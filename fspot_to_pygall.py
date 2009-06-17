@@ -18,13 +18,12 @@ from sqlalchemy.exceptions import InvalidRequestError
 
 home = os.environ['HOME']
 fspot_db = "sqlite:////home/clemence/.gnome2/f-spot/photos.db" % locals()
-#fspot_db = "sqlite:////%(home)s/.gnome2/f-spot/photos.db" % locals()
-pygall_db = "sqlite:////home/bruno/Desktop/gallerie/PyGall/development.db" % locals()
+pygall_db = "sqlite:////home/bruno/dev/PyGall/development.db" % locals()
 
-# Prefix to remove from F-Spot urls to get the pygall URLs.
 photos_src_dir = '/home/data/'
 photos_dest_dir = '/home/bruno/photos_dest_dir/'
-photos_scaled_dest_dir = '/home/bruno/photos_scaled_dest_dir/'
+photos_scaled_dest_dir = '/home/bruno/dev/PyGall/pygall/public/'
+photos_dest_dir = '/home/bruno/dev/PyGall/pygall/public/data/'
 pygall_tag = u'pygall'
 
 ECHO_DB = False
@@ -280,6 +279,7 @@ pygall_session.commit()
 ############################################################
 
 # REMEMBER: Creating missing tags and caching them
+# Tricky sqlalchemy request...
 #stmt = fspot_session.query(FSpotPhoto).join('tags').filter(FSpotTag.name==pygall_tag).subquery()
 #selected_photos_alias = aliased(FSpotPhoto, stmt)
 #extracted_tags = fspot_session.query(FSpotTag).join((selected_photos_alias, FSpotTag.photos)).all()
