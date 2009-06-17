@@ -21,7 +21,6 @@ fspot_db = "sqlite:////home/clemence/.gnome2/f-spot/photos.db" % locals()
 pygall_db = "sqlite:////home/bruno/dev/PyGall/development.db" % locals()
 
 photos_src_dir = '/home/data/'
-photos_dest_dir = '/home/bruno/photos_dest_dir/'
 photos_scaled_dest_dir = '/home/bruno/dev/PyGall/pygall/public/'
 photos_dest_dir = '/home/bruno/dev/PyGall/pygall/public/data/'
 pygall_tag = u'pygall'
@@ -156,8 +155,10 @@ if REBUILD_ONLY_DB or REBUILD_ALL:
     pygall_session.execute(pygall_photos_table.delete())
 
 if REBUILD_ALL:
-    shutil.rmtree(photos_scaled_dest_dir)
-    shutil.rmtree(photos_dest_dir)
+    if os.path.exists(os.path.join(photos_scaled_dest_dir, 'photos')):
+        shutil.rmtree(os.path.join(photos_scaled_dest_dir, 'photos'))
+    if os.path.exists(os.path.join(photos_dest_dir, 'photos')):
+        shutil.rmtree(os.path.join(photos_dest_dir, 'photos'))
 
 
 def copy_crop_photos(uri):
