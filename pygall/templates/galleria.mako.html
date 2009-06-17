@@ -1,0 +1,103 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+    <title>Binet's gallery</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta http-equiv="imagetoolbar" content="false">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+	<link href="/css/galleria.css" rel="stylesheet" type="text/css" media="screen">
+	<link href="/css/style.css" rel="stylesheet" type="text/css" media="screen">
+	<script type="text/javascript" src="/js/jquery.min.js"></script>
+	<script type="text/javascript" src="/js/jquery.galleria.js"></script>
+	<script type="text/javascript">
+	$(document).ready(function(){
+		$('ul.gallery_demo').galleria({
+			history   : true, // activates the history object for bookmarking, back-button etc.
+			clickNext : true, // helper for making the image clickable
+			insert    : '#side-b', // the containing selector for our main image
+			onImage   : function(image,caption,thumb) { // let's add some image effects for demonstration purposes
+				
+				// fade in the image & caption
+				image.css('display','none').fadeIn(500);
+				caption.css('display','none').fadeIn(500);
+				
+				// fetch the thumbnail container
+				var _li = thumb.parents('li');
+				
+				// fade out inactive thumbnail
+				_li.siblings().children('img.selected').fadeTo(500,0.3);
+				
+				// fade in active thumbnail
+				thumb.fadeTo('fast',1).addClass('selected');
+				
+				// add a title for the clickable image
+				image.attr('title','Next image >>');
+			},
+			onThumb : function(thumb) { // thumbnail effects goes here
+				
+				// fetch the thumbnail container
+				var _li = thumb.parents('li');
+				
+				// if thumbnail is active, fade all the way.
+				var _fadeTo = _li.is('.active') ? '1' : '0.3';
+				
+				// fade in the thumbnail when finnished loading
+				thumb.css({display:'none',opacity:_fadeTo}).fadeIn(1500);
+				
+				// hover effects
+				thumb.hover(
+					function() { thumb.fadeTo('fast',1); },
+					function() { _li.not('.active').children('img').fadeTo('fast',0.3); } // don't fade out if the parent is active
+				)
+			}
+		});
+	});
+	</script>
+	
+</head>
+
+<body>
+    <div id="wrapper">
+        <div id="header">
+            <!--HEADER-->
+        </div>
+        <div id="container">
+            <div id="side-a">
+
+                <h1>La galerie des Binet!</h1>
+                <ul class="gallery_demo">
+                    <% first=True %>
+                    % for photo in c.photos:
+                    % if first:
+                    <li class="active">
+                    <% first=False %>
+                    % else:
+                    <li>
+                    % endif
+                        <img src="/${photo.uri}" alt="${photo.uri}" title="${photo.description}">
+                    </li>
+                    % endfor
+                </ul>
+                <div class="nav">
+                    <p>
+                        <a href="#" onclick="$.galleria.prev(); return false;">&laquo; previous</a> | <a href="#" onclick="$.galleria.next(); return false;">next &raquo;</a>
+                    </p>
+                    <p>
+                        ${c.photos.pager('Page: $link_previous ~4~ $link_next')}
+                    </p>
+                </div>
+
+            </div>
+            
+            <div id="side-b">
+                <!--image box-->
+            </div>
+        </div>
+        <div id="footer">
+            <!--FOOTER-->
+        </div>
+    </div>
+
+</body>
+</html>
