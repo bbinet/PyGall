@@ -214,7 +214,7 @@ def copy_crop_photos(uri):
                     height_dest = height_dest - height_dest % 2
                     width_dest = width_dest - width_dest % 2
 
-                im.resize((width_dest, height_dest)).save(dest_scaled, quality=quality)
+                im.resize((width_dest, height_dest), Image.ANTIALIAS).save(dest_scaled, quality=quality)
                 print "%s" %dest_scaled
 
             else:
