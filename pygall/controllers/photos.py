@@ -17,7 +17,8 @@ class PhotosController(BaseController):
         photo_q = Session.query(PyGallPhoto).order_by(PyGallPhoto.time.asc())
         if page is None:
             # default to last page
-            page = ceil(float(photo_q.count()) / 33)
+            page = int(ceil(float(photo_q.count()) / 33))
+            redirect_to(controller='photos', action='index', page=page)
 
         c.photos = paginate.Page(photo_q, page=page, items_per_page=33)
         return render('galleria.mako.html')
