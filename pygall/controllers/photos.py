@@ -1,4 +1,5 @@
 import logging
+from math import ceil
 
 from pylons import request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect_to
@@ -12,7 +13,11 @@ log = logging.getLogger(__name__)
 
 class PhotosController(BaseController):
 
-    def index(self, page=1):
-        photo_q = Session.query(PyGallPhoto).order_by(PyGallPhoto.time.desc())
+    def index(self, page=None):
+        photo_q = Session.query(PyGallPhoto).order_by(PyGallPhoto.time.asc())
+        if page is None:
+            # default to last page
+            page = ceil(float(photo_q.count()) / 33)
+
         c.photos = paginate.Page(photo_q, page=page, items_per_page=33)
         return render('galleria.mako.html')
