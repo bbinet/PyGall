@@ -1,296 +1,489 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import sys
+import getopt
 import os
 import shutil
+import subprocess
 import Image
 import pyexiv2
 from datetime import datetime
 
-from sqlalchemy import create_engine, MetaData
-from sqlalchemy import Column, Table, Sequence, DateTime, \
-        UnicodeText, Integer, String, Unicode, ForeignKey, Boolean
+from sqlalchemy import create_engine, MetaData, Column, \
+        Table, Sequence, DateTime, UnicodeText, Integer, \
+        String, Unicode, ForeignKey, Boolean, not_
 from sqlalchemy.sql import func, join
 from sqlalchemy.orm import mapper, sessionmaker, deferred, \
         relation, backref, aliased
 from sqlalchemy.exceptions import InvalidRequestError
 
 
-home = os.environ['HOME']
-fspot_db = "sqlite:////home/clemence/.gnome2/f-spot/photos.db" % locals()
-pygall_db = "sqlite:////home/bruno/dev/PyGall/development.db" % locals()
+class ExportGall:
+    """
+    - define from_db and to_db (url, schema, uri field...)
+    - get all records that match the export_tag
+    - process actions on each record (ex: scale, copy, encode...)
+    - copy both original and processed record                                       
+    - rsync both original and processed record
+    """
+    def __init__(self,
+                 src_dir,
+                 base_dir,
+                 dest_dir,
+                 processed_dest_dir,
+                 upload_user,
+                 upload_host,
+                 upload_base_dir,
+                 fromdb_url,
+                 todb_url,
+                 export_tag,
+                 verbose=False,
+                 rebuild_db=False,
+                 cleanup_db=False,
+                 cleanup_files=False):
+        # default values
+        self.src_dir = src_dir
+        self.base_dir = base_dir
+        self.dest_dir = dest_dir
+        self.processed_dest_dir = processed_dest_dir
+        self.upload_user = upload_user
+        self.upload_host = upload_host
+        self.upload_base_dir = upload_base_dir
+        self.fromdb_url = fromdb_url
+        self.todb_url = todb_url
+        self.export_tag = export_tag
+        self.verbose = verbose
+        self.rebuild_db = rebuild_db
+        self.cleanup_db = cleanup_db
+        self.cleanup_files = cleanup_files
+        self.abs_dest_dir = os.path.join(self.base_dir, self.dest_dir)
+        self.abs_processed_dest_dir = os.path.join(self.base_dir, self.processed_dest_dir)
+        self.upload_base_url = "%s@%s:%s" %(self.upload_user,
+                                            self.upload_host,
+                                            self.upload_base_dir)
+        self.upload_dest_url = os.path.join(self.upload_base_url, self.dest_dir)
+        self.upload_processed_dest_url = os.path.join(self.upload_base_url, self.processed_dest_dir)
 
-photos_src_dir = '/home/data/'
-photos_scaled_dest_dir = '/home/bruno/dev/PyGall/pygall/public/'
-photos_dest_dir = '/home/bruno/dev/PyGall/pygall/public/data/'
-pygall_tag = u'pygall'
+    def init_db(self):
+        " To be overriden in subclasses "
+        pass
 
-ECHO_DB = False
-DELETE_ALL_TAGS = False
-REBUILD_ONLY_DB = False
-REBUILD_ALL = True
+    def process(self):
+        " To be overriden in subclasses "
+        pass
 
-quality = 80
-dimension = 700
-
-############################################################
-# F-Spot database
-############################################################
-
-fspot_engine = create_engine(fspot_db, echo=ECHO_DB)
-fspot_metadata = MetaData()
-
-fspot_tags_table = Table(
-    "tags", fspot_metadata,
-    Column("name", Unicode()),
-    autoload = True, autoload_with = fspot_engine)
-# id, name, category_id, is_category, sort_priority, icon
-
-fspot_photo_tags_table = Table(
-    "photo_tags", fspot_metadata,
-    Column("photo_id", Integer, ForeignKey('photos.id')),
-    Column("tag_id", Integer, ForeignKey('tags.id')),
-    autoload = True, autoload_with = fspot_engine)
-# photo_id, tag_id
-
-fspot_photos_table = Table(
-    "photos", fspot_metadata,
-    Column("uri", Unicode()),
-    autoload = True, autoload_with = fspot_engine)
-# id, time, uri, description, roll_id, default_version_id, rating
-
-class FSpotTag(object):
-    pass
-class FSpotPhoto(object):
-    pass
-
-mapper(FSpotTag,
-       fspot_tags_table,
-       properties = {
-           'icon' : deferred(fspot_tags_table.c.icon), # Big: ignore!
-           'photos' : relation(FSpotPhoto, secondary = fspot_photo_tags_table),
-       })
-mapper(FSpotPhoto,
-       fspot_photos_table,
-       properties = {
-           'tags' : relation(FSpotTag, secondary = fspot_photo_tags_table),
-       })
-
-############################################################
-# PyGall database
-############################################################
-
-pygall_engine = create_engine(pygall_db, echo=ECHO_DB)
-pygall_metadata = MetaData()
-
-pygall_photos_table = Table(
-    "photos", pygall_metadata,
-    Column('id', Integer(), Sequence('photos_seq', optional=True),
-              primary_key=True),
-    Column("uri", Unicode(), nullable=False),
-    Column("description", Unicode()),
-    Column("rating", Integer()),
-    Column("time", DateTime(), nullable=False)
-)
-# id, uri, description, rating, time
-
-pygall_tags_table = Table(
-    "tags", pygall_metadata,
-    Column("id", Integer(), primary_key=True),
-    Column("name", Unicode(), nullable=False)
-)
-# id, name, category_id, is_category, sort_priority, icon
-
-pygall_photos_tags_table = Table(
-    "photo_tags", pygall_metadata,
-    Column("photo_id", Integer, ForeignKey('photos.id')),
-    Column("tag_id", Integer, ForeignKey('tags.id'))
-)
-# photo_id, tag_id
-
-class PyGallTag(object):
-    def __init__(self, name):
-        self.name = name
-
-class PyGallPhoto(object):
-    def __init__(self, fspot_photo=None):
-        if fspot_photo is not None:
-            self.uri = fspot_uri_to_pygall(fspot_photo.uri)
-            self.description = fspot_photo.description
-            self.rating = fspot_photo.rating
-            self.time = datetime.fromtimestamp(fspot_photo.time) # Convert to datetime
-
-mapper(PyGallTag,
-       pygall_tags_table,
-       properties = {
-           'photos' : relation(PyGallPhoto, secondary = pygall_photos_tags_table),
-        })
-
-mapper(PyGallPhoto,
-       pygall_photos_table,
-       properties = {
-          'tags' : relation(PyGallTag, secondary = pygall_photos_tags_table),
-       })
+    def upload(self):
+        subprocess.check_call(["rsync", "-avz", "--delete", "--force",
+                               self.abs_dest_dir, self.upload_dest_url])
+        subprocess.check_call(["rsync", "-avz", "--delete", "--force",
+                               self.abs_processed_dest_dir, self.upload_processed_dest_url])
+        subprocess.check_call(["rsync", "-avz", "--delete", "--force",
+                               self.todb_url, self.upload_base_url])
 
 
-############################################################
-# Connect to the database
-############################################################
-FSpotSession = sessionmaker(autoflush = True, autocommit = False)
-FSpotSession.configure(bind = fspot_engine)
-PyGallSession = sessionmaker(autoflush = True, autocommit = False)
-PyGallSession.configure(bind = pygall_engine)
 
-fspot_session = FSpotSession()
-pygall_session = PyGallSession()
-############################################################
+class FSpotToPyGall(ExportGall):
+    def __init__(self,
+                 src_dir="/home/data/photos/",
+                 base_dir="/home/bruno/dev/PyGall/",
+                 dest_dir="pygall/public/data/photos/",
+                 processed_dest_dir="pygall/public/photos/",
+                 upload_user="data",
+                 upload_host="srvb",
+                 upload_base_dir="/home/data/websites/photos.inneos.org/PyGall/",
+                 fromdb_url="/home/clemence/.gnome2/f-spot/photos.db",
+                 todb_url="/home/bruno/dev/PyGall/development.db",
+                 export_tag="pygall",
+                 verbose=False,
+                 rebuild_db=False,
+                 cleanup_db=False,
+                 cleanup_files=False,
+                 quality=80,
+                 dimension=700):
 
-# cache dictionnary for tags
-pygall_tags = {}
+        ExportGall.__init__(self, src_dir, base_dir, dest_dir, processed_dest_dir,
+                            upload_user, upload_host, upload_base_dir, fromdb_url,
+                            todb_url, export_tag, verbose, rebuild_db, cleanup_db,
+                            cleanup_files)
+        self.quality = quality
+        self.dimension = dimension
 
-if DELETE_ALL_TAGS or REBUILD_ONLY_DB or REBUILD_ALL:
-    pygall_session.execute(pygall_photos_tags_table.delete())
-    pygall_session.execute(pygall_tags_table.delete())
-if REBUILD_ONLY_DB or REBUILD_ALL:
-    pygall_session.execute(pygall_photos_table.delete())
+    def init_db(self):
+        self._init_fromdb()
+        self._init_todb()
 
-if REBUILD_ALL:
-    if os.path.exists(os.path.join(photos_scaled_dest_dir, 'photos')):
-        shutil.rmtree(os.path.join(photos_scaled_dest_dir, 'photos'))
-    if os.path.exists(os.path.join(photos_dest_dir, 'photos')):
-        shutil.rmtree(os.path.join(photos_dest_dir, 'photos'))
+    def _fromdb_uri_to_todb(self, uri):
+        """
+        Takes F-Spot file uri. Returns the relative path
+        to be used on PyGall
+        """
+        if not uri.startswith('file://%s' % self.src_dir):
+            raise Exception("Don't know how to handle image %s" % uri)
+        return uri.replace('file://%s' % self.src_dir, "")
+
+    def _init_fromdb(self):
+        """
+        Init FSpot database
+        """
+        fromdb_engine = create_engine("sqlite:///%s" % self.fromdb_url, echo=self.verbose)
+        fromdb_metadata = MetaData()
+        
+        fromdb_tags_table = Table(
+            "tags", fromdb_metadata,
+            Column("name", Unicode()),
+            autoload = True, autoload_with = fromdb_engine)
+        # id, name, category_id, is_category, sort_priority, icon
+        
+        fromdb_photo_tags_table = Table(
+            "photo_tags", fromdb_metadata,
+            Column("photo_id", Integer, ForeignKey('photos.id')),
+            Column("tag_id", Integer, ForeignKey('tags.id')),
+            autoload = True, autoload_with = fromdb_engine)
+        # photo_id, tag_id
+        
+        fromdb_photos_table = Table(
+            "photos", fromdb_metadata,
+            Column("uri", Unicode()),
+            autoload = True, autoload_with = fromdb_engine)
+        # id, time, uri, description, roll_id, default_version_id, rating
+        
+        class FromDbTag(object):
+            pass
+        class FromDbPhoto(object):
+            pass
+        
+        mapper(FromDbTag,
+               fromdb_tags_table,
+               properties = {
+                   'icon' : deferred(fromdb_tags_table.c.icon), # Big: ignore!
+                   'photos' : relation(FromDbPhoto, secondary = fromdb_photo_tags_table),
+               })
+        mapper(FromDbPhoto,
+               fromdb_photos_table,
+               properties = {
+                   'tags' : relation(FromDbTag, secondary = fromdb_photo_tags_table),
+               })
+
+        FSpotSession = sessionmaker(autoflush = True, autocommit = False)
+        FSpotSession.configure(bind = fromdb_engine)
+
+        self.FromDbMain = FromDbPhoto
+        self.FromDbTag = FromDbTag
+        self.fromdb_session = FSpotSession()
+
+        
+    def _init_todb(self):
+        """
+        Init PyGall database
+        """
+        todb_engine = create_engine("sqlite:///%s" % self.todb_url, echo=self.verbose)
+        todb_metadata = MetaData()
+        
+        todb_photos_table = Table(
+            "photos", todb_metadata,
+            Column('id', Integer(), Sequence('photos_seq', optional=True),
+                      primary_key=True),
+            Column("uri", Unicode(), nullable=False, index=True),
+            Column("description", Unicode()),
+            Column("rating", Integer()),
+            Column("time", DateTime(), nullable=False)
+        )
+        # id, uri, description, rating, time
+        
+        todb_tags_table = Table(
+            "tags", todb_metadata,
+            Column("id", Integer(), primary_key=True),
+            Column("name", Unicode(), nullable=False)
+        )
+        # id, name, category_id, is_category, sort_priority, icon
+        
+        todb_photos_tags_table = Table(
+            "photo_tags", todb_metadata,
+            Column("photo_id", Integer, ForeignKey('photos.id')),
+            Column("tag_id", Integer, ForeignKey('tags.id'))
+        )
+        # photo_id, tag_id
+        
+        class ToDbTag(object):
+            def __init__(self, name):
+                self.name = name
+        
+        class ToDbPhoto(object):
+            def __init__(self, uri="", description="", rating=-1, time=datetime(1,1,1)):
+                self.uri = uri
+                self.description = description
+                self.rating = rating
+                self.time = time
+        
+        mapper(ToDbTag,
+               todb_tags_table,
+               properties = {
+                   'photos' : relation(ToDbPhoto, secondary = todb_photos_tags_table),
+                })
+        
+        mapper(ToDbPhoto,
+               todb_photos_table,
+               properties = {
+                  'tags' : relation(ToDbTag, secondary = todb_photos_tags_table),
+               })
+
+        ToDbSession = sessionmaker(autoflush = True, autocommit = False)
+        ToDbSession.configure(bind = todb_engine)
+
+        self.ToDbMain = ToDbPhoto
+        self.ToDbTag = ToDbTag
+        self.todb_session = ToDbSession()
+        self.sqla_tables = [todb_photos_table, todb_tags_table, todb_photos_table]
+
+        if self.rebuild_db:
+            # remove and recreate db
+            os.remove(self.todb_url)
+            todb_metadata.create_all(bind=todb_engine)
 
 
-def copy_crop_photos(uri):
+    def process(self):
+        # cleanup if wanted
+        if self.cleanup_db:
+            for table in self.sqla_tables:
+                self.todb_session.execute(table.delete())
+        if self.cleanup_files:
+            if os.path.exists(self.abs_processed_dest_dir):
+                print "Cleaning directory %s..." % self.abs_processed_dest_dir
+                shutil.rmtree(self.abs_processed_dest_dir)
+            if os.path.exists(self.abs_dest_dir):
+                print "Cleaning directory %s..." % self.abs_dest_dir
+                shutil.rmtree(self.abs_dest_dir)
+
+        (full_list, simple_list) = self._get_export_list()
+        self._process_db(full_list, simple_list)
+        self._process_files(simple_list)
+
+    def _get_export_list(self):
+        full_list = []
+        simple_list = []
+        q = self.fromdb_session.query(self.FromDbMain).join('tags').filter(self.FromDbTag.name==self.export_tag)
+        for row in q.all():
+            full_list.append({
+                "uri": self._fromdb_uri_to_todb(row.uri),
+                "description": row.description,
+                "rating": row.rating,
+                "time": datetime.fromtimestamp(row.time),
+                "tags": [tag.name for tag in row.tags]
+            })
+            simple_list.append(self._fromdb_uri_to_todb(row.uri))
+        return (full_list, simple_list)
+
+    def _process_db(self, full_list, simple_list):
+        cache_tags = {}
+        def _process_tags(row, tags):
+            # remove old tags
+            for dbtag in row.tags:
+                if dbtag.name not in tags:
+                    row.tags.remove(dbtag)
+                    print "[db] Disassociated : tag %s to photo %s" % (dbtag.name, row.uri)
+            # add new tags
+            for tag in tags:
+                if tag != self.export_tag: # ignore export_tag
+                    new_tag = False
+                    if not cache_tags.has_key(tag):
+                        # cache tag from db (or create it if not exist)
+                        dbtag = self.todb_session.query(self.ToDbTag).filter_by(name=tag).first()
+                        if not dbtag:
+                            new_tag = True
+                            print "[db] Created : tag %s" % tag
+                            dbtag = self.ToDbTag(tag)
+                            self.todb_session.add(dbtag)
+                        cache_tags[tag] = dbtag
+
+                    if new_tag or (cache_tags[tag] not in row.tags):
+                        # append tag if not already exists
+                        row.tags.append(cache_tags[tag])
+                        print "[db] Associated : tag %s to photo %s" % (tag, row.uri)
+
+        # remove old photos
+        count = self.todb_session.query(self.ToDbMain).filter(not_(self.ToDbMain.uri.in_(simple_list))).delete()
+        if count > 0:
+            print "[db] Removed : %d photo(s)" % count
+
+        # add new photos
+        for item in full_list:
+            # look for the same photo in ToDb
+            row = self.todb_session.query(self.ToDbMain).filter_by(uri=item["uri"]).first()
+            if not row:
+                row = self.ToDbMain(item["uri"], item["description"], item["rating"], item["time"])
+                self.todb_session.add(row)
+                print "[db] Created : photo %s" % item["uri"]
+            _process_tags(row, item["tags"])
+
+        # end db sessions
+        self.fromdb_session.flush()
+        self.todb_session.flush()
+        self.fromdb_session.rollback()
+        self.todb_session.commit()
 
 
-    src = os.path.join(photos_src_dir, uri)
-    dest = os.path.join(photos_dest_dir, uri)
-    dest_scaled = os.path.join(photos_scaled_dest_dir, uri)
+    def _process_files(self, list):
+        # remove old processed files
+        original_files = []
+        processed_files = []
+        for uri in list:
+            original_files.append(os.path.join(self.abs_dest_dir, uri))
+            processed_files.append(os.path.join(self.abs_processed_dest_dir, uri))
+        
+        # walk in abs_dest_dir and abs_processed_dest_dir and remove all files not in 'list'
+        for root, dirs, files in os.walk(self.abs_dest_dir):
+            for file in files:
+                f = os.path.join(root, file)
+                if f not in original_files:
+                    print "Removed : %s" % f
+                    os.remove(f)
+        for root, dirs, files in os.walk(self.abs_processed_dest_dir):
+            for file in files:
+                f = os.path.join(root, file)
+                if f not in processed_files:
+                    print "Removed : %s (processed)" % f
+                    os.remove(f)
 
-    exif = pyexiv2.Image(src)
-    exif.readMetadata()
-    orientation=exif['Exif.Image.Orientation']
+        # add missing files
+        for uri in list:
+            src = os.path.join(self.src_dir, uri)
+            dest = os.path.join(self.abs_dest_dir, uri)
 
-    # copy original photo
-    if os.path.exists(dest):
-        print "Photo already exists (%s): give up..." %dest
-    else:
-        dirpath = os.path.dirname(dest)
-        if not os.path.exists(dirpath):
-            os.makedirs(dirpath, 0755)
-        shutil.copy2(src, dest)
-
-    # copy scaled photo
-    if os.path.exists(dest_scaled):
-        print "Scaled photo already exists (%s): give up..." %dest_scaled
-    else:
-        dirpath = os.path.dirname(dest_scaled)
-        if not os.path.exists(dirpath):
-            os.makedirs(dirpath, 0755)
-
-        base, extension = os.path.splitext(src)
-        if extension.lower() == ".jpg" or extension.lower() == ".jpeg":
-            print "%s" %src
-            im = Image.open(src)
-            # auto rotate if needed
-            if orientation == 6:
-                im=im.rotate(270)
-            if orientation == 8:
-                im=im.rotate(90)
-
-            width_src, height_src = im.size
-            if width_src > dimension or height_src > dimension:
-                if width_src > height_src:
-                    height_dest = dimension * height_src / width_src
-                    width_dest = dimension
-                else:
-                    width_dest = dimension * width_src / height_src
-                    height_dest = dimension
-
-                # Si on redimmensionne selon une taille paire, on force la largeur et hauteur 
-                # finales de l'image a etre egalement paires.
-                if dimension % 2 == 0:
-                    height_dest = height_dest - height_dest % 2
-                    width_dest = width_dest - width_dest % 2
-
-                im.resize((width_dest, height_dest), Image.ANTIALIAS).save(dest_scaled, quality=quality)
-                print "%s" %dest_scaled
-
+            # copy original photo
+            if os.path.exists(dest):
+                if self.verbose:
+                    print "Photo already exists (%s): give up..." % dest
             else:
-                print "Nothing to do (only copy): photo is to small!"
-                shutil.copy(src, dest_scaled)
-        else:
-            print "Ignoring file %s : only jpg images are allowed!" %src
+                dirpath = os.path.dirname(dest)
+                if not os.path.exists(dirpath):
+                    os.makedirs(dirpath, 0755)
+                shutil.copy2(src, dest)
+                print "Copied : %s" % dest
+
+            # copy scaled photo
+            dest_processed = os.path.join(self.abs_processed_dest_dir, uri)
+            exif = pyexiv2.Image(src)
+            exif.readMetadata()
+            orientation=exif['Exif.Image.Orientation']
+
+            if os.path.exists(dest_processed):
+                if self.verbose:
+                    print "Processed photo already exists (%s): give up..." % dest_processed
+            else:
+                dirpath = os.path.dirname(dest_processed)
+                if not os.path.exists(dirpath):
+                    os.makedirs(dirpath, 0755)
+
+                base, extension = os.path.splitext(src)
+                if extension.lower() == ".jpg" or extension.lower() == ".jpeg":
+                    im = Image.open(src)
+                    # auto rotate if needed
+                    if orientation == 6:
+                        im=im.rotate(270)
+                    if orientation == 8:
+                        im=im.rotate(90)
+
+                    width_src, height_src = im.size
+                    if width_src > self.dimension or height_src > self.dimension:
+                        if width_src > height_src:
+                            height_dest = self.dimension * height_src / width_src
+                            width_dest = self.dimension
+                        else:
+                            width_dest = self.dimension * width_src / height_src
+                            height_dest = self.dimension
+
+                        # Si on redimmensionne selon une taille paire, on force la largeur et hauteur 
+                        # finales de l'image a etre egalement paires.
+                        if self.dimension % 2 == 0:
+                            height_dest = height_dest - height_dest % 2
+                            width_dest = width_dest - width_dest % 2
+
+                        im.resize((width_dest, height_dest), Image.ANTIALIAS).save(dest_processed, quality=self.quality)
+                        print "Processed : %s" % dest_processed
+
+                    else:
+                        print "Nothing to do (only copy): photo is to small!"
+                        shutil.copy(src, dest_processed)
+                else:
+                    print "Ignored : %s is not jpg!" %src
 
 
-def fspot_uri_to_pygall(f_uri):
-    """
-    Takes F-Spot file uri. Returns the relative path
-    to be used on PyGall
-    """
-    if not f_uri.startswith('file://%s' %photos_src_dir):
-        raise Exception("Don't know how to handle image %s" % f_uri)
-    return f_uri.replace('file://%s' %photos_src_dir, "")
+class Usage(Exception):
+    def __init__(self, msg):
+        self.msg = msg
 
-def attach_tag(f_tag, p_photo, force=False):
-    if f_tag.name != pygall_tag: # ignore pygall_tag
-        if not pygall_tags.has_key(f_tag.name):
-            # cache tag from db (or create it if not exist)
-            p_tag = pygall_session.query(PyGallTag).filter_by(name = f_tag.name).first()
-            if not p_tag:
-                print "Creating missing PyGall tag %s" % f_tag.name
-                p_tag = PyGallTag(f_tag.name)
-                pygall_session.add(p_tag)
-                force = True
-            pygall_tags[ f_tag.name ] = p_tag
-
-        if force or (pygall_tags[f_tag.name] not in p_photo.tags): # check if already exists
-            # append tag to photos_tags
-            print "Adding tag %s to photo %s" % (f_tag.name, p_photo.uri)
-            p_photo.tags.append(pygall_tags[f_tag.name])
+def help(name):
+    print >>sys.stdout, "Usage: %s [options]" % name
+    print >>sys.stdout, "	--help"
+    print >>sys.stdout, "	--verbose"
+    print >>sys.stdout, "	--rebuild_db"
+    print >>sys.stdout, "	--cleanup_db"
+    print >>sys.stdout, "	--cleanup_files"
+    print >>sys.stdout, "	--src_dir="
+    print >>sys.stdout, "	--base_dir="
+    print >>sys.stdout, "	--dest_dir="
+    print >>sys.stdout, "	--processed_dest_dir="
+    print >>sys.stdout, "	--upload_user="
+    print >>sys.stdout, "	--upload_host="
+    print >>sys.stdout, "	--upload_base_dir="
+    print >>sys.stdout, "	--fromdb_url="
+    print >>sys.stdout, "	--todb_url="
+    print >>sys.stdout, "	--export_tag="
+    print >>sys.stdout, "	--quality="
+    print >>sys.stdout, "	--dimension="
 
 
-# Iterate on each photo
-for f_photo in fspot_session.query(FSpotPhoto).join('tags').filter(FSpotTag.name==pygall_tag).all():
-    force_append_tag = False
-    # Lookup the same photo in PyGall database
-    pygall_uri = fspot_uri_to_pygall(f_photo.uri)
-    p_photo = pygall_session.query(PyGallPhoto).filter_by(uri = pygall_uri).first()
-    if not p_photo:
-        print "Creating missing PyGall photo %s" % pygall_uri
-        if not REBUILD_ONLY_DB:
-            copy_crop_photos(pygall_uri)
-        p_photo = PyGallPhoto(f_photo)
-        pygall_session.add(p_photo)
-        force_append_tag = True
-    for t in f_photo.tags:
-        attach_tag(t, p_photo, force_append_tag)
+def main(argv=None):
+    if argv is None:
+        argv = sys.argv
+    try:
+        try:
+            opts, args = getopt.getopt(
+                argv[1:],
+                "h",
+                ["help",
+                 "verbose",
+                 "rebuild_db",
+                 "cleanup_db",
+                 "cleanup_files",
+                 "src_dir=",
+                 "base_dir=",
+                 "dest_dir=",
+                 "processed_dest_dir=",
+                 "upload_user=",
+                 "upload_host=",
+                 "upload_base_dir=",
+                 "fromdb_url=",
+                 "todb_url=",
+                 "export_tag=",
+                 "quality=",
+                 "dimension="]
+            )
+            options = {}
+            for opt, arg in opts:
+                if opt in ("-h", "--help"):
+                    help(argv[0])
+                    return 0
+                elif opt in ("--verbose", "--rebuild_db", "--cleanup_db", "--cleanup_files"):
+                    options[opt[2:]] = True
+                else:
+                    options[opt[2:]] = arg
+
+            export = FSpotToPyGall(**options)
+            export.init_db()
+            export.process()
+            export.upload()
+            return 0
+        except getopt.error, msg:
+             raise Usage(msg)
+        # more code, unchanged
+    except Usage, err:
+        print >>sys.stderr, err.msg
+        print >>sys.stderr, "for help use --help"
+        return 2
 
 
-
-############################################################
-# The END
-############################################################
-fspot_session.flush()
-pygall_session.flush()
-
-fspot_session.rollback()
-pygall_session.commit()
-############################################################
-
-# REMEMBER: Creating missing tags and caching them
-# Tricky sqlalchemy request...
-#stmt = fspot_session.query(FSpotPhoto).join('tags').filter(FSpotTag.name==pygall_tag).subquery()
-#selected_photos_alias = aliased(FSpotPhoto, stmt)
-#extracted_tags = fspot_session.query(FSpotTag).join((selected_photos_alias, FSpotTag.photos)).all()
-
-#for f_tag in extracted_tags:
-    #p_tag = pygall_session.query(PyGallTag).filter_by(name = f_tag.name).first()
-    #if not p_tag:
-        #print "Creating missing PyGall tag %s" % f_tag.name
-        #p_tag = PyGallTag(f_tag.name)
-        #pygall_session.add(p_tag)
-
-    #pygall_tags[ f_tag.name ] = p_tag
+if __name__ == "__main__":
+    sys.exit(main())
 
