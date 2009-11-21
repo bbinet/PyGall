@@ -20,18 +20,10 @@ from sqlalchemy.exceptions import InvalidRequestError
 
 
 class ExportGall:
-    """
-    - define from_db and to_db (url, schema, uri field...)
-    - get all records that match the export_tag
-    - process actions on each record (ex: scale, copy, encode...)
-    - copy both original and processed record                                       
-    - rsync both original and processed record
-    """
     def __init__(self,
                  src_dir,
                  base_dir,
                  dest_dir,
-                 processed_dest_dir,
                  upload_user,
                  upload_host,
                  upload_base_dir,
@@ -46,7 +38,6 @@ class ExportGall:
         self.src_dir = src_dir
         self.base_dir = base_dir
         self.dest_dir = dest_dir
-        self.processed_dest_dir = processed_dest_dir
         self.upload_user = upload_user
         self.upload_host = upload_host
         self.upload_base_dir = upload_base_dir
@@ -58,12 +49,10 @@ class ExportGall:
         self.cleanup_db = cleanup_db
         self.cleanup_files = cleanup_files
         self.abs_dest_dir = os.path.join(self.base_dir, self.dest_dir)
-        self.abs_processed_dest_dir = os.path.join(self.base_dir, self.processed_dest_dir)
         self.upload_base_url = "%s@%s:%s" %(self.upload_user,
                                             self.upload_host,
                                             self.upload_base_dir)
         self.upload_dest_url = os.path.join(self.upload_base_url, self.dest_dir)
-        self.upload_processed_dest_url = os.path.join(self.upload_base_url, self.processed_dest_dir)
 
     def init_db(self):
         " To be overriden in subclasses "
@@ -102,10 +91,13 @@ class FSpotToPyGall(ExportGall):
                  quality=80,
                  dimension=700):
 
-        ExportGall.__init__(self, src_dir, base_dir, dest_dir, processed_dest_dir,
-                            upload_user, upload_host, upload_base_dir, fromdb_url,
-                            todb_url, export_tag, verbose, rebuild_db, cleanup_db,
+        ExportGall.__init__(self, src_dir, base_dir, dest_dir, upload_user,
+                            upload_host, upload_base_dir, fromdb_url, todb_url,
+                            export_tag, verbose, rebuild_db, cleanup_db,
                             cleanup_files)
+        self.processed_dest_dir = processed_dest_dir
+        self.abs_processed_dest_dir = os.path.join(self.base_dir, self.processed_dest_dir)
+        self.upload_processed_dest_url = os.path.join(self.upload_base_url, self.processed_dest_dir)
         self.quality = quality
         self.dimension = dimension
 
