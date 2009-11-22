@@ -15,7 +15,7 @@ from sqlalchemy import create_engine, MetaData, Column, \
         String, Unicode, ForeignKey, Boolean, not_
 from sqlalchemy.sql import func, join
 from sqlalchemy.orm import mapper, sessionmaker, deferred, \
-        relation, backref, aliased
+        relation, backref, aliased, column_property
 from sqlalchemy.exceptions import InvalidRequestError
 
 
@@ -48,7 +48,6 @@ class ExportGall:
         self.rebuild_db = rebuild_db
         self.cleanup_db = cleanup_db
         self.cleanup_files = cleanup_files
-        self.abs_dest_dir = os.path.join(self.base_dir, self.dest_dir)
         self.upload_base_url = "%s@%s:%s" %(self.upload_user,
                                             self.upload_host,
                                             self.upload_base_dir)
@@ -63,10 +62,11 @@ class ExportGall:
         pass
 
     def upload(self):
+        # synchronize files
         subprocess.check_call(["rsync", "-avz", "--delete", "--force",
-                               self.abs_dest_dir, self.upload_dest_url])
-        subprocess.check_call(["rsync", "-avz", "--delete", "--force",
-                               self.abs_processed_dest_dir, self.upload_processed_dest_url])
+                               os.path.join(self.base_dir, self.dest_dir),
+                               self.upload_dest_url])
+        # synchronize db
         subprocess.check_call(["rsync", "-avz", "--delete", "--force",
                                self.todb_url, self.upload_base_url])
 
@@ -77,11 +77,12 @@ class FSpotToPyGall(ExportGall):
                  src_dir="/home/data/photos/",
                  base_dir="/home/bruno/dev/PyGall/",
                  dest_dir="pygall/public/data/photos/",
-                 processed_dest_dir="pygall/public/photos/",
+                 orig_dir="orig",
+                 scaled_dir="scaled",
                  upload_user="data",
                  upload_host="srvb",
                  upload_base_dir="/home/data/websites/photos.inneos.org/PyGall/",
-                 fromdb_url="/home/clemence/.gnome2/f-spot/photos.db",
+                 fromdb_url="/home/clemence/.config/f-spot/photos.db",
                  todb_url="/home/bruno/dev/PyGall/development.db",
                  export_tag="pygall",
                  verbose=False,
@@ -95,9 +96,10 @@ class FSpotToPyGall(ExportGall):
                             upload_host, upload_base_dir, fromdb_url, todb_url,
                             export_tag, verbose, rebuild_db, cleanup_db,
                             cleanup_files)
-        self.processed_dest_dir = processed_dest_dir
-        self.abs_processed_dest_dir = os.path.join(self.base_dir, self.processed_dest_dir)
-        self.upload_processed_dest_url = os.path.join(self.upload_base_url, self.processed_dest_dir)
+        self.orig_dir = orig_dir
+        self.scaled_dir = scaled_dir
+        self.abs_orig_dest_dir = os.path.join(self.base_dir, self.dest_dir, self.orig_dir)
+        self.abs_scaled_dest_dir = os.path.join(self.base_dir, self.dest_dir, self.scaled_dir)
         self.quality = quality
         self.dimension = dimension
 
@@ -136,9 +138,10 @@ class FSpotToPyGall(ExportGall):
         
         fromdb_photos_table = Table(
             "photos", fromdb_metadata,
-            Column("uri", Unicode()),
+            Column("base_uri", Unicode()),
+            Column("filename", Unicode()),
             autoload = True, autoload_with = fromdb_engine)
-        # id, time, uri, description, roll_id, default_version_id, rating
+        # id, time, base_uri, filename, description, roll_id, default_version_id, rating, md5_sum
         
         class FromDbTag(object):
             pass
@@ -154,6 +157,9 @@ class FSpotToPyGall(ExportGall):
         mapper(FromDbPhoto,
                fromdb_photos_table,
                properties = {
+                   'uri': column_property(
+                       (fromdb_photos_table.c.base_uri + fromdb_photos_table.c.filename).label('uri')
+                   ),
                    'tags' : relation(FromDbTag, secondary = fromdb_photo_tags_table),
                })
 
@@ -240,12 +246,12 @@ class FSpotToPyGall(ExportGall):
             for table in self.sqla_tables:
                 self.todb_session.execute(table.delete())
         if self.cleanup_files:
-            if os.path.exists(self.abs_processed_dest_dir):
-                print "Cleaning directory %s..." % self.abs_processed_dest_dir
-                shutil.rmtree(self.abs_processed_dest_dir)
-            if os.path.exists(self.abs_dest_dir):
-                print "Cleaning directory %s..." % self.abs_dest_dir
-                shutil.rmtree(self.abs_dest_dir)
+            if os.path.exists(self.abs_scaled_dest_dir):
+                print "Cleaning directory %s..." % self.abs_scaled_dest_dir
+                shutil.rmtree(self.abs_scaled_dest_dir)
+            if os.path.exists(self.abs_orig_dest_dir):
+                print "Cleaning directory %s..." % self.abs_orig_dest_dir
+                shutil.rmtree(self.abs_orig_dest_dir)
 
         (full_list, simple_list) = self._get_export_list()
         self._process_db(full_list, simple_list)
@@ -316,31 +322,31 @@ class FSpotToPyGall(ExportGall):
 
 
     def _process_files(self, list):
-        # remove old processed files
-        original_files = []
-        processed_files = []
+        # remove old scaled files
+        orig_files = []
+        scaled_files = []
         for uri in list:
-            original_files.append(os.path.join(self.abs_dest_dir, uri))
-            processed_files.append(os.path.join(self.abs_processed_dest_dir, uri))
+            orig_files.append(os.path.join(self.abs_orig_dest_dir, uri))
+            scaled_files.append(os.path.join(self.abs_scaled_dest_dir, uri))
         
-        # walk in abs_dest_dir and abs_processed_dest_dir and remove all files not in 'list'
-        for root, dirs, files in os.walk(self.abs_dest_dir):
+        # walk in abs_orig_dest_dir and abs_scaled_dest_dir and remove all files not in 'list'
+        for root, dirs, files in os.walk(self.abs_orig_dest_dir):
             for file in files:
                 f = os.path.join(root, file)
-                if f not in original_files:
+                if f not in orig_files:
                     print "Removed : %s" % f
                     os.remove(f)
-        for root, dirs, files in os.walk(self.abs_processed_dest_dir):
+        for root, dirs, files in os.walk(self.abs_scaled_dest_dir):
             for file in files:
                 f = os.path.join(root, file)
-                if f not in processed_files:
-                    print "Removed : %s (processed)" % f
+                if f not in scaled_files:
+                    print "Removed : %s (scaled)" % f
                     os.remove(f)
 
         # add missing files
         for uri in list:
             src = os.path.join(self.src_dir, uri)
-            dest = os.path.join(self.abs_dest_dir, uri)
+            dest = os.path.join(self.abs_orig_dest_dir, uri)
 
             # copy original photo
             if os.path.exists(dest):
@@ -354,16 +360,16 @@ class FSpotToPyGall(ExportGall):
                 print "Copied : %s" % dest
 
             # copy scaled photo
-            dest_processed = os.path.join(self.abs_processed_dest_dir, uri)
+            dest_scaled = os.path.join(self.abs_scaled_dest_dir, uri)
             exif = pyexiv2.Image(src)
             exif.readMetadata()
             orientation=exif['Exif.Image.Orientation']
 
-            if os.path.exists(dest_processed):
+            if os.path.exists(dest_scaled):
                 if self.verbose:
-                    print "Processed photo already exists (%s): give up..." % dest_processed
+                    print "Processed photo already exists (%s): give up..." % dest_scaled
             else:
-                dirpath = os.path.dirname(dest_processed)
+                dirpath = os.path.dirname(dest_scaled)
                 if not os.path.exists(dirpath):
                     os.makedirs(dirpath, 0755)
 
@@ -391,12 +397,12 @@ class FSpotToPyGall(ExportGall):
                             height_dest = height_dest - height_dest % 2
                             width_dest = width_dest - width_dest % 2
 
-                        im.resize((width_dest, height_dest), Image.ANTIALIAS).save(dest_processed, quality=self.quality)
-                        print "Processed : %s" % dest_processed
+                        im.resize((width_dest, height_dest), Image.ANTIALIAS).save(dest_scaled, quality=self.quality)
+                        print "Processed : %s" % dest_scaled
 
                     else:
                         print "Nothing to do (only copy): photo is to small!"
-                        shutil.copy(src, dest_processed)
+                        shutil.copy(src, dest_scaled)
                 else:
                     print "Ignored : %s is not jpg!" %src
 
@@ -415,7 +421,8 @@ def help(name):
     print >>sys.stdout, "	--src_dir="
     print >>sys.stdout, "	--base_dir="
     print >>sys.stdout, "	--dest_dir="
-    print >>sys.stdout, "	--processed_dest_dir="
+    print >>sys.stdout, "	--orig_dir="
+    print >>sys.stdout, "	--scaled_dir="
     print >>sys.stdout, "	--upload_user="
     print >>sys.stdout, "	--upload_host="
     print >>sys.stdout, "	--upload_base_dir="
@@ -442,7 +449,8 @@ def main(argv=None):
                  "src_dir=",
                  "base_dir=",
                  "dest_dir=",
-                 "processed_dest_dir=",
+                 "orig_dir=",
+                 "scaled_dir=",
                  "upload_user=",
                  "upload_host=",
                  "upload_base_dir=",
