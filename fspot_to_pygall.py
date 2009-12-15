@@ -52,6 +52,7 @@ class ExportGall:
                                             self.upload_host,
                                             self.upload_base_dir)
         self.upload_dest_url = os.path.join(self.upload_base_url, self.dest_dir)
+        self.abs_dest_dir = os.path.join(self.base_dir, self.dest_dir)
 
     def init_db(self):
         " To be overriden in subclasses "
@@ -98,14 +99,20 @@ class FSpotToPyGall(ExportGall):
                             cleanup_files)
         self.orig_dir = orig_dir
         self.scaled_dir = scaled_dir
-        self.abs_orig_dest_dir = os.path.join(self.base_dir, self.dest_dir, self.orig_dir)
-        self.abs_scaled_dest_dir = os.path.join(self.base_dir, self.dest_dir, self.scaled_dir)
+        self.abs_orig_dest_dir = os.path.join(self.abs_dest_dir, self.orig_dir)
+        self.abs_scaled_dest_dir = os.path.join(self.abs_dest_dir, self.scaled_dir)
         self.quality = quality
         self.dimension = dimension
 
     def init_db(self):
-        self._init_fromdb()
-        self._init_todb()
+        fromdb_engine = self._init_fromdb()
+        todb_engine = self._init_todb()
+        if self.rebuild_db:
+            # remove db
+            os.remove(self.todb_url)
+        if not os.path.exists(self.todb_url):
+            # create db
+            todb_metadata.create_all(bind = todb_engine)
 
     def _fromdb_uri_to_todb(self, uri):
         """
@@ -169,6 +176,8 @@ class FSpotToPyGall(ExportGall):
         self.FromDbMain = FromDbPhoto
         self.FromDbTag = FromDbTag
         self.fromdb_session = FSpotSession()
+
+        return from_engine
 
         
     def _init_todb(self):
@@ -234,10 +243,7 @@ class FSpotToPyGall(ExportGall):
         self.todb_session = ToDbSession()
         self.sqla_tables = [todb_photos_table, todb_tags_table, todb_photos_table]
 
-        if self.rebuild_db:
-            # remove and recreate db
-            os.remove(self.todb_url)
-            todb_metadata.create_all(bind=todb_engine)
+        return todb_engine
 
 
     def process(self):
@@ -247,10 +253,10 @@ class FSpotToPyGall(ExportGall):
                 self.todb_session.execute(table.delete())
         if self.cleanup_files:
             if os.path.exists(self.abs_scaled_dest_dir):
-                print "Cleaning directory %s..." % self.abs_scaled_dest_dir
+                print "Cleaning scaled directory %s..." % self.abs_scaled_dest_dir
                 shutil.rmtree(self.abs_scaled_dest_dir)
             if os.path.exists(self.abs_orig_dest_dir):
-                print "Cleaning directory %s..." % self.abs_orig_dest_dir
+                print "Cleaning orig directory %s..." % self.abs_orig_dest_dir
                 shutil.rmtree(self.abs_orig_dest_dir)
 
         (full_list, simple_list) = self._get_export_list()
@@ -321,90 +327,96 @@ class FSpotToPyGall(ExportGall):
         self.todb_session.commit()
 
 
+    def _cleanup_dir(self, dir, list):
+        # walk in directories and remove all files not in 'list'
+        for root, dirs, files in os.walk(dir):
+            for file in files:
+                f = os.path.join(root, file)
+                if f not in list:
+                    os.remove(f)
+                    print "Removed : %s" % f
+
+
+    def _process_file(self, uri):
+        src = os.path.join(self.src_dir, uri)
+        dest = os.path.join(self.abs_orig_dest_dir, uri)
+
+        # copy original photo
+        if os.path.exists(dest):
+            if self.verbose:
+                print "Already exists (%s): give up..." % dest
+        else:
+            dirpath = os.path.dirname(dest)
+            if not os.path.exists(dirpath):
+                os.makedirs(dirpath, 0755)
+            shutil.copy2(src, dest)
+            print "Copied : %s" % dest
+
+        # copy scaled photo
+        dest_scaled = os.path.join(self.abs_scaled_dest_dir, uri)
+        exif = pyexiv2.Image(src)
+        try:
+            exif.readMetadata()
+            orientation=exif['Exif.Image.Orientation']
+        except:
+            orientation=0
+
+        if os.path.exists(dest_scaled):
+            if self.verbose:
+                print "Processed photo already exists (%s): give up..." % dest_scaled
+        else:
+            dirpath = os.path.dirname(dest_scaled)
+            if not os.path.exists(dirpath):
+                os.makedirs(dirpath, 0755)
+
+            base, extension = os.path.splitext(src)
+            if extension.lower() == ".jpg" or extension.lower() == ".jpeg":
+                im = Image.open(src)
+                # auto rotate if needed
+                if orientation == 6:
+                    im=im.rotate(270)
+                if orientation == 8:
+                    im=im.rotate(90)
+
+                width_src, height_src = im.size
+                if width_src > self.dimension or height_src > self.dimension:
+                    if width_src > height_src:
+                        height_dest = self.dimension * height_src / width_src
+                        width_dest = self.dimension
+                    else:
+                        width_dest = self.dimension * width_src / height_src
+                        height_dest = self.dimension
+
+                    # Si on redimmensionne selon une taille paire, on force la largeur et hauteur 
+                    # finales de l'image a etre egalement paires.
+                    if self.dimension % 2 == 0:
+                        height_dest = height_dest - height_dest % 2
+                        width_dest = width_dest - width_dest % 2
+
+                    im.resize((width_dest, height_dest), Image.ANTIALIAS).save(dest_scaled, quality=self.quality)
+                    print "Processed : %s" % dest_scaled
+
+                else:
+                    print "Nothing to do (only copy): photo is to small!"
+                    shutil.copy(src, dest_scaled)
+            else:
+                print "Ignored : %s is not jpg!" %src
+
+
     def _process_files(self, list):
-        # remove old scaled files
         orig_files = []
         scaled_files = []
         for uri in list:
             orig_files.append(os.path.join(self.abs_orig_dest_dir, uri))
             scaled_files.append(os.path.join(self.abs_scaled_dest_dir, uri))
         
-        # walk in abs_orig_dest_dir and abs_scaled_dest_dir and remove all files not in 'list'
-        for root, dirs, files in os.walk(self.abs_orig_dest_dir):
-            for file in files:
-                f = os.path.join(root, file)
-                if f not in orig_files:
-                    print "Removed : %s" % f
-                    os.remove(f)
-        for root, dirs, files in os.walk(self.abs_scaled_dest_dir):
-            for file in files:
-                f = os.path.join(root, file)
-                if f not in scaled_files:
-                    print "Removed : %s (scaled)" % f
-                    os.remove(f)
+        # remove all files that should not be there
+        self._cleanup_dir(self.abs_orig_dest_dir, orig_files)
+        self._cleanup_dir(self.abs_scaled_dest_dir, scaled_files)
 
         # add missing files
         for uri in list:
-            src = os.path.join(self.src_dir, uri)
-            dest = os.path.join(self.abs_orig_dest_dir, uri)
-
-            # copy original photo
-            if os.path.exists(dest):
-                if self.verbose:
-                    print "Photo already exists (%s): give up..." % dest
-            else:
-                dirpath = os.path.dirname(dest)
-                if not os.path.exists(dirpath):
-                    os.makedirs(dirpath, 0755)
-                shutil.copy2(src, dest)
-                print "Copied : %s" % dest
-
-            # copy scaled photo
-            dest_scaled = os.path.join(self.abs_scaled_dest_dir, uri)
-            exif = pyexiv2.Image(src)
-            exif.readMetadata()
-            orientation=exif['Exif.Image.Orientation']
-
-            if os.path.exists(dest_scaled):
-                if self.verbose:
-                    print "Processed photo already exists (%s): give up..." % dest_scaled
-            else:
-                dirpath = os.path.dirname(dest_scaled)
-                if not os.path.exists(dirpath):
-                    os.makedirs(dirpath, 0755)
-
-                base, extension = os.path.splitext(src)
-                if extension.lower() == ".jpg" or extension.lower() == ".jpeg":
-                    im = Image.open(src)
-                    # auto rotate if needed
-                    if orientation == 6:
-                        im=im.rotate(270)
-                    if orientation == 8:
-                        im=im.rotate(90)
-
-                    width_src, height_src = im.size
-                    if width_src > self.dimension or height_src > self.dimension:
-                        if width_src > height_src:
-                            height_dest = self.dimension * height_src / width_src
-                            width_dest = self.dimension
-                        else:
-                            width_dest = self.dimension * width_src / height_src
-                            height_dest = self.dimension
-
-                        # Si on redimmensionne selon une taille paire, on force la largeur et hauteur 
-                        # finales de l'image a etre egalement paires.
-                        if self.dimension % 2 == 0:
-                            height_dest = height_dest - height_dest % 2
-                            width_dest = width_dest - width_dest % 2
-
-                        im.resize((width_dest, height_dest), Image.ANTIALIAS).save(dest_scaled, quality=self.quality)
-                        print "Processed : %s" % dest_scaled
-
-                    else:
-                        print "Nothing to do (only copy): photo is to small!"
-                        shutil.copy(src, dest_scaled)
-                else:
-                    print "Ignored : %s is not jpg!" %src
+            _self._process_file(uri)
 
 
 class Usage(Exception):
