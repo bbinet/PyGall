@@ -177,7 +177,7 @@ class FSpotToPyGall(ExportGall):
         self.FromDbTag = FromDbTag
         self.fromdb_session = FSpotSession()
 
-        return from_engine
+        return fromdb_engine
 
         
     def _init_todb(self):
@@ -416,7 +416,7 @@ class FSpotToPyGall(ExportGall):
 
         # add missing files
         for uri in list:
-            _self._process_file(uri)
+            self._process_file(uri)
 
 
 class Usage(Exception):
