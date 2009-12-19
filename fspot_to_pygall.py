@@ -8,6 +8,7 @@ import shutil
 import subprocess
 import Image
 import pyexiv2
+from urllib import unquote
 from datetime import datetime
 
 from sqlalchemy import create_engine, MetaData, Column, \
@@ -105,8 +106,8 @@ class FSpotToPyGall(ExportGall):
         self.dimension = dimension
 
     def init_db(self):
-        fromdb_engine = self._init_fromdb()
-        todb_engine = self._init_todb()
+        fromdb_engine, fromdb_metadata = self._init_fromdb()
+        todb_engine, todb_metadata = self._init_todb()
         if self.rebuild_db:
             # remove db
             os.remove(self.todb_url)
@@ -119,9 +120,10 @@ class FSpotToPyGall(ExportGall):
         Takes F-Spot file uri. Returns the relative path
         to be used on PyGall
         """
-        if not uri.startswith('file://%s' % self.src_dir):
-            raise Exception("Don't know how to handle image %s" % uri)
-        return uri.replace('file://%s' % self.src_dir, "")
+        decoded_uri = unquote(uri)
+        if not decoded_uri.startswith('file://%s' % self.src_dir):
+            raise Exception("Don't know how to handle image %s" % decoded_uri)
+        return decoded_uri.replace('file://%s' % self.src_dir, "")
 
     def _init_fromdb(self):
         """
@@ -177,7 +179,7 @@ class FSpotToPyGall(ExportGall):
         self.FromDbTag = FromDbTag
         self.fromdb_session = FSpotSession()
 
-        return fromdb_engine
+        return fromdb_engine, fromdb_metadata
 
         
     def _init_todb(self):
@@ -243,7 +245,7 @@ class FSpotToPyGall(ExportGall):
         self.todb_session = ToDbSession()
         self.sqla_tables = [todb_photos_table, todb_tags_table, todb_photos_table]
 
-        return todb_engine
+        return todb_engine, todb_metadata
 
 
     def process(self):
