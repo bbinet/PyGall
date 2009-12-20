@@ -395,12 +395,14 @@ class FSpotToPyGall(ExportGall):
                         height_dest = height_dest - height_dest % 2
                         width_dest = width_dest - width_dest % 2
 
-                    im.resize((width_dest, height_dest), Image.ANTIALIAS).save(dest_scaled, quality=self.quality)
+                    im.resize((width_dest, height_dest), Image.ANTIALIAS)
                     print "Processed : %s" % dest_scaled
 
                 else:
-                    print "Nothing to do (only copy): photo is to small!"
-                    shutil.copy(src, dest_scaled)
+                    print "Scale cannot be processed: photo is to small!"
+
+                # save processed image
+                im.save(dest_scaled, quality=self.quality)
             else:
                 print "Ignored : %s is not jpg!" %src
 
