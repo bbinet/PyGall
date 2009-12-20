@@ -13,14 +13,6 @@ log = logging.getLogger(__name__)
 
 class PhotosController(BaseController):
 
-    def index(self, format='html'):
-        photo_q = Session.query(PyGallPhoto).order_by(PyGallPhoto.time.asc())
-        return render('index.mako.html')
-
-    def show(self, id, format='html'):
-        photo_q = Session.query(PyGallPhoto).get(id)
-        return render('show.mako.html')
-
     def galleria(self, page=None):
         photo_q = Session.query(PyGallPhoto).order_by(PyGallPhoto.time.asc())
         if page is None:
