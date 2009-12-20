@@ -88,11 +88,8 @@ $$ = $.fn.galleria = function($options) {
 	// create a wrapping div for the image
 	var _div = $(document.createElement('div')).addClass('galleria_wrapper');
 	
-	// create a caption span
-	var _span = $(document.createElement('span')).addClass('caption');
-	
 	// inject the wrapper in in the insert selector
-	_insert.addClass('galleria_container').append(_div).append(_span);
+	_insert.addClass('galleria_container').append(_div);
 	
 	//-------------
 	
@@ -106,7 +103,7 @@ $$ = $.fn.galleria = function($options) {
 			
 			// bring the scope
 			var _container = $(this);
-			                
+			
 			// build element specific options
 			var _o = $.meta ? $.extend({}, $opts, _container.data()) : $opts;
 			
@@ -126,7 +123,7 @@ $$ = $.fn.galleria = function($options) {
 			// find a title
 			var _title = _a ? _a.attr('title') : _img.attr('title');
 			
-			// create loader image            
+			// create loader image
 			var _loader = new Image();
 			
 			// check url and activate container if match
@@ -201,7 +198,6 @@ $$ = $.fn.galleria = function($options) {
 				// check active class and activate image if match
 				if (_container.hasClass('active')) {
 					$.galleria.activate(_src);
-					//_span.text(_title);
 				}
 				
 				//-----------------------------------------------------------------
@@ -302,14 +298,24 @@ $$.onPageLoad = function(_src) {
 		// define a new image
 		var _img   = $(new Image()).attr('src',_src).addClass('replaced');
 
-		// empty the wrapper and insert the new image
-		_wrapper.empty().append(_img);
+		// define a new caption
+		var _span = $(document.createElement('span')).addClass('caption');
+		if(!_thumb.attr('title')) {
+			_span.css('display','none');
+		} else {
+			_span.text(_thumb.attr('title'));
+		}
 
-		// insert the caption
-		_wrapper.siblings('.caption').text(_thumb.attr('title'));
-		
+		// define a div container for the image
+		var _div = $(document.createElement('div')).addClass('image-container')
+		_div.append(_img);
+		_div.append(_span);
+
+		// empty the wrapper and insert the new image
+		_wrapper.empty().append(_div);
+
 		// fire the onImage function to customize the loaded image's features
-		$.galleria.onImage(_img,_wrapper.siblings('.caption'),_thumb);
+		$.galleria.onImage(_img,_span,_thumb);
 		
 		// add clickable image helper
 		if($.galleria.clickNext) {
