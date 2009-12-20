@@ -23,6 +23,42 @@
                 if(caption.css('display') != 'none') {
                     caption.css('display','none').fadeIn(500);
                 }
+                var edit_caption = $(document.createElement('a')).css({
+                    background: '#000',
+                    border: 'solid 1px',
+                    float: 'left',
+                    position: 'absolute',
+                    display: 'block',
+                    right: 0,
+                    bottom: 0,
+                    'margin-bottom': '4px',
+                    padding: '9px',
+                    cursor: 'pointer',
+                    'z-index': 30
+                });
+                edit_caption.text('Edit');
+                edit_caption.click(function () {
+                    var comment = prompt("Saisir un commentaire : ", caption.text() || "");
+                    if(comment == null) {
+                        return;
+                    }
+                    $.post(
+                        '${url(controller='photos', action='edit')}',
+                        {uri:thumb.attr('alt'), comment: comment},
+                        function(data, textStatus) {
+                            //console.log(data);
+                        },
+                        'json'
+                    );
+                    caption.text(comment);
+                    thumb.attr('title', comment);
+                    if(!comment) {
+                        caption.css('display', 'none');
+                    } else {
+                        caption.css('display', 'block');
+                    }
+                });
+                image.after(edit_caption);
 				
 				// fetch the thumbnail container
 				var _li = thumb.parents('li');
