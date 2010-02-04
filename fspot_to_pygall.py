@@ -395,7 +395,7 @@ class FSpotToPyGall(ExportGall):
                         height_dest = height_dest - height_dest % 2
                         width_dest = width_dest - width_dest % 2
 
-                    im.resize((width_dest, height_dest), Image.ANTIALIAS)
+                    im=im.resize((width_dest, height_dest), Image.ANTIALIAS)
                     print "Processed : %s" % dest_scaled
 
                 else:
