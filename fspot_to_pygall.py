@@ -32,7 +32,6 @@ class ExportGall:
                  todb_url,
                  export_tag,
                  verbose=False,
-                 rebuild_db=False,
                  cleanup_db=False,
                  cleanup_files=False):
         # default values
@@ -46,7 +45,6 @@ class ExportGall:
         self.todb_url = todb_url
         self.export_tag = export_tag
         self.verbose = verbose
-        self.rebuild_db = rebuild_db
         self.cleanup_db = cleanup_db
         self.cleanup_files = cleanup_files
         self.upload_base_url = "%s@%s:%s" %(self.upload_user,
@@ -88,7 +86,6 @@ class FSpotToPyGall(ExportGall):
                  todb_url="/home/bruno/dev/PyGall/development.db",
                  export_tag="pygall",
                  verbose=False,
-                 rebuild_db=False,
                  cleanup_db=False,
                  cleanup_files=False,
                  quality=80,
@@ -96,8 +93,7 @@ class FSpotToPyGall(ExportGall):
 
         ExportGall.__init__(self, src_dir, base_dir, dest_dir, upload_user,
                             upload_host, upload_base_dir, fromdb_url, todb_url,
-                            export_tag, verbose, rebuild_db, cleanup_db,
-                            cleanup_files)
+                            export_tag, verbose, cleanup_db, cleanup_files)
         self.orig_dir = orig_dir
         self.scaled_dir = scaled_dir
         self.abs_orig_dest_dir = os.path.join(self.abs_dest_dir, self.orig_dir)
@@ -108,9 +104,6 @@ class FSpotToPyGall(ExportGall):
     def init_db(self):
         fromdb_engine, fromdb_metadata = self._init_fromdb()
         todb_engine, todb_metadata = self._init_todb()
-        if self.rebuild_db:
-            # remove db
-            os.remove(self.todb_url)
         if not os.path.exists(self.todb_url):
             # create db
             todb_metadata.create_all(bind = todb_engine)
@@ -431,7 +424,6 @@ def help(name):
     print >>sys.stdout, "Usage: %s [options]" % name
     print >>sys.stdout, "	--help"
     print >>sys.stdout, "	--verbose"
-    print >>sys.stdout, "	--rebuild_db"
     print >>sys.stdout, "	--cleanup_db"
     print >>sys.stdout, "	--cleanup_files"
     print >>sys.stdout, "	--src_dir="
@@ -459,7 +451,6 @@ def main(argv=None):
                 "h",
                 ["help",
                  "verbose",
-                 "rebuild_db",
                  "cleanup_db",
                  "cleanup_files",
                  "src_dir=",
@@ -481,7 +472,7 @@ def main(argv=None):
                 if opt in ("-h", "--help"):
                     help(argv[0])
                     return 0
-                elif opt in ("--verbose", "--rebuild_db", "--cleanup_db", "--cleanup_files"):
+                elif opt in ("--verbose", "--cleanup_db", "--cleanup_files"):
                     options[opt[2:]] = True
                 else:
                     options[opt[2:]] = arg
