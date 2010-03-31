@@ -20,9 +20,12 @@ def make_map():
 
     # CUSTOM ROUTES HERE
     map.connect('/', controller='photos', action='galleria')
-    map.connect('/{page}', controller='photos', action='galleria')
+    map.connect('/edit', controller='photos', action='edit')
+    map.connect('/dates', controller='dates', action='index')
+    map.connect('/tags', controller='tags', action='index')
+    map.connect('/{page:\d+}', controller='photos', action='galleria')
 
-    map.connect('/{controller}/{action}')
-    map.connect('/{controller}/{action}/{id}')
+    #map.connect('/{controller}/{action}')
+    #map.connect('/{controller}/{action}/{id}')
 
     return map
