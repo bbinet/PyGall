@@ -254,27 +254,37 @@ class FSpotToPyGall(ExportGall):
                 print "Cleaning orig directory %s..." % self.abs_orig_dest_dir
                 shutil.rmtree(self.abs_orig_dest_dir)
 
-        (full_list, simple_list) = self._get_export_list()
-        self._process_db(full_list, simple_list)
-        self._process_files(simple_list)
+        list = self._get_export_list()
+        self._process_db(list)
+        self._process_files(list)
 
     def _get_export_list(self):
-        full_list = []
-        simple_list = []
+        list = []
         q = self.fromdb_session.query(self.FromDbMain).join('tags').filter(self.FromDbTag.name==self.export_tag)
         for row in q.all():
-            full_list.append({
+            list.append({
+                "id": row.id,
                 "uri": self._fromdb_uri_to_todb(row.uri),
                 "description": row.description,
                 "rating": row.rating,
                 "time": datetime.fromtimestamp(row.time),
                 "tags": [tag.name for tag in row.tags]
             })
-            simple_list.append(self._fromdb_uri_to_todb(row.uri))
-        return (full_list, simple_list)
+        return list
 
-    def _process_db(self, full_list, simple_list):
+    def _process_db(self, list):
         cache_tags = {}
+
+        def _process_description(to_row, item):
+            if to_row.description != item['description']:
+                if not to_row.description:
+                    to_row.description = item['description']
+                    print "[db] Created : description %s" % item['description']
+                else:
+                    from_row = self.fromdb_session.query(self.FromDbMain).get(item['id'])
+                    from_row.description = to_row.description
+                    print "[db] Synchronized : description %s" % to_row.description
+
         def _process_tags(row, tags):
             # remove old tags
             for dbtag in row.tags:
@@ -301,24 +311,28 @@ class FSpotToPyGall(ExportGall):
                         print "[db] Associated : tag %s to photo %s" % (tag, row.uri)
 
         # remove old photos
-        count = self.todb_session.query(self.ToDbMain).filter(not_(self.ToDbMain.uri.in_(simple_list))).delete()
+        count = self.todb_session.query(self.ToDbMain).filter(
+            not_(self.ToDbMain.uri.in_([item['uri'] for item in list])
+            )).delete()
         if count > 0:
             print "[db] Removed : %d photo(s)" % count
 
         # add new photos
-        for item in full_list:
+        for item in list:
             # look for the same photo in ToDb
             row = self.todb_session.query(self.ToDbMain).filter_by(uri=item["uri"]).first()
             if not row:
                 row = self.ToDbMain(item["uri"], item["description"], item["rating"], item["time"])
                 self.todb_session.add(row)
                 print "[db] Created : photo %s" % item["uri"]
+            else:
+                _process_description(row, item)
             _process_tags(row, item["tags"])
 
         # end db sessions
         self.fromdb_session.flush()
         self.todb_session.flush()
-        self.fromdb_session.rollback()
+        self.fromdb_session.commit()
         self.todb_session.commit()
 
 
@@ -403,17 +417,16 @@ class FSpotToPyGall(ExportGall):
     def _process_files(self, list):
         orig_files = []
         scaled_files = []
-        for uri in list:
-            orig_files.append(os.path.join(self.abs_orig_dest_dir, uri))
-            scaled_files.append(os.path.join(self.abs_scaled_dest_dir, uri))
+        for file in list:
+            # add missing files
+            self._process_file(file['uri'])
+            # build list to know what file to remove
+            orig_files.append(os.path.join(self.abs_orig_dest_dir, file['uri']))
+            scaled_files.append(os.path.join(self.abs_scaled_dest_dir, file['uri']))
         
         # remove all files that should not be there
         self._cleanup_dir(self.abs_orig_dest_dir, orig_files)
         self._cleanup_dir(self.abs_scaled_dest_dir, scaled_files)
-
-        # add missing files
-        for uri in list:
-            self._process_file(uri)
 
 
 class Usage(Exception):
