@@ -24,18 +24,21 @@
                     caption.css('display','none').fadeIn(500);
                 }
 
+                % if c.edit:
                 var edit_caption = $(document.createElement('a')).css({
                     background: '#000',
-                    border: 'solid 1px',
                     float: 'left',
                     position: 'absolute',
                     display: 'block',
                     right: 0,
                     bottom: 0,
-                    'margin-bottom': '4px',
-                    padding: '9px',
+                    padding: '12px',
                     cursor: 'pointer',
-                    'z-index': 30
+                    'z-index': 50,
+                    'filter': 'alpha(opacity=60)',
+                    '-moz-opacity': 0.6,
+                    '-khtml-opacity': 0.6,
+                    opacity: 0.6
                 });
                 edit_caption.text('Edit');
                 edit_caption.click(function () {
@@ -60,6 +63,7 @@
                     }
                 });
                 image.after(edit_caption);
+                % endif
 
 				// fetch the thumbnail container
 				var _li = thumb.parents('li');
@@ -142,7 +146,11 @@
                         <a href="#" onclick="$.galleria.prev(); return false;">&laquo; previous</a> | <a href="#" onclick="$.galleria.next(); return false;">next &raquo;</a>
                     </p>
                     <p>
+                        % if c.edit:
+                        ${c.photos.pager('Page: $link_previous ~4~ $link_next', edit=c.edit)}
+                        % else:
                         ${c.photos.pager('Page: $link_previous ~4~ $link_next')}
+                        % endif
                     </p>
                 </div>
 
