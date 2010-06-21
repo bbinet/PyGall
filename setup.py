@@ -13,8 +13,8 @@ setup(
     author_email='',
     url='',
     install_requires=[
-        "Pylons>=0.9.7",
-        "SQLAlchemy>=0.5",
+        "Pylons>=0.9.7,<=0.9.99",
+        "SQLAlchemy>=0.5,<=0.5.99",
     ],
     setup_requires=["PasteScript>=1.6.3"],
     packages=find_packages(exclude=['ez_setup']),
