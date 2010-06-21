@@ -47,7 +47,7 @@
                         return;
                     }
                     $.post(
-                        '${url(controller='photos', action='edit')}',
+                        '${url(controller='photos', action='editcomment')}',
                         {uri:thumb.attr('alt'), comment: comment},
                         function(data, textStatus) {
                             //console.log(data);

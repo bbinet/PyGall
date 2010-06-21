@@ -19,6 +19,8 @@ def make_map():
     map.connect('/error/{action}/{id}', controller='error')
 
     # CUSTOM ROUTES HERE
+    map.connect('/', controller='photos', action='galleria')
+    map.connect('/edit', controller='photos', action='editcomment')
     map.resource('photo', 'photos')
     map.connect('/dates', controller='dates', action='index')
     map.connect('/tags', controller='tags', action='index')
