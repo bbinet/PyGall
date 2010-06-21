@@ -1,3 +1,5 @@
 PyGall.egg-info/
 development.db
 vp
+data/
+pygall/public/data/
