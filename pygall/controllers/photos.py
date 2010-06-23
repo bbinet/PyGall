@@ -1,4 +1,5 @@
 import logging
+import os
 from math import ceil
 from webhelpers import paginate
 
@@ -7,6 +8,7 @@ from pylons.controllers.util import abort, redirect_to
 from pylons.decorators import jsonify
 
 from pygall.lib.base import BaseController, render
+from pygall.lib.archivefile import extractall
 from pygall.model.meta import Session
 from pygall.model import PyGallPhoto
 
@@ -25,10 +27,20 @@ class PhotosController(BaseController):
     def create(self):
         """POST /photos: Create a new item"""
         # url('photos')
+        fieldstorage = request.POST['file']
+        file = fieldstorage.file.read()
+        fieldstorage.file.close()
+        # TODO: extract possible archive, then import photos into pygall
+        #extractall(os.path.join(config['storage'], file), destdir)
+        #importphotos(destdir)
+        response.status = 201
+        log.info("File has been downloaded to %s" %(file))
+
 
     def new(self, format='html'):
         """GET /photos/new: Form to create a new item"""
         # url('new_photo')
+        return render('/photos/new.mako.html')
 
     def update(self, id):
         """PUT /photos/id: Update an existing item"""
