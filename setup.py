@@ -15,6 +15,7 @@ setup(
     install_requires=[
         "Pylons>=0.9.7,<=0.9.99",
         "SQLAlchemy>=0.5,<=0.5.99",
+        "gp.fileupload>=1.0,<=1.0.99",
     ],
     setup_requires=["PasteScript>=1.6.3"],
     packages=find_packages(exclude=['ez_setup']),
