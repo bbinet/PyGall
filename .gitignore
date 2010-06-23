@@ -2,4 +2,5 @@ PyGall.egg-info/
 development.db
 vp
 data/
+storage/
 pygall/public/data/
