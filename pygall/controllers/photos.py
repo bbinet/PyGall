@@ -26,22 +26,37 @@ class PhotosController(BaseController):
 
         # gp.fileupload stores uploaded filename in fieldstorage
         fieldstorage = request.POST['file']
-        relpath = fieldstorage.file.read().strip(" \n\r")
-        abspath = os.path.join(
+        filepath = os.path.join(
             config['global_conf']['upload_dir'],
-            relpath)
-        log.info("File has been downloaded to %s" %(abspath))
+            fieldstorage.file.read().strip(" \n\r"))
+        log.debug("File has been downloaded to %s" %(filepath))
         fieldstorage.file.close()
 
-        # extract archive to "import" directory
         try:
-            extractall(abspath, config['app_conf']['import_dir'])
-            log.info("Extraction to %s has succeeded" %(config['app_conf']['import_dir']))
+            # extract archive to "import" directory
+            extractall(filepath, config['app_conf']['import_dir'])
+
+            # walk in import directory to delete all files that are not photos
+            for dirpath, dirs, files in os.walk(config['app_conf']['import_dir']):
+                for filename in files:
+                    abspath = os.path.join(dirpath, filename)
+                    log.debug("Walk on file: %s" %abspath)
+                    if os.path.splitext(abspath)[1].lower() not in ['.jpg', '.jpeg']:
+                        log.debug("Remove non jpeg file: %s" %abspath)
+                        os.remove(abspath)
+                for subdirname in dirs:
+                    abspath = os.path.join(dirpath, subdirname)
+                    log.debug("Walk on dir: %s" %abspath)
+                    try:
+                        os.rmdir(abspath)
+                    except OSError:
+                        pass
+            log.debug("Extraction to %s has succeeded" %(config['app_conf']['import_dir']))
         except Exception, e:
             # TODO: log error in session (flash message)
             raise e
         # delete the uploaded archive if no exception is raised
-        os.remove(abspath)
+        os.remove(filepath)
 
     def index(self, format='html'):
         """GET /photos: All items in the collection"""
