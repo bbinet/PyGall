@@ -3,7 +3,7 @@ import os
 from math import ceil
 from webhelpers import paginate
 
-from pylons import request, response, session, tmpl_context as c
+from pylons import config, request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect_to
 from pylons.decorators import jsonify
 
@@ -20,6 +20,29 @@ class PhotosController(BaseController):
     # file has a resource setup:
     #     map.resource('photo', 'photos')
 
+    def upload(self):
+        """POST /photos/upload: Upload archive of photo"""
+        # url(controller='photos', action='upload')
+
+        # gp.fileupload stores uploaded filename in fieldstorage
+        fieldstorage = request.POST['file']
+        relpath = fieldstorage.file.read().strip(" \n\r")
+        abspath = os.path.join(
+            config['global_conf']['upload_dir'],
+            relpath)
+        log.info("File has been downloaded to %s" %(abspath))
+        fieldstorage.file.close()
+
+        # extract archive to "import" directory
+        try:
+            extractall(abspath, config['app_conf']['import_dir'])
+            log.info("Extraction to %s has succeeded" %(config['app_conf']['import_dir']))
+        except Exception, e:
+            # TODO: log error in session (flash message)
+            raise e
+        # delete the uploaded archive if no exception is raised
+        os.remove(abspath)
+
     def index(self, format='html'):
         """GET /photos: All items in the collection"""
         # url('photos')
@@ -27,15 +50,6 @@ class PhotosController(BaseController):
     def create(self):
         """POST /photos: Create a new item"""
         # url('photos')
-        fieldstorage = request.POST['file']
-        file = fieldstorage.file.read()
-        fieldstorage.file.close()
-        # TODO: extract possible archive, then import photos into pygall
-        #extractall(os.path.join(config['storage'], file), destdir)
-        #importphotos(destdir)
-        response.status = 201
-        log.info("File has been downloaded to %s" %(file))
-
 
     def new(self, format='html'):
         """GET /photos/new: Form to create a new item"""

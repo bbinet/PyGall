@@ -21,6 +21,7 @@ def make_map():
     # CUSTOM ROUTES HERE
     map.connect('/', controller='photos', action='galleria')
     map.connect('/edit', controller='photos', action='editcomment')
+    map.connect('/photos/upload', controller='photos', action='upload')
     map.resource('photo', 'photos')
     map.connect('/dates', controller='dates', action='index')
     map.connect('/tags', controller='tags', action='index')
