@@ -22,6 +22,7 @@ def make_map():
     map.connect('/', controller='photos', action='galleria')
     map.connect('/edit', controller='photos', action='editcomment')
     map.connect('/photos/upload', controller='photos', action='upload')
+    map.connect('/photos/import', controller='photos', action='import_')
     map.resource('photo', 'photos')
     map.connect('/dates', controller='dates', action='index')
     map.connect('/tags', controller='tags', action='index')
