@@ -58,6 +58,18 @@ class PhotosController(BaseController):
         # delete the uploaded archive if no exception is raised
         os.remove(filepath)
 
+    def import_(self):
+        """GET /photos/import: Choose photos to be imported"""
+        # create a json tree of the photos to be imported
+        c.tree = []
+        for root, dirs, files in os.walk(config['app_conf']['import_dir'], topdown=True):
+            for name in files:
+                c.tree.append(os.path.join(root, name))
+            for name in dirs:
+                c.tree.append(os.path.join(root, name) + os.sep)
+        c.tree.sort()
+        return render('/photos/import.mako.html')
+
     def index(self, format='html'):
         """GET /photos: All items in the collection"""
         # url('photos')
