@@ -37,20 +37,20 @@ class PhotosController(BaseController):
             extractall(filepath, config['app_conf']['import_dir'])
 
             # walk in import directory to delete all files that are not photos
-            for dirpath, dirs, files in os.walk(config['app_conf']['import_dir']):
+            for dirpath, dirs, files in os.walk(config['app_conf']['import_dir'], topdown=False):
                 for filename in files:
                     abspath = os.path.join(dirpath, filename)
-                    log.debug("Walk on file: %s" %abspath)
+                    log.debug("walk on file: %s" %abspath)
                     if os.path.splitext(abspath)[1].lower() not in ['.jpg', '.jpeg']:
                         log.debug("Remove non jpeg file: %s" %abspath)
                         os.remove(abspath)
                 for subdirname in dirs:
                     abspath = os.path.join(dirpath, subdirname)
-                    log.debug("Walk on dir: %s" %abspath)
+                    log.debug("walk on dir: %s" %abspath)
                     try:
                         os.rmdir(abspath)
                     except OSError:
-                        pass
+                        log.debug('directory is not empty')
             log.debug("Extraction to %s has succeeded" %(config['app_conf']['import_dir']))
         except Exception, e:
             # TODO: log error in session (flash message)
