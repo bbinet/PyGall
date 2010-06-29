@@ -43,6 +43,14 @@
         $("table#photos-tree tbody tr span").mousedown(function() {
             $($(this).parents("tr")[0]).trigger("mousedown");
         });
+
+        $("table#photos-tree tfoot input").click(function() {
+            var checked = [];
+            $('table#photos-tree tbody tr input[name="'+this.name+'"]:checked')
+            .each(function() {
+                checked.push($(this).val());
+            });
+            alert(this.name + ": " + checked);
         });
     });
     </script>
@@ -57,6 +65,13 @@
                 <th>Supprimer</th>
             </tr>
         </thead>
+        <tfoot>
+            <tr>
+                <td></td>
+                <td><input type="button" name="import" value="Importer"></td>
+                <td><input type="button" name="delete" value="Supprimer"></td>
+            </tr>
+        </tfoot>
         <tbody>
         % for row in rows:
             % if row['parent'] is None:
@@ -65,8 +80,8 @@
             <tr id="node-${row['id']}" class="child-of-node-${row['parent']}">
             % endif
                 <td><span class="${row['class']}">${row['path']}</span></td>
-                <td>${row['id']} Ko</td>
-                <td>Bla bla</td>
+                <td><input type="checkbox" name="import" value="${row['id']}"></td>
+                <td><input type="checkbox" name="delete" value="${row['id']}"></td>
             </tr>
         % endfor
         </tbody>
