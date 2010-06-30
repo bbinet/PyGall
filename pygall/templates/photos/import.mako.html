@@ -45,12 +45,18 @@
         });
 
         $("table#photos-tree tfoot input").click(function() {
-            var checked = [];
             $('table#photos-tree tbody tr input[name="'+this.name+'"]:checked')
             .each(function() {
-                checked.push($(this).val());
+                var path = $(this).parents("tr").find("td span").text();
+                // TODO: do not send request for directories
+                $.post(
+                    "${url('photos')}",
+                    { path: path },
+                    function(response){
+                        console.log(response);
+                    }
+                );
             });
-            alert(this.name + ": " + checked);
         });
 
         // checking nodes will check corresponding leafs
