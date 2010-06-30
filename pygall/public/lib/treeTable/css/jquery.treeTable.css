@@ -77,7 +77,7 @@ table thead tr th {
 /* footer
  * ------------------------------------------------------------------------- */
 table tfoot {
-  background: #aaa url(../img/bg-table-thead.png) repeat-x top left;
+  background: #aaa url(../img/bg-table-tfoot.png) repeat-x top left;
   font-size: .9em;
 }
 
