@@ -74,6 +74,20 @@ table thead tr th {
   text-align: left;
 }
 
+/* footer
+ * ------------------------------------------------------------------------- */
+table tfoot {
+  background: #aaa url(../img/bg-table-thead.png) repeat-x top left;
+  font-size: .9em;
+}
+
+table tfoot tr th {
+  border: 1px solid #888;
+  font-weight: normal;
+  padding: .3em 1.67em .1em 1.67em;
+  text-align: left;
+}
+
 /* Body
  * ------------------------------------------------------------------------- */
 table tbody tr td {
