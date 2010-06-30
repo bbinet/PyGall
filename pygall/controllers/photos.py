@@ -2,6 +2,7 @@ import logging
 import os
 from math import ceil
 from webhelpers import paginate
+from types import StringType, UnicodeType
 
 from pylons import config, request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect_to
@@ -19,6 +20,29 @@ class PhotosController(BaseController):
     # To properly map this controller, ensure your config/routing.py
     # file has a resource setup:
     #     map.resource('photo', 'photos')
+
+    # get safe and correct unchroot path
+    def _unchroot_path(self, path, chroot):
+        if type(path) != StringType and type(path) != UnicodeType:
+            raise Exception('Bad path (type is not string)')
+        while path.startswith(os.sep):
+            path = path[len(os.sep):]
+        if not path.startswith(os.path.basename(chroot)):
+            path = os.path.join(os.path.basename(chroot), path)
+            #raise Exception('Bad path (no chroot prefix)')
+
+        path = os.path.normpath(path[len(os.path.basename(chroot)):])
+        if path.startswith(os.sep):
+            path = path[len(os.sep):]
+        unchroot_path = os.path.normpath(os.path.join(chroot, path))
+
+        if not unchroot_path.startswith(chroot):
+            raise Exception('Bad path (chroot protected)')
+        if not os.path.exists(unchroot_path):
+            raise Exception('Bad path (does not exist): %s' %unchroot_path)
+
+        return unchroot_path
+
 
     def upload(self):
         """POST /photos/upload: Upload archive of photo"""
@@ -78,6 +102,10 @@ class PhotosController(BaseController):
     def create(self):
         """POST /photos: Create a new item"""
         # url('photos')
+        abspath = self._unchroot_path(
+            request.params.get('path', None),
+            config['app_conf']['import_dir'])
+        return abspath
 
     def new(self, format='html'):
         """GET /photos/new: Form to create a new item"""
