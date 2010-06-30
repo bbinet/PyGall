@@ -52,6 +52,15 @@
             });
             alert(this.name + ": " + checked);
         });
+
+        // checking nodes will check corresponding leafs
+        $.each(${dirs.values()}, function(index, value) {
+            $('#node-'+value+' input[type="checkbox"]').change(function() {
+                $('.child-of-node-'+value+' input[name="'+this.name+'"]')
+                .attr('checked', $(this).is(':checked'))
+                .trigger('change');
+            });
+        });
     });
     </script>
 </head>
