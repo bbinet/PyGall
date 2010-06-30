@@ -62,11 +62,12 @@ class PhotosController(BaseController):
         """GET /photos/import: Choose photos to be imported"""
         # create a json tree of the photos to be imported
         c.tree = []
+        import_dir_len = len(config['app_conf']['import_dir'])
         for root, dirs, files in os.walk(config['app_conf']['import_dir'], topdown=True):
             for name in files:
-                c.tree.append(os.path.join(root, name))
+                c.tree.append(os.path.join(root, name)[import_dir_len+1:])
             for name in dirs:
-                c.tree.append(os.path.join(root, name) + os.sep)
+                c.tree.append(os.path.join(root, name)[import_dir_len+1:] + os.sep)
         c.tree.sort()
         return render('/photos/import.mako.html')
 
