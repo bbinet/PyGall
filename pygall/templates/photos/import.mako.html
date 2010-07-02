@@ -47,15 +47,17 @@
         $("table#photos-tree tfoot input").click(function() {
             $('table#photos-tree tbody tr input[name="'+this.name+'"]:checked')
             .each(function() {
-                var path = $(this).parents("tr").find("td span").text();
-                // TODO: do not send request for directories
-                $.post(
-                    "${url('photos')}",
-                    { path: path },
-                    function(response){
-                        console.log(response);
-                    }
-                );
+                // do not send request for directories
+                if ($(this).parents("tr").find("td span").attr('class') == 'file') {
+                    var path = $(this).parents("tr").find("td span").text();
+                    $.post(
+                        "${url('photos')}",
+                        { path: path },
+                        function(response){
+                            console.log(response);
+                        }
+                    );
+                }
             });
         });
 
