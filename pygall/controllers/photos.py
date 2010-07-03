@@ -10,6 +10,7 @@ from pylons.decorators import jsonify
 
 from pygall.lib.base import BaseController, render
 from pygall.lib.archivefile import extractall
+from pygall.lib.imageprocessing import ImageProcessing
 from pygall.model.meta import Session
 from pygall.model import PyGallPhoto
 
@@ -102,13 +103,34 @@ class PhotosController(BaseController):
         """GET /photos: All items in the collection"""
         # url('photos')
 
+    @jsonify
     def create(self):
         """POST /photos: Create a new item"""
         # url('photos')
         abspath, uri = self._unchroot_path(
             request.params.get('path', None),
             config['app_conf']['import_dir'])
-        return abspath
+
+        ip = ImageProcessing(
+            config['app_conf']['import_dir'],
+            os.path.join(config['pylons.paths']['static_files'],
+                         config['app_conf']['photos_public_dir']))
+
+        error = False
+        msg = None
+        try:
+            ip.process_image(uri)
+            # TODO: import image in db
+            # TODO: remove empty directories
+        except Exception, e:
+            error = True
+            msg = str(e)
+            log.error(msg)
+
+        return {
+            "status": not error,
+            "msg": msg
+        }
 
     def new(self, format='html'):
         """GET /photos/new: Form to create a new item"""
