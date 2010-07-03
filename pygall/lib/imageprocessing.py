@@ -138,7 +138,7 @@ class ImageProcessing:
         exif = pyexiv2.Image(src)
         try:
             exif.readMetadata()
-            date = exif['Exif.Image.DateTime'].value
+            date = exif['Exif.Image.DateTime']
         except:
             date = datetime.datetime.today()
 
