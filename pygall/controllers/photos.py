@@ -113,8 +113,9 @@ class PhotosController(BaseController):
 
         ip = ImageProcessing(
             config['app_conf']['import_dir'],
-            os.path.join(config['pylons.paths']['static_files'],
-                         config['app_conf']['photos_public_dir']))
+            os.path.join(
+                config['pylons.paths']['static_files'],
+                config['app_conf']['photos_public_dir']))
 
         error = False
         msg = None
@@ -123,7 +124,9 @@ class PhotosController(BaseController):
             ip.process_image(uri)
             # TODO: import image in db
             # remove empty directories
-            for dirpath, dirs, files in os.walk(config['app_conf']['import_dir'], topdown=False):
+            for dirpath, dirs, files in os.walk(
+                config['app_conf']['import_dir'],
+                topdown=False):
                 for subdirname in dirs:
                     try:
                         os.rmdir(os.path.join(dirpath, subdirname))
