@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
+import datetime
 import shutil
 import Image
 import pyexiv2
@@ -26,12 +27,13 @@ class ImageProcessing:
         self.quality = crop_quality
 
 
-    def copy_orig(self, uri):
+    def copy_orig(self, uri, dest_uri=None):
         """
         Copy the original image to orig dest directory
         """
         src = os.path.join(self.src_dir, uri)
-        dest = os.path.join(self.abs_orig_dest_dir, uri)
+        dest_uri = uri if dest_uri is None else dest_uri
+        dest = os.path.join(self.abs_orig_dest_dir, dest_uri)
 
         self._check_paths(src, dest)
 
@@ -43,13 +45,14 @@ class ImageProcessing:
         log.info("Copied: %s" % dest)
 
 
-    def copy_scaled(self, uri):
+    def copy_scaled(self, uri, dest_uri=None):
         """
         Rotate and scale image.
         Copy the processed image to scaled dest directory
         """
         src = os.path.join(self.src_dir, uri)
-        dest = os.path.join(self.abs_scaled_dest_dir, uri)
+        dest_uri = uri if dest_uri is None else dest_uri
+        dest = os.path.join(self.abs_scaled_dest_dir, dest_uri)
 
         self._check_paths(src, dest)
 
@@ -113,16 +116,45 @@ class ImageProcessing:
     def process_image(self, uri):
         """
         Standard processing for the given image:
+        Built the destination relative path based on image timestamp
         Copy the original image to orig dest directory
         Copy the scaled and rotated image to scaled dest directory
         Remove the original image from disk
         """
-        self.copy_orig(uri)
-        self.copy_scaled(uri)
+        dest_uri = self._get_dest_uri(uri)
+        self.copy_orig(uri, dest_uri)
+        self.copy_scaled(uri, dest_uri)
         self.unlink(uri)
 
 
+    def _get_dest_uri(self, uri):
+        """
+        Built the destination relative path based on image timestamp
+        """
+        src = os.path.join(self.src_dir, uri)
+
+        self._check_paths(src)
+
+        exif = pyexiv2.Image(src)
+        try:
+            exif.readMetadata()
+            date = exif['Exif.Image.DateTime'].value
+        except:
+            date = datetime.datetime.today()
+
+        dest_uri = os.path.join(
+            date.strftime("%Y"),
+            date.strftime("%m"),
+            date.strftime("%d"),
+            os.path.basename(src)
+        )
+        return dest_uri
+
+
     def _check_paths(self, src, dest=None):
+        """
+        Checks validity of src and/or dest paths
+        """
         # abort if src photo does not exist
         if not os.path.exists(src):
             raise Exception("Source photo does not exists (%s)" % src)
