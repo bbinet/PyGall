@@ -28,20 +28,19 @@ class PhotosController(BaseController):
         while path.startswith(os.sep):
             path = path[len(os.sep):]
         if not path.startswith(os.path.basename(chroot)):
-            path = os.path.join(os.path.basename(chroot), path)
-            #raise Exception('Bad path (no chroot prefix)')
+            raise Exception('Bad path (no chroot prefix)')
 
-        path = os.path.normpath(path[len(os.path.basename(chroot)):])
-        if path.startswith(os.sep):
-            path = path[len(os.sep):]
-        unchroot_path = os.path.normpath(os.path.join(chroot, path))
+        uri = os.path.normpath(path[len(os.path.basename(chroot)):])
+        while uri.startswith(os.sep):
+            uri = uri[len(os.sep):]
+        unchroot_path = os.path.normpath(os.path.join(chroot, uri))
 
         if not unchroot_path.startswith(chroot):
             raise Exception('Bad path (chroot protected)')
         if not os.path.exists(unchroot_path):
             raise Exception('Bad path (does not exist): %s' %unchroot_path)
 
-        return unchroot_path
+        return (unchroot_path, uri)
 
 
     def upload(self):
@@ -106,7 +105,7 @@ class PhotosController(BaseController):
     def create(self):
         """POST /photos: Create a new item"""
         # url('photos')
-        abspath = self._unchroot_path(
+        abspath, uri = self._unchroot_path(
             request.params.get('path', None),
             config['app_conf']['import_dir'])
         return abspath
