@@ -119,6 +119,7 @@ class PhotosController(BaseController):
         error = False
         msg = None
         try:
+            # TODO: check same image has not already been imported
             ip.process_image(uri)
             # TODO: import image in db
             # TODO: remove empty directories
