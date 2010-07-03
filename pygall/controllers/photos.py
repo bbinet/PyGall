@@ -122,7 +122,13 @@ class PhotosController(BaseController):
             # TODO: check same image has not already been imported
             ip.process_image(uri)
             # TODO: import image in db
-            # TODO: remove empty directories
+            # remove empty directories
+            for dirpath, dirs, files in os.walk(config['app_conf']['import_dir'], topdown=False):
+                for subdirname in dirs:
+                    try:
+                        os.rmdir(os.path.join(dirpath, subdirname))
+                    except OSError:
+                        log.debug('directory is not empty')
         except Exception, e:
             error = True
             msg = str(e)
