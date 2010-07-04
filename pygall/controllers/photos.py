@@ -61,7 +61,8 @@ class PhotosController(BaseController):
             extractall(filepath, config['app_conf']['import_dir'])
 
             # walk in import directory to delete all files that are not photos
-            for dirpath, dirs, files in os.walk(config['app_conf']['import_dir'], topdown=False):
+            for dirpath, dirs, files in os.walk(
+                config['app_conf']['import_dir'], topdown=False):
                 for filename in files:
                     abspath = os.path.join(dirpath, filename)
                     log.debug("walk on file: %s" %abspath)
