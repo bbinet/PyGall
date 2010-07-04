@@ -19,9 +19,10 @@ pygall_photos_table = sa.Table(
     sa.Column('id', sa.types.Integer, sa.Sequence('photos_seq', optional=True),
               primary_key=True),
     sa.Column("uri", sa.types.Unicode, nullable=False),
+    sa.Column("md5sum", sa.types.Unicode, unique=True),
     sa.Column("description", sa.types.Unicode),
     sa.Column("rating", sa.types.Integer),
-    sa.Column("time", sa.types.DateTime, nullable=False)
+    sa.Column("time", sa.types.DateTime, nullable=False),
 )
 # id, uri, description, rating, time
 
@@ -47,6 +48,7 @@ class PyGallPhoto(object):
     def __init__(self, fspot_photo=None):
         if fspot_photo is not None:
             self.uri = fspot_uri_to_pygall(fspot_photo.uri)
+            self.md5sum = fspot_photo.md5sum
             self.description = fspot_photo.description
             self.rating = fspot_photo.rating
             self.time = datetime.fromtimestamp(fspot_photo.time) # Convert to datetime
