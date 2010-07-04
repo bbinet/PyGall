@@ -11,6 +11,7 @@ from pylons.decorators import jsonify
 from pygall.lib.base import BaseController, render
 from pygall.lib.archivefile import extractall
 from pygall.lib.imageprocessing import ImageProcessing
+from pygall.lib.helpers import md5_for_file
 from pygall.model.meta import Session
 from pygall.model import PyGallPhoto
 
@@ -121,9 +122,21 @@ class PhotosController(BaseController):
         error = False
         msg = None
         try:
-            # TODO: check same image has not already been imported
+            # check same image has not already been imported
+            f = open(abspath)
+            try:
+                hash = md5_for_file(f)
+            finally:
+                f.close()
+            photo = Session.query(PyGallPhoto).filter_by(md5sum=hash)
+            if photo.count() > 0:
+                raise Exception("Same md5sum already exists in database (%s)" % abspath)
+
+            # process and import photos to public/data/photos dir
             ip.process_image(uri)
+
             # TODO: import image in db
+
             # remove empty directories
             for dirpath, dirs, files in os.walk(
                 config['app_conf']['import_dir'],
