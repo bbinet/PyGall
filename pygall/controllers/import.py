@@ -3,8 +3,11 @@ import os
 
 from pylons import config, request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect_to
+from pylons.decorators import jsonify
 
 from pygall.lib.base import BaseController, render
+from pygall.lib.helpers import unchroot_path, remove_empty_dirs
+from pygall.lib.archivefile import extractall
 
 log = logging.getLogger(__name__)
 
@@ -72,5 +75,25 @@ class ImportController(BaseController):
         """GET /import/new: Form to create a new item"""
         return render('/import/new.mako.html')
 
-    def delete(self, id):
-        """DELETE /photos/id: Delete an existing item"""
+    @jsonify
+    def delete(self):
+        """GET /import/delete: Delete an existing item"""
+        error = False
+        msg = None
+        uri = None
+        try:
+            abspath, uri = unchroot_path(
+                request.params.get('path', None),
+                config['app_conf']['import_dir'])
+            os.unlink(abspath)
+            msg = "File has been successfully deleted"
+            remove_empty_dirs(config['app_conf']['import_dir'])
+        except Exception, e:
+            error = True
+            msg = str(e)
+            log.error(msg)
+        return {
+            "path": uri,
+            "status": not error,
+            "msg": msg
+        }

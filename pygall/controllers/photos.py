@@ -2,16 +2,14 @@ import logging
 import os
 from math import ceil
 from webhelpers import paginate
-from types import StringType, UnicodeType
 
 from pylons import config, request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect_to
 from pylons.decorators import jsonify
 
 from pygall.lib.base import BaseController, render
-from pygall.lib.archivefile import extractall
 from pygall.lib.imageprocessing import ImageProcessing
-from pygall.lib.helpers import md5_for_file
+from pygall.lib.helpers import md5_for_file, unchroot_path, remove_empty_dirs
 from pygall.model.meta import Session
 from pygall.model import PyGallPhoto
 
@@ -24,26 +22,6 @@ class PhotosController(BaseController):
     #     map.resource('photo', 'photos')
 
     # get safe and correct unchroot path
-    def _unchroot_path(self, path, chroot):
-        if type(path) != StringType and type(path) != UnicodeType:
-            raise Exception('Bad path (type is not string)')
-        while path.startswith(os.sep):
-            path = path[len(os.sep):]
-        if not path.startswith(os.path.basename(chroot)):
-            raise Exception('Bad path (no chroot prefix)')
-
-        uri = os.path.normpath(path[len(os.path.basename(chroot)):])
-        while uri.startswith(os.sep):
-            uri = uri[len(os.sep):]
-        unchroot_path = os.path.normpath(os.path.join(chroot, uri))
-
-        if not unchroot_path.startswith(chroot):
-            raise Exception('Bad path (chroot protected)')
-        if not os.path.exists(unchroot_path):
-            raise Exception('Bad path (does not exist): %s' %unchroot_path)
-
-        return (unchroot_path, uri)
-
 
     def index(self, format='html'):
         """GET /photos: All items in the collection"""
@@ -53,7 +31,7 @@ class PhotosController(BaseController):
     def create(self):
         """POST /photos: Create a new item"""
         # url('photos')
-        abspath, uri = self._unchroot_path(
+        abspath, uri = unchroot_path(
             request.params.get('path', None),
             config['app_conf']['import_dir'])
 
@@ -65,6 +43,7 @@ class PhotosController(BaseController):
 
         error = False
         msg = None
+        dest_uri = None
         try:
             # check same image has not already been imported
             f = open(abspath)
@@ -87,15 +66,7 @@ class PhotosController(BaseController):
             Session.add(photo)
             Session.commit()
 
-            # remove empty directories
-            for dirpath, dirs, files in os.walk(
-                config['app_conf']['import_dir'],
-                topdown=False):
-                for subdirname in dirs:
-                    try:
-                        os.rmdir(os.path.join(dirpath, subdirname))
-                    except OSError:
-                        log.debug('directory is not empty')
+            remove_empty_dirs(config['app_conf']['import_dir'])
         except Exception, e:
             error = True
             msg = str(e)

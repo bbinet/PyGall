@@ -45,18 +45,32 @@
         });
 
         $("table#photos-tree tfoot input").click(function() {
+            var action = this.name;
             $('table#photos-tree tbody tr input[name="'+this.name+'"]:checked')
             .each(function() {
                 // do not send request for directories
                 if ($(this).parents("tr").find("td span").attr('class') == 'file') {
                     var path = $(this).parents("tr").find("td span").text();
-                    $.post(
-                        "${url('photos')}",
-                        { path: path },
-                        function(response){
-                            console.log(response);
-                        }
-                    );
+                    switch (action) {
+                    case "import":
+                        $.post(
+                            "${url('photos')}",
+                            { path: path },
+                            function(response){
+                                console.log(response);
+                            }
+                        );
+                        break;
+                    case "delete":
+                        $.post(
+                            "${url(controller='import', action='delete')}",
+                            { path: path },
+                            function(response){
+                                console.log(response);
+                            }
+                        );
+                        break;
+                    }
                 }
             });
         });
