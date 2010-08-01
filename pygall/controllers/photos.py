@@ -50,7 +50,9 @@ class PhotosController(BaseController):
         # url(controller='photos', action='upload')
 
         # gp.fileupload stores uploaded filename in fieldstorage
-        fieldstorage = request.POST['file']
+        fieldstorage = request.params.get('file', None)
+        if fieldstorage is None:
+            abort(400)
         filepath = os.path.join(
             config['global_conf']['upload_dir'],
             fieldstorage.file.read().strip(" \n\r"))
