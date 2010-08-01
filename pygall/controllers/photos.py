@@ -135,9 +135,15 @@ class PhotosController(BaseController):
                 raise Exception("Same md5sum already exists in database (%s)" % abspath)
 
             # process and import photos to public/data/photos dir
-            ip.process_image(uri)
+            date, dest_uri = ip.process_image(uri)
 
-            # TODO: import image in db
+            # import image in db
+            photo = PyGallPhoto()
+            photo.uri = dest_uri
+            photo.md5sum = hash
+            photo.time = date
+            Session.add(photo)
+            Session.commit()
 
             # remove empty directories
             for dirpath, dirs, files in os.walk(
@@ -155,7 +161,8 @@ class PhotosController(BaseController):
 
         return {
             "status": not error,
-            "msg": msg
+            "msg": msg,
+            "dest_uri": dest_uri
         }
 
     def new(self, format='html'):

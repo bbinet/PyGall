@@ -121,13 +121,20 @@ class ImageProcessing:
         Copy the scaled and rotated image to scaled dest directory
         Remove the original image from disk
         """
-        dest_uri = self._get_dest_uri(uri)
+        date = self._get_datetime(uri)
+        dest_uri = os.path.join(
+            date.strftime("%Y"),
+            date.strftime("%m"),
+            date.strftime("%d"),
+            os.path.basename(os.path.join(self.src_dir, uri))
+        )
         self.copy_orig(uri, dest_uri)
         self.copy_scaled(uri, dest_uri)
         self.unlink(uri)
+        return (date, dest_uri)
 
 
-    def _get_dest_uri(self, uri):
+    def _get_datetime(self, uri):
         """
         Built the destination relative path based on image timestamp
         """
@@ -142,13 +149,7 @@ class ImageProcessing:
         except:
             date = datetime.datetime.today()
 
-        dest_uri = os.path.join(
-            date.strftime("%Y"),
-            date.strftime("%m"),
-            date.strftime("%d"),
-            os.path.basename(src)
-        )
-        return dest_uri
+        return date
 
 
     def _check_paths(self, src, dest=None):
