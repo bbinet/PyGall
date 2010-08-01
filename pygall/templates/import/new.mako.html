@@ -9,7 +9,7 @@
     function setupForm() {
         $("#upload").html("");
         $("#upload").fileUpload({
-            action: "${url(controller='photos', action='upload')}",
+            action: "${url(controller='import', action='upload')}",
             submit_label: "Envoyer",
             max_size_error_label: "Le fichier est trop gros",
             success: function() { alert("L'envoi a réussi"); setupForm(); },

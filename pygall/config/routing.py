@@ -21,12 +21,14 @@ def make_map():
     # CUSTOM ROUTES HERE
     map.connect('/', controller='photos', action='galleria')
     map.connect('/edit', controller='photos', action='editcomment')
-    map.connect('/photos/upload', controller='photos', action='upload')
-    map.connect('/photos/import', controller='photos', action='import_')
+    map.connect('/{page:\d+}', controller='photos', action='galleria')
     map.resource('photo', 'photos')
+    map.connect('/import/new', controller='import', action='new')
+    map.connect('/import/upload', controller='import', action='upload')
+    map.connect('/import/delete', controller='import', action='delete')
+    map.connect('/import', controller='import', action='index')
     map.connect('/dates', controller='dates', action='index')
     map.connect('/tags', controller='tags', action='index')
-    map.connect('/{page:\d+}', controller='photos', action='galleria')
 
     #map.connect('/{controller}/{action}')
     #map.connect('/{controller}/{action}/{id}')
