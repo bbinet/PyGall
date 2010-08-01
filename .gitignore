@@ -1,3 +1,5 @@
+Paste*.egg
+**.pyc
 PyGall.egg-info/
 development.db
 vp
