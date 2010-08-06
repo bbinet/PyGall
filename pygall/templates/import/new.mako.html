@@ -4,6 +4,11 @@
 <head>
     <title>Upload de photos</title>
     <link rel="stylesheet" type="text/css" href="/gp.fileupload.static/fileupload.css">
+    <style>
+        #upload {
+            margin-top:20px;
+        }
+    </style>
     <script src="/gp.fileupload.static/jquery.js" type="text/javascript"></script>
     <script type="text/javascript">
     function setupForm() {
@@ -23,6 +28,8 @@
 </head>
 <body>
     <h3>Uploader des photos dans la gallerie PyGall</h1>
+    <a href="${url(controller='import', action='index')}">Import</a> |
+    <a href="${url(controller='photos', action='galleria')}">Galleria</a>
     <div id="upload"></div>
     <script type="text/javascript" src="/gp.fileupload.static/jquery.fileupload.js"></script>
 </body>
