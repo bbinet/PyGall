@@ -50,7 +50,7 @@ table {
   border-collapse: collapse;
   line-height: 1;
   margin: 1em auto;
-  width: 90%;
+  width: 100%; //90%
 }
 
 /* Caption
