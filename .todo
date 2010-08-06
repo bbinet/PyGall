@@ -9,14 +9,17 @@
     <note priority="veryhigh" time="1277161335" done="1280676345">
         add support for photo import (files, zip, ftp)
     </note>
+    <note priority="veryhigh" time="1280676877" done="1281076682">
+        add support for removing uploaded photos
+        <comment>
+            done
+        </comment>
+    </note>
     <note priority="veryhigh" time="1273640885">
         package and release it to GitHub/PyPi
     </note>
-    <note priority="veryhigh" time="1280676450">
+    <note priority="veryhigh" time="1280676450" done="1281084919">
         delete row in import table when photo has been successfully imported/deleted
-    </note>
-    <note priority="veryhigh" time="1280676877" done="1281076682">
-        add support for removing uploaded photos
         <comment>
             done
         </comment>

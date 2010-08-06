@@ -57,8 +57,15 @@
                             "${url('photos')}",
                             { path: path },
                             function(response){
-                                console.log(response);
-                            }
+                                if (response.status == true) {
+                                    $('table#photos-tree tbody tr td span.file').filter(
+                                        function(){
+                                            return $(this).text()==path;
+                                        }
+                                    ).parents("tr").remove();
+                                }
+                            },
+                            "json"
                         );
                         break;
                     case "delete":
@@ -66,8 +73,15 @@
                             "${url(controller='import', action='delete')}",
                             { path: path },
                             function(response){
-                                console.log(response);
-                            }
+                                if (response.status == true) {
+                                    $('table#photos-tree tbody tr td span.file').filter(
+                                        function(){
+                                            return $(this).text()==path;
+                                        }
+                                    ).parents("tr").remove();
+                                }
+                            },
+                            "json"
                         );
                         break;
                     }
