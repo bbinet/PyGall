@@ -38,9 +38,19 @@
     text-align:center;
 }
 
+#upload {                                                                                                                     
+    margin-top:20px;
+}
+#flash {
+    background-color: #ffaa00;
+    color: #334488;
+}
+table#photos-tree.treeTable thead {
+    color: black;
+}
 
 /* BEGIN DEMO STYLE */
-body{text-align:center;background:black;color:#bba;font:80%/140% georgia,serif;}
+body{background:black;color:#bba;font:80%/140% georgia,serif;}
 h1{font:bold 90% 'helvetica neue',sans-serif;letter-spacing:3px;text-transform:uppercase;margin-bottom:20px;margin-left:5px;}
 a{color:#348;text-decoration:none;outline:none;}
 a:hover{color:#67a;}
