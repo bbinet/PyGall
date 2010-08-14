@@ -6,10 +6,10 @@
     <meta http-equiv="imagetoolbar" content="false">
     <meta name="description" content="">
     <meta name="keywords" content="">
-	<link href="/css/galleria.css" rel="stylesheet" type="text/css" media="screen">
-	<link href="/css/style.css" rel="stylesheet" type="text/css" media="screen">
-	<script type="text/javascript" src="/js/jquery.min.js"></script>
-	<script type="text/javascript" src="/js/jquery.galleria.js"></script>
+    <link href="${url('/css/galleria.css')}" rel="stylesheet" type="text/css" media="screen">
+    <link href="${url('/css/style.css')}" rel="stylesheet" type="text/css" media="screen">
+    <script type="text/javascript" src="${url('/js/jquery.min.js')}"></script>
+    <script type="text/javascript" src="${url('/js/jquery.galleria.js')}"></script>
 	<script type="text/javascript">
 	$(document).ready(function(){
 		$('ul.gallery_demo').galleria({
@@ -140,7 +140,7 @@
                     % else:
                     <li title="${photo.time.strftime('%d/%m/%Y')}">
                     % endif
-                        <img src="/data/photos/scaled/${photo.uri}" alt="${photo.uri}" title="${photo.description}">
+                        <img src="${url('/data/photos/scaled/'+str(photo.uri))}" alt="${photo.uri}" title="${photo.description}">
                     </li>
                     % endfor
                 </ul>
