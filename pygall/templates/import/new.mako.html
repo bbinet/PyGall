@@ -8,6 +8,9 @@
         #upload {
             margin-top:20px;
         }
+        #flash {
+            background-color: #ffaa00;
+        }
     </style>
     <script src="/gp.fileupload.static/jquery.js" type="text/javascript"></script>
     <script type="text/javascript">
@@ -17,8 +20,8 @@
             action: "${url(controller='import', action='upload')}",
             submit_label: "Envoyer",
             max_size_error_label: "Le fichier est trop gros",
-            success: function() { alert("L'envoi a réussi"); setupForm(); },
-            error: function() { alert("L'envoi a échoué"); setupForm(); }
+            success: function() { $('#flash').text("L'envoi a réussi"); setupForm(); },
+            error: function() { $('#flash').text("L'envoi a échoué"); setupForm(); }
         });
     }
     $(document).ready(function() {
