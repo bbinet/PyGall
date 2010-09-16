@@ -14,6 +14,6 @@ Make a config file as follows::
 
 Tweak the config file as appropriate and then setup the application::
 
-    paster setup-app config.ini
+    paster setup-app --name=pygall config.ini
 
 Then you are ready to go.
