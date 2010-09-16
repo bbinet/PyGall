@@ -6,7 +6,7 @@ App.constants = {
 
     urls: {
 
-        editcomment: "${url(controller='photos', action='editcomment')}",
+        photos_editcomment: "${url(controller='photos', action='editcomment')}",
 
         photos: "${url('photos')}",
 

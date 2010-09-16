@@ -38,7 +38,7 @@ App.Galleria = {
                             return;
                         }
                         $.post(
-                            App.constants.urls.editcomment,
+                            App.constants.urls.photos_editcomment,
                             {uri:thumb.attr('alt'), comment: comment},
                             function(data, textStatus) {
                                 //console.log(data);
