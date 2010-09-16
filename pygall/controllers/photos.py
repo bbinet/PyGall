@@ -131,5 +131,5 @@ class PhotosController(BaseController):
             redirect_to(controller='photos', action='galleria', page=page)
 
         c.photos = paginate.Page(photo_q, page=page, items_per_page=33)
-        c.edit = request.params.get('edit')
+        c.edit = bool(request.params.get('edit', False))
         return render('galleria.mako.html')
