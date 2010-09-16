@@ -7,7 +7,7 @@ except ImportError:
 
 setup(
     name='PyGall',
-    version='0.2',
+    version='0.2.1',
     description='Image gallery built with the Pylons web framework',
     author='Bruno Binet',
     author_email='binet.bruno@gmail.com',
@@ -43,6 +43,8 @@ setup(
         'Topic :: Internet :: WWW/HTTP :: WSGI :: Application',
         'Topic :: Multimedia :: Graphics :: Viewers',
         ],
+    keywords='pylons wsgi image photo web gallery',
+    license='BSD',
     entry_points="""
     [paste.app_factory]
     main = pygall.config.middleware:make_app
