@@ -21,8 +21,11 @@
             done
         </comment>
     </note>
-    <note priority="veryhigh" time="1270162994">
+    <note priority="veryhigh" time="1270162994" done="1284651023">
         move css from template galleria.mako.html to a separate css file
+        <comment>
+            done
+        </comment>
     </note>
     <note priority="veryhigh" time="1273640885">
         package and release it to GitHub/PyPi
