@@ -29,6 +29,7 @@ def make_map():
     map.connect('/import', controller='import', action='index')
     map.connect('/dates', controller='dates', action='index')
     map.connect('/tags', controller='tags', action='index')
+    map.connect('/js/App.constants.js', controller='main', action='constants')
 
     #map.connect('/{controller}/{action}')
     #map.connect('/{controller}/{action}/{id}')
