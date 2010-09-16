@@ -30,6 +30,7 @@ setup(
     paster_plugins=['PasteScript', 'Pylons'],
     classifiers          = [
         'Development Status :: 4 - Beta',
+        'Environment :: Web Environment',
         'Intended Audience :: End Users/Desktop',
         'License :: OSI Approved :: BSD License',
         'Operating System :: OS Independent',
