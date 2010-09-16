@@ -9,6 +9,12 @@
     <note priority="veryhigh" time="1277161335" done="1280676345">
         add support for photo import (files, zip, ftp)
     </note>
+    <note priority="veryhigh" time="1280676450" done="1281084919">
+        delete row in import table when photo has been successfully imported/deleted
+        <comment>
+            done
+        </comment>
+    </note>
     <note priority="veryhigh" time="1280676877" done="1281076682">
         add support for removing uploaded photos
         <comment>
@@ -18,17 +24,14 @@
     <note priority="veryhigh" time="1273640885">
         package and release it to GitHub/PyPi
     </note>
-    <note priority="veryhigh" time="1280676450" done="1281084919">
-        delete row in import table when photo has been successfully imported/deleted
-        <comment>
-            done
-        </comment>
-    </note>
     <note priority="high" time="1270162994">
         move css from template galleria.mako.html to a separate css file
     </note>
     <note priority="high" time="1277067281">
         export the modified version to pygall instead of the original
+    </note>
+    <note priority="high" time="1284612283">
+        move to Pylons 1.0
     </note>
     <note priority="medium" time="1273560113">
         utiliser formalchemy comme interface d'admin
