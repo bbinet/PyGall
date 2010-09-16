@@ -18,8 +18,9 @@ class ImportController(BaseController):
         # url(controller='import', action='upload')
 
         # gp.fileupload stores uploaded filename in fieldstorage
-        fieldstorage = request.params.get('file', None)
-        if fieldstorage is None:
+        fieldstorage = request.params.get('file', u'')
+        if fieldstorage == u'':
+            log.debug("Nothing uploaded")
             abort(400)
         filepath = os.path.join(
             config['global_conf']['upload_dir'],
