@@ -46,6 +46,7 @@
         });
 
         $("table#photos-tree tfoot input").click(function() {
+            $('#flash').text(''); // reinit flash message
             var action = this.name;
             $('table#photos-tree tbody tr input[name="'+this.name+'"]:checked')
             .each(function() {
@@ -64,6 +65,13 @@
                                             return $(this).text()==path;
                                         }
                                     ).parents("tr").remove();
+                                }
+                                else {
+                                    var current_flash = $('#flash').html();
+                                    if (current_flash) {
+                                        current_flash += "<br />";
+                                        }
+                                    $('#flash').html(current_flash + response.msg);
                                 }
                             },
                             "json"
@@ -102,6 +110,7 @@
     </script>
 </head>
 <body>
+    <div id="flash"></div>
     <h3>Importer les photos dans la gallerie PyGall</h1>
     <a href="${url(controller='import', action='new')}">Upload</a> |
     <a href="${url(controller='photos', action='galleria')}">Galleria</a>
