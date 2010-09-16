@@ -14,10 +14,25 @@ use = egg:Paste#http
 host = 0.0.0.0
 port = 5000
 
-[app:main]
+[pipeline:main]
+pipeline = fileupload pygall
+
+[filter:fileupload]
+use = egg:gp.fileupload
+# temporary directory to write streams to
+tempdir = %(here)s/data/fileupload
+# max upload size is 200 Mo
+max_size = 200
+# use this options to also wrap your application with a Storage middleware
+upload_to = %(upload_dir)s
+
+[app:pygall]
 use = egg:PyGall
 full_stack = true
 static_files = true
+
+import_dir = %(here)s/import
+photos_public_dir = data/photos
 
 cache_dir = %(here)s/data
 beaker.session.key = pygall
