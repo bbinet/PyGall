@@ -8,6 +8,7 @@ debug = true
 email_to = you@yourdomain.com
 smtp_server = localhost
 error_email_from = paste@localhost
+upload_dir = %(here)s/storage
 
 [server:main]
 use = egg:Paste#http
