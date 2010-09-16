@@ -6,6 +6,12 @@
             done
         </comment>
     </note>
+    <note priority="veryhigh" time="1270162994" done="1284651023">
+        move css from template galleria.mako.html to a separate css file
+        <comment>
+            done
+        </comment>
+    </note>
     <note priority="veryhigh" time="1277161335" done="1280676345">
         add support for photo import (files, zip, ftp)
     </note>
@@ -21,12 +27,6 @@
             done
         </comment>
     </note>
-    <note priority="veryhigh" time="1270162994" done="1284651023">
-        move css from template galleria.mako.html to a separate css file
-        <comment>
-            done
-        </comment>
-    </note>
     <note priority="veryhigh" time="1273640885">
         package and release it to GitHub/PyPi
     </note>
@@ -36,8 +36,11 @@
     <note priority="veryhigh" time="1284647947">
         factorize common template code in a base mako template
     </note>
-    <note priority="veryhigh" time="1284648003">
+    <note priority="veryhigh" time="1284648003" done="1284661367">
         move js code to separate files
+        <comment>
+            done
+        </comment>
     </note>
     <note priority="high" time="1277067281">
         export the modified version to pygall instead of the original
