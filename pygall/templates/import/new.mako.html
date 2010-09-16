@@ -6,21 +6,11 @@
     <link rel="stylesheet" type="text/css" href="/gp.fileupload.static/fileupload.css">
     <link rel="stylesheet" type="text/css" href="${url('/css/style.css')}">
     <script src="/gp.fileupload.static/jquery.js" type="text/javascript"></script>
+    <script src="${url('/js/App.Upload.js')}" type="text/javascript"></script>
+    <script src="${url(controller='import', action='upload')}" type="text/javascript"></script>
+    <script src="${url(controller='main', action='constants')}" type="text/javascript"></script>
     <script type="text/javascript">
-    function setupForm() {
-        $("#upload").html("");
-        $("#upload").fileUpload({
-            action: "${url(controller='import', action='upload')}",
-            submit_label: "Envoyer",
-            max_size_error_label: "Le fichier est trop gros",
-            success: function() { $('#flash').text("L'envoi a réussi"); setupForm(); },
-            error: function() { $('#flash').text("L'envoi a échoué"); setupForm(); },
-            submit_empty_forms: false
-        });
-    }
-    $(document).ready(function() {
-        setupForm();
-    });
+    $(document).ready(App.Upload.init);
     </script>
 </head>
 <body>
