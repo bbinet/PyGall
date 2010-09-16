@@ -53,8 +53,7 @@ class PhotosController(BaseController):
                 f.close()
             photo = Session.query(PyGallPhoto).filter_by(md5sum=hash)
             if photo.count() > 0:
-                raise Exception("Same md5sum already exists in database (%s)" %
-                               request.params.get('path', None))
+                raise Exception("Same md5sum already exists in database")
 
             # process and import photos to public/data/photos dir
             date, dest_uri = ip.process_image(uri)
@@ -70,7 +69,7 @@ class PhotosController(BaseController):
             remove_empty_dirs(config['app_conf']['import_dir'])
         except Exception, e:
             error = True
-            msg = str(e)
+            msg = "%s [%s]" %(str(e), request.params.get('path', ''))
             log.error(msg)
 
         return {
