@@ -2,8 +2,6 @@ App = window.App || {};
 
 App.constants = {
 
-    edit: false,
-
     urls: {
 
         photos_editcomment: "${url(controller='photos', action='editcomment')}",
