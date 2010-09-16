@@ -8,10 +8,10 @@ except ImportError:
 setup(
     name='PyGall',
     version='0.1',
-    description='',
-    author='',
-    author_email='',
-    url='',
+    description='Image gallery built with the Pylons web framework',
+    author='Bruno Binet',
+    author_email='binet.bruno@gmail.com',
+    url='http://gitorious.org/PyGall',
     install_requires=[
         "Pylons>=0.9.7,<=0.9.99",
         "SQLAlchemy>=0.5,<=0.5.99",
@@ -28,6 +28,20 @@ setup(
     #        ('public/**', 'ignore', None)]},
     zip_safe=False,
     paster_plugins=['PasteScript', 'Pylons'],
+    classifiers          = [
+        'Development Status :: 4 - Beta',
+        'Intended Audience :: End Users/Desktop',
+        'License :: OSI Approved :: BSD License',
+        'Operating System :: OS Independent',
+        'Programming Language :: Python',
+        'Programming Language :: JavaScript',
+        'Framework :: Pylons',
+        'Topic :: Internet :: WWW/HTTP',
+        'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
+        'Topic :: Internet :: WWW/HTTP :: WSGI',
+        'Topic :: Internet :: WWW/HTTP :: WSGI :: Application',
+        'Topic :: Multimedia :: Graphics :: Viewers',
+        ],
     entry_points="""
     [paste.app_factory]
     main = pygall.config.middleware:make_app
