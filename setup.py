@@ -7,7 +7,7 @@ except ImportError:
 
 setup(
     name='PyGall',
-    version='0.2.1',
+    version='0.3',
     description='Image gallery built with the Pylons web framework',
     author='Bruno Binet',
     author_email='binet.bruno@gmail.com',
