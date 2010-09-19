@@ -71,12 +71,10 @@ App.Import = {
         });
 
         // checking nodes will check corresponding leafs
-        $.each(App.constants.dirs, function(index, value) {
-            $('#node-'+value+' input[type="checkbox"]').change(function() {
-                $('.child-of-node-'+value+' input[name="'+this.name+'"]')
-                .attr('checked', $(this).is(':checked'))
-                .trigger('change');
-            });
+        $('.folder').parent().siblings().children('input[type="checkbox"]').change(function() {
+            $('.child-of-node-'+this.value+' input[name="'+this.name+'"]')
+            .attr('checked', $(this).is(':checked'))
+            .trigger('change');
         });
     }
 };
