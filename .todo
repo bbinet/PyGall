@@ -33,14 +33,14 @@
             done
         </comment>
     </note>
-    <note priority="veryhigh" time="1284648003" done="1284661367">
-        move js code to separate files
+    <note priority="veryhigh" time="1284647947" done="1284937725">
+        factorize common template code in a base mako template
         <comment>
             done
         </comment>
     </note>
-    <note priority="veryhigh" time="1284647947" done="1284937725">
-        factorize common template code in a base mako template
+    <note priority="veryhigh" time="1284648003" done="1284661367">
+        move js code to separate files
         <comment>
             done
         </comment>
@@ -71,6 +71,9 @@
     </note>
     <note priority="low" time="1284933118">
         add support for dates (sorting)
+    </note>
+    <note priority="low" time="1285132786">
+        add support to preview images during import phase
     </note>
     <note priority="verylow" time="1273560113">
         utiliser formalchemy comme interface d'admin
