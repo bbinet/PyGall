@@ -70,11 +70,11 @@ class ImportController(BaseController):
             for name in dirs:
                 c.tree.append(os.path.join(root, name)[len(cut)+1:] + os.sep)
         c.tree.sort()
-        return render('/import/index.mako.html')
+        return render('/pygall/import/index.mako.html')
 
     def new(self, format='html'):
         """GET /import/new: Form to create a new item"""
-        return render('/import/new.mako.html')
+        return render('/pygall/import/new.mako.html')
 
     @jsonify
     def delete(self):

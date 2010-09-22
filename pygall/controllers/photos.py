@@ -132,4 +132,4 @@ class PhotosController(BaseController):
 
         c.photos = paginate.Page(photo_q, page=page, items_per_page=33)
         c.edit = bool(request.params.get('edit', False))
-        return render('galleria.mako.html')
+        return render('/pygall/photos/galleria.mako.html')

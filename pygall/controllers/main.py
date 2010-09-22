@@ -11,4 +11,4 @@ class MainController(BaseController):
 
     def constants(self):
         # render the javascript constants
-        return render('constants.mako.js')
+        return render('/pygall/main/constants.mako.js')
