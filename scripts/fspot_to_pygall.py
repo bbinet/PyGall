@@ -6,6 +6,7 @@ import getopt
 import os
 import shutil
 import subprocess
+import hashlib
 import Image
 import pyexiv2
 from urllib import unquote
@@ -13,11 +14,21 @@ from datetime import datetime
 
 from sqlalchemy import create_engine, MetaData, Column, \
         Table, Sequence, DateTime, UnicodeText, Integer, \
-        String, Unicode, ForeignKey, Boolean, not_
+        String, Unicode, ForeignKey, Boolean, not_, types
 from sqlalchemy.sql import func, join, and_
 from sqlalchemy.orm import mapper, sessionmaker, deferred, \
         relation, backref, aliased, column_property
 from sqlalchemy.exceptions import InvalidRequestError
+
+
+def md5_for_file(f, block_size=2**20):
+    md5 = hashlib.md5()
+    while True:
+        data = f.read(block_size)
+        if not data:
+            break
+        md5.update(data)
+    return md5.hexdigest()
 
 
 class ExportGall:
@@ -211,7 +222,8 @@ class FSpotToPyGall(ExportGall):
             Column("uri", Unicode(), nullable=False, index=True),
             Column("description", Unicode()),
             Column("rating", Integer()),
-            Column("time", DateTime(), nullable=False)
+            Column("time", DateTime(), nullable=False),
+            Column("md5sum", types.Unicode, unique=True),
         )
         # id, uri, description, rating, time
         
@@ -234,11 +246,14 @@ class FSpotToPyGall(ExportGall):
                 self.name = name
         
         class ToDbPhoto(object):
-            def __init__(self, uri="", description="", rating=-1, time=datetime(1,1,1)):
+            def __init__(self, uri="", description="", rating=-1, time=datetime(1,1,1), src_dir=self.src_dir):
                 self.uri = uri
                 self.description = description
                 self.rating = rating
                 self.time = time
+                f = open(os.path.join(src_dir, uri))
+                self.md5sum = md5_for_file(f)
+                f.close()
         
         mapper(ToDbTag,
                todb_tags_table,
