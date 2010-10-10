@@ -1,7 +1,6 @@
 # Execute this script in paster shell to update the md5sum of all photos
 
 import os
-import hashlib
 from pygall.model.meta import Session
 from pygall.model import PyGallPhoto
 from pygall.lib.helpers import md5_for_file
