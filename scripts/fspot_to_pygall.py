@@ -14,7 +14,7 @@ from datetime import datetime
 from sqlalchemy import create_engine, MetaData, Column, \
         Table, Sequence, DateTime, UnicodeText, Integer, \
         String, Unicode, ForeignKey, Boolean, not_
-from sqlalchemy.sql import func, join
+from sqlalchemy.sql import func, join, and_
 from sqlalchemy.orm import mapper, sessionmaker, deferred, \
         relation, backref, aliased, column_property
 from sqlalchemy.exceptions import InvalidRequestError
@@ -138,6 +138,15 @@ class FSpotToPyGall(ExportGall):
             autoload = True, autoload_with = fromdb_engine)
         # photo_id, tag_id
         
+        fromdb_photo_versions_table = Table(
+            "photo_versions", fromdb_metadata,
+            Column("photo_id", Integer(), ForeignKey('photos.id'), primary_key=True),
+            Column("version_id", Integer(), primary_key=True),
+            Column("base_uri", Unicode()),
+            Column("filename", Unicode()),
+            autoload = True, autoload_with = fromdb_engine)
+        # photo_id, version_id, name, base_uri, filename, md5_sum, protected
+
         fromdb_photos_table = Table(
             "photos", fromdb_metadata,
             Column("base_uri", Unicode()),
@@ -146,6 +155,8 @@ class FSpotToPyGall(ExportGall):
         # id, time, base_uri, filename, description, roll_id, default_version_id, rating, md5_sum
         
         class FromDbTag(object):
+            pass
+        class FromDbVersion(object):
             pass
         class FromDbPhoto(object):
             pass
@@ -156,6 +167,13 @@ class FSpotToPyGall(ExportGall):
                    'icon' : deferred(fromdb_tags_table.c.icon), # Big: ignore!
                    'photos' : relation(FromDbPhoto, secondary = fromdb_photo_tags_table),
                })
+        mapper(FromDbVersion,
+               fromdb_photo_versions_table,
+               properties = {
+                   'uri': column_property(
+                       (fromdb_photo_versions_table.c.base_uri + fromdb_photo_versions_table.c.filename).label('uri')
+                   )
+               })
         mapper(FromDbPhoto,
                fromdb_photos_table,
                properties = {
@@ -163,6 +181,10 @@ class FSpotToPyGall(ExportGall):
                        (fromdb_photos_table.c.base_uri + fromdb_photos_table.c.filename).label('uri')
                    ),
                    'tags' : relation(FromDbTag, secondary = fromdb_photo_tags_table),
+                   'last_version' : relation(FromDbVersion, primaryjoin=
+                       and_(fromdb_photos_table.c.id==fromdb_photo_versions_table.c.photo_id,
+                           fromdb_photos_table.c.default_version_id==fromdb_photo_versions_table.c.version_id),
+                       uselist=False)
                })
 
         FSpotSession = sessionmaker(autoflush = True, autocommit = False)
@@ -264,7 +286,7 @@ class FSpotToPyGall(ExportGall):
         for row in q.all():
             list.append({
                 "id": row.id,
-                "uri": self._fromdb_uri_to_todb(row.uri),
+                "uri": self._fromdb_uri_to_todb(row.last_version.uri),
                 "description": row.description,
                 "rating": row.rating,
                 "time": datetime.fromtimestamp(row.time),

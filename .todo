@@ -60,8 +60,11 @@
     <note priority="medium" time="1284932593">
         add support to turn on/off the comment caption display visibilty
     </note>
-    <note priority="low" time="1277067281">
+    <note priority="low" time="1277067281" done="1286747562">
         export the modified version to pygall instead of the original
+        <comment>
+            done
+        </comment>
     </note>
     <note priority="low" time="1284932790">
         add support for deleting images in a web page
