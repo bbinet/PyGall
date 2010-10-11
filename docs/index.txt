@@ -55,7 +55,7 @@ photo gallery::
     $ paster make-config PyGall pygall.ini
 
 The newly created ``pygall.ini`` file will be used by Paster to initialize
-the application, create the database, then serve your application.
+the application, create the database, and serve your application.
 
 So you need to create the database::
 
