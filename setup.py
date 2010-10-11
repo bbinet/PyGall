@@ -15,7 +15,7 @@ f.close()
 
 setup(
     name='PyGall',
-    version='0.4',
+    version='0.4.1',
     description='Image gallery built with the Pylons web framework',
     long_description=long_description,
     author='Bruno Binet',

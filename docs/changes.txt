@@ -1,6 +1,13 @@
 Changes
 =======
 
+0.4.1
+-----
+
+* Add long_description to setup.py
+
+* Add docs and license information
+
 0.4
 ---
 
