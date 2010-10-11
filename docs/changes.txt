@@ -1,0 +1,24 @@
+Changes
+=======
+
+0.4
+---
+
+* fspot_to_pygall.py: speed up query by deactivating lazy loading
+
+* fspot_to_pygall.py: calculate md5sum for photos imported from f-spot
+
+* fspot_to_pygall.py: export the modified version to pygall instead of the
+  original
+
+* Reorganize templates struture on filesystem
+
+* Move model declaration to its own file
+
+0.3
+---
+
+* First usable release with upload and import support.
+
+* Refactoring of mako templates using inheritance.
+
