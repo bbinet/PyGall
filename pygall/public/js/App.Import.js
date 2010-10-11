@@ -17,62 +17,66 @@ App.Import = {
             $($(this).parents("tr")[0]).trigger("mousedown");
         });
 
-        $("table#photos-tree tfoot input").click(function() {
+        $("#btn_import").click(function() {
             $('#flash').text(''); // reinit flash message
-            var action = this.name;
-            $('table#photos-tree tbody tr input[name="'+this.name+'"]:checked')
+            $('table#photos-tree tbody tr input:checked')
             .each(function() {
                 // do not send request for directories
                 if ($(this).parents("tr").find("td span").attr('class') == 'file') {
                     var path = $(this).parents("tr").find("td span").text();
-                    switch (action) {
-                    case "import":
-                        $.post(
-                            App.constants.urls.photos,
-                            { path: path },
-                            function(response){
-                                if (response.status == true) {
-                                    $('table#photos-tree tbody tr td span.file').filter(
-                                        function(){
-                                            return $(this).text()==path;
-                                        }
-                                    ).parents("tr").remove();
-                                }
-                                else {
-                                    var current_flash = $('#flash').html();
-                                    if (current_flash) {
-                                        current_flash += "<br />";
-                                        }
-                                    $('#flash').html(current_flash + response.msg);
-                                }
-                            },
-                            "json"
-                        );
-                        break;
-                    case "delete":
-                        $.post(
-                            App.constants.urls.import_delete,
-                            { path: path },
-                            function(response){
-                                if (response.status == true) {
-                                    $('table#photos-tree tbody tr td span.file').filter(
-                                        function(){
-                                            return $(this).text()==path;
-                                        }
-                                    ).parents("tr").remove();
-                                }
-                            },
-                            "json"
-                        );
-                        break;
-                    }
+                    $.post(
+                        App.constants.urls.photos,
+                        { path: path },
+                        function(response){
+                            if (response.status == true) {
+                                $('table#photos-tree tbody tr td span.file').filter(
+                                    function(){
+                                        return $(this).text()==path;
+                                    }
+                                ).parents("tr").remove();
+                            }
+                            else {
+                                var current_flash = $('#flash').html();
+                                if (current_flash) {
+                                    current_flash += "<br />";
+                                    }
+                                $('#flash').html(current_flash + response.msg);
+                            }
+                        },
+                        "json"
+                    );
+                }
+            });
+        });
+
+        $("#btn_delete").click(function() {
+            $('#flash').text(''); // reinit flash message
+            $('table#photos-tree tbody tr input:checked')
+            .each(function() {
+                // do not send request for directories
+                if ($(this).parents("tr").find("td span").attr('class') == 'file') {
+                    var path = $(this).parents("tr").find("td span").text();
+                    $.post(
+                        App.constants.urls.import_delete,
+                        { path: path },
+                        function(response){
+                            if (response.status == true) {
+                                $('table#photos-tree tbody tr td span.file').filter(
+                                    function(){
+                                        return $(this).text()==path;
+                                    }
+                                ).parents("tr").remove();
+                            }
+                        },
+                        "json"
+                    );
                 }
             });
         });
 
         // checking nodes will check corresponding leafs
         $('.folder').parent().siblings().children('input[type="checkbox"]').change(function() {
-            $('.child-of-node-'+this.value+' input[name="'+this.name+'"]')
+            $('.child-of-node-'+this.value+' input')
             .attr('checked', $(this).is(':checked'))
             .trigger('change');
         });
