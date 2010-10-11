@@ -26,17 +26,9 @@
     <thead>
         <tr>
             <th>Titre</th>
-            <th>Importer</th>
-            <th>Supprimer</th>
+            <th style="width: 80px; text-align: center;">Sélectionner</th>
         </tr>
     </thead>
-    <tfoot>
-        <tr>
-            <td></td>
-            <td><input type="button" name="import" value="Importer"></td>
-            <td><input type="button" name="delete" value="Supprimer"></td>
-        </tr>
-    </tfoot>
     <tbody>
     % for row in rows:
         % if row['parent'] is None:
@@ -45,12 +37,13 @@
         <tr id="node-${row['id']}" class="child-of-node-${row['parent']}">
         % endif
             <td><span class="${row['class']}">${row['path']}</span></td>
-            <td><input type="checkbox" name="import" value="${row['id']}"></td>
-            <td><input type="checkbox" name="delete" value="${row['id']}"></td>
+            <td style="width: 80px; text-align: center;"><input type="checkbox" name="select" value="${row['id']}"></td>
         </tr>
     % endfor
     </tbody>
 </table>
+<input type="button" name="import" value="Importer">
+<input type="button" name="delete" value="Supprimer">
 ############
 <%def name="title()">Import de photos</%def>\
 ############
