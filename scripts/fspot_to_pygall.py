@@ -301,7 +301,7 @@ class FSpotToPyGall(ExportGall):
         for row in q.all():
             list.append({
                 "id": row.id,
-                "uri": self._fromdb_uri_to_todb(row.last_version.uri),
+                "uri": self._fromdb_uri_to_todb(row.uri if row.last_version is None else row.last_version.uri),
                 "description": row.description,
                 "rating": row.rating,
                 "time": datetime.fromtimestamp(row.time),
