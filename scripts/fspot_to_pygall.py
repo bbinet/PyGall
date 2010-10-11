@@ -191,11 +191,11 @@ class FSpotToPyGall(ExportGall):
                    'uri': column_property(
                        (fromdb_photos_table.c.base_uri + fromdb_photos_table.c.filename).label('uri')
                    ),
-                   'tags' : relation(FromDbTag, secondary = fromdb_photo_tags_table),
+                   'tags' : relation(FromDbTag, secondary = fromdb_photo_tags_table, lazy=False),
                    'last_version' : relation(FromDbVersion, primaryjoin=
                        and_(fromdb_photos_table.c.id==fromdb_photo_versions_table.c.photo_id,
                            fromdb_photos_table.c.default_version_id==fromdb_photo_versions_table.c.version_id),
-                       uselist=False)
+                       uselist=False, lazy=False)
                })
 
         FSpotSession = sessionmaker(autoflush = True, autocommit = False)
