@@ -350,7 +350,7 @@ class FSpotToPyGall(ExportGall):
         # remove old photos
         count = self.todb_session.query(self.ToDbMain).filter(
             not_(self.ToDbMain.uri.in_([item['uri'] for item in list])
-            )).delete()
+            )).delete(synchronize_session=False)
         if count > 0:
             print "[db] Removed : %d photo(s)" % count
 
