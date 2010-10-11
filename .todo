@@ -60,8 +60,11 @@
     <note priority="veryhigh" time="1270075339">
         secure pygall with repoze.who/what (upload, import, deletion...)
     </note>
-    <note priority="veryhigh" time="1284934767">
+    <note priority="veryhigh" time="1284934767" done="1286837989">
         only one checkbox for each photo is needed (not two)
+        <comment>
+            done
+        </comment>
     </note>
     <note priority="high" time="1284932790">
         add support for deleting images in a web page
