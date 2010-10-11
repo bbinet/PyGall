@@ -22,7 +22,7 @@ setup(
     author_email='binet.bruno@gmail.com',
     url='http://gitorious.org/PyGall',
     install_requires=[
-        "Pylons>=0.9.7,<=0.9.99",
+        "Pylons>=0.9.7,<=0.10.99",
         "SQLAlchemy>=0.5,<=0.5.99",
         "gp.fileupload>=1.0,<=1.0.99",
     ],
