@@ -54,8 +54,11 @@
     <note priority="veryhigh" time="1270075339">
         secure pygall with repoze.who/what (upload, import, deletion...)
     </note>
-    <note priority="veryhigh" time="1284612283">
+    <note priority="veryhigh" time="1284612283" done="1286830329">
         move to Pylons 1.0
+        <comment>
+            done
+        </comment>
     </note>
     <note priority="veryhigh" time="1284934767">
         only one checkbox for each photo is needed (not two)
