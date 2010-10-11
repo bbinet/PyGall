@@ -2,7 +2,7 @@ import logging
 import os
 
 from pylons import config, request, response, session, tmpl_context as c
-from pylons.controllers.util import abort, redirect_to
+from pylons.controllers.util import abort
 from pylons.decorators import jsonify
 
 from pygall.lib.base import BaseController, render

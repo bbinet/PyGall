@@ -3,8 +3,8 @@ import os
 from math import ceil
 from webhelpers import paginate
 
-from pylons import config, request, response, session, tmpl_context as c
-from pylons.controllers.util import abort, redirect_to
+from pylons import url, config, request, response, session, tmpl_context as c
+from pylons.controllers.util import abort, redirect
 from pylons.decorators import jsonify
 
 from pygall.lib.base import BaseController, render
@@ -128,7 +128,7 @@ class PhotosController(BaseController):
         if page is None:
             # default to last page
             page = int(ceil(float(photo_q.count()) / 33))
-            redirect_to(controller='photos', action='galleria', page=page)
+            redirect(url(controller='photos', action='galleria', page=page))
 
         c.photos = paginate.Page(photo_q, page=page, items_per_page=33)
         c.edit = bool(request.params.get('edit', False))
