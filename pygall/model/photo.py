@@ -1,30 +1,32 @@
-import sqlalchemy as sa
-from sqlalchemy import orm
-from pygall.model import meta
+from sqlalchemy import Table, Sequence, ForeignKey, Column
+from sqlalchemy.types import Unicode, Integer, DateTime
+from sqlalchemy.orm import relation, mapper
 
-pygall_photos_table = sa.Table(
-    "photos", meta.metadata,
-    sa.Column('id', sa.types.Integer, sa.Sequence('photos_seq', optional=True),
+from pygall.model.meta import metadata
+
+pygall_photos_table = Table(
+    "photos", metadata,
+    Column('id', Integer, Sequence('photos_seq', optional=True),
               primary_key=True),
-    sa.Column("uri", sa.types.Unicode, nullable=False),
-    sa.Column("md5sum", sa.types.Unicode, unique=True),
-    sa.Column("description", sa.types.Unicode),
-    sa.Column("rating", sa.types.Integer),
-    sa.Column("time", sa.types.DateTime, nullable=False),
+    Column("uri", Unicode, nullable=False),
+    Column("md5sum", Unicode, unique=True),
+    Column("description", Unicode),
+    Column("rating", Integer),
+    Column("time", DateTime, nullable=False),
 )
 # id, uri, description, rating, time
 
-pygall_tags_table = sa.Table(
-    "tags", meta.metadata,
-    sa.Column("id", sa.types.Integer, primary_key=True),
-    sa.Column("name", sa.types.Unicode, nullable=False)                                                                                                                                                  
+pygall_tags_table = Table(
+    "tags", metadata,
+    Column("id", Integer, primary_key=True),
+    Column("name", Unicode, nullable=False)
 )
 # id, name
 
-pygall_photos_tags_table = sa.Table(
-    "photo_tags", meta.metadata,
-    sa.Column("photo_id", sa.types.Integer, sa.ForeignKey('photos.id')),
-    sa.Column("tag_id", sa.types.Integer, sa.ForeignKey('tags.id'))
+pygall_photos_tags_table = Table(
+    "photo_tags", metadata,
+    Column("photo_id", Integer, ForeignKey('photos.id')),
+    Column("tag_id", Integer, ForeignKey('tags.id'))
 )
 # photo_id, tag_id
 
@@ -41,15 +43,15 @@ class PyGallPhoto(object):
             self.rating = fspot_photo.rating
             self.time = datetime.fromtimestamp(fspot_photo.time) # Convert to datetime
 
-orm.mapper(PyGallTag,
+mapper(PyGallTag,
        pygall_tags_table,
        properties = {
-           'photos' : orm.relation(PyGallPhoto, secondary = pygall_photos_tags_table),
+           'photos' : relation(PyGallPhoto, secondary = pygall_photos_tags_table),
         })
 
-orm.mapper(PyGallPhoto,
+mapper(PyGallPhoto,
        pygall_photos_table,
        properties = {
-          'tags' : orm.relation(PyGallTag, secondary = pygall_photos_tags_table),
+          'tags' : relation(PyGallTag, secondary = pygall_photos_tags_table),
        })
 
