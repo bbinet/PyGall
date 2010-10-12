@@ -2,39 +2,47 @@ from sqlalchemy import Table, Sequence, ForeignKey, Column
 from sqlalchemy.types import Unicode, Integer, DateTime
 from sqlalchemy.orm import relation, mapper
 
-from pygall.model.meta import metadata
+from pygall.model.meta import Base
 
-pygall_photos_table = Table(
-    "photos", metadata,
-    Column('id', Integer, Sequence('photos_seq', optional=True),
-              primary_key=True),
-    Column("uri", Unicode, nullable=False),
-    Column("md5sum", Unicode, unique=True),
-    Column("description", Unicode),
-    Column("rating", Integer),
-    Column("time", DateTime, nullable=False),
-)
-# id, uri, description, rating, time
 
-pygall_tags_table = Table(
-    "tags", metadata,
-    Column("id", Integer, primary_key=True),
-    Column("name", Unicode, nullable=False)
-)
-# id, name
-
-pygall_photos_tags_table = Table(
-    "photo_tags", metadata,
+photos_tags_table = Table(
+    "photo_tags", Base.metadata,
     Column("photo_id", Integer, ForeignKey('photos.id')),
     Column("tag_id", Integer, ForeignKey('tags.id'))
 )
 # photo_id, tag_id
 
-class PyGallTag(object):
+
+class PyGallTag(Base):
+
+    __tablename__ = 'tags'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(Unicode, nullable=False)
+
+    # Relations
+    photos = relation('PyGallPhoto', secondary=photos_tags_table)
+
     def __init__(self, name):
         self.name = name
 
-class PyGallPhoto(object):
+
+class PyGallPhoto(Base):
+
+    __tablename__ = 'photos'
+
+    # Columns
+    id = Column(Integer, Sequence('photos_seq', optional=True),
+            primary_key=True)
+    uri = Column(Unicode, nullable=False)
+    md5sum = Column(Unicode, unique=True)
+    description = Column(Unicode)
+    rating = Column(Integer)
+    time = Column(DateTime, nullable=False)
+
+    # Relations
+    tags = relation('PyGallTag', secondary=photos_tags_table)
+
     def __init__(self, fspot_photo=None):
         if fspot_photo is not None:
             self.uri = fspot_uri_to_pygall(fspot_photo.uri)
@@ -42,16 +50,4 @@ class PyGallPhoto(object):
             self.description = fspot_photo.description
             self.rating = fspot_photo.rating
             self.time = datetime.fromtimestamp(fspot_photo.time) # Convert to datetime
-
-mapper(PyGallTag,
-       pygall_tags_table,
-       properties = {
-           'photos' : relation(PyGallPhoto, secondary = pygall_photos_tags_table),
-        })
-
-mapper(PyGallPhoto,
-       pygall_photos_table,
-       properties = {
-          'tags' : relation(PyGallTag, secondary = pygall_photos_tags_table),
-       })
 
