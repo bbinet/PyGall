@@ -5,6 +5,7 @@ import pylons.test
 
 from pygall.config.environment import load_environment
 from pygall.model.meta import Session, Base
+from pygall.model.auth import User, Group, Permission
 
 log = logging.getLogger(__name__)
 
@@ -16,3 +17,32 @@ def setup_app(command, conf, vars):
 
     # Create the tables if they don't already exist
     Base.metadata.create_all(bind=Session.bind)
+
+    log.info("Adding initial users, groups and permissions...")
+    g = Group()
+    g.name = u'admin'
+    g.description = u'Group of administrators'
+    Session.add(g)
+
+    p = Permission()
+    p.name = u'admin'
+    p.description = u'Admin permission'
+    p.groups.append(g)
+    Session.add(p)
+
+    u = User()
+    u.name = u'admin'
+    u.password = u'admin'
+    u.email_adress = u'admin@example.com'
+    u.description = u'Admin user'
+    u.groups.append(g)
+    Session.add(u)
+
+    u = User()
+    u.name = u'test'
+    u.password = u'test'
+    u.email_adress = u'test@example.com'
+    u.description = u'Test user'
+    Session.add(u)
+
+    Session.commit()

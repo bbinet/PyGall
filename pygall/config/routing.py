@@ -31,6 +31,17 @@ def make_map(config):
     map.connect('/tags', controller='tags', action='index')
     map.connect('/js/App.constants.js', controller='main', action='constants')
 
+    # XXX: These URLs are hardcoded into pygall.lib.auth and
+    # pygall.templates.pygall.account.login.mako.html.
+    # These files are initialized before routing helper methods
+    # (ie pylons.url) are available.
+    map.connect('/account/login', controller='account', action='login')
+    map.connect('/account/login_handler', controller='account', action='login_handler')
+    map.connect('/account/logout', controller='account', action='logout')
+    map.connect('/account/welcome', controller='account', action='welcome')
+    map.connect('/account/test_admin_access', controller='account', action='test_admin_access')
+    map.connect('/account/test_user_access', controller='account', action='test_user_access')
+
     #map.connect('/{controller}/{action}')
     #map.connect('/{controller}/{action}/{id}')
 

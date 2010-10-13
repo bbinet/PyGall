@@ -34,6 +34,7 @@ static_files = true
 
 import_dir = %(here)s/import
 photos_public_dir = data/photos
+sa_auth.cookie_secret = ${app_instance_secret}
 
 cache_dir = %(here)s/data
 beaker.session.key = pygall

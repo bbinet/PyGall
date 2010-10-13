@@ -9,6 +9,7 @@ from pylons.wsgiapp import PylonsApp
 from routes.middleware import RoutesMiddleware
 
 from pygall.config.environment import load_environment
+from pygall.lib.auth import AuthMiddleware
 
 def make_app(global_conf, full_stack=True, static_files=True, **app_conf):
     """Create a Pylons WSGI application and return it
@@ -44,6 +45,7 @@ def make_app(global_conf, full_stack=True, static_files=True, **app_conf):
     app = SessionMiddleware(app, config)
 
     # CUSTOM MIDDLEWARE HERE (filtered by error handling middlewares)
+    app = AuthMiddleware(app, config)
 
     if asbool(full_stack):
         # Handle Python exceptions

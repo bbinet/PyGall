@@ -25,6 +25,8 @@ setup(
         "Pylons>=1.0,<=1.0.90",
         "SQLAlchemy>=0.6,<=0.6.99",
         "gp.fileupload>=1.0,<=1.0.99",
+        "repoze.what-pylons>=1.0,<=1.0.99",
+        "repoze.what-quickstart>=1.0,<=1.0.99",
     ],
     setup_requires=["PasteScript>=1.6.3"],
     packages=find_packages(exclude=['ez_setup']),
