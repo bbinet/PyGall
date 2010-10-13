@@ -2,6 +2,8 @@
 import logging
 
 from pylons import request, response, session, tmpl_context as c
+from repoze.what.predicates import not_anonymous, has_permission
+from repoze.what.plugins.pylonshq import ActionProtector
 
 from pygall.lib.base import BaseController, render
 from pygall.model.meta import Session
@@ -11,6 +13,7 @@ log = logging.getLogger(__name__)
 
 class TagsController(BaseController):
 
+    @ActionProtector(not_anonymous())
     def index(self):
         tags = Session.query(PyGallTag)
         serialized_tags = []

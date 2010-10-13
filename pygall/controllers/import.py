@@ -4,6 +4,8 @@ import os
 from pylons import config, request, response, session, tmpl_context as c
 from pylons.controllers.util import abort
 from pylons.decorators import jsonify
+from repoze.what.predicates import not_anonymous, has_permission
+from repoze.what.plugins.pylonshq import ActionProtector
 
 from pygall.lib.base import BaseController, render
 from pygall.lib.helpers import unchroot_path, remove_empty_dirs
@@ -13,6 +15,7 @@ log = logging.getLogger(__name__)
 
 class ImportController(BaseController):
 
+    @ActionProtector(has_permission('admin'))
     def upload(self):
         """POST /photos/upload: Upload archive of photo"""
         # url(controller='import', action='upload')
@@ -55,6 +58,7 @@ class ImportController(BaseController):
         # delete the uploaded archive if no exception is raised
         os.remove(filepath)
 
+    @ActionProtector(has_permission('admin'))
     def index(self):
         """GET /photos/import: Choose photos to be imported"""
         # create a json tree of the photos to be imported
@@ -72,10 +76,12 @@ class ImportController(BaseController):
         c.tree.sort()
         return render('/pygall/import/index.mako.html')
 
+    @ActionProtector(has_permission('admin'))
     def new(self, format='html'):
         """GET /import/new: Form to create a new item"""
         return render('/pygall/import/new.mako.html')
 
+    @ActionProtector(has_permission('admin'))
     @jsonify
     def delete(self):
         """GET /import/delete: Delete an existing item"""

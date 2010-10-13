@@ -6,6 +6,8 @@ from webhelpers import paginate
 from pylons import url, config, request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect
 from pylons.decorators import jsonify
+from repoze.what.predicates import not_anonymous, has_permission
+from repoze.what.plugins.pylonshq import ActionProtector
 
 from pygall.lib.base import BaseController, render
 from pygall.lib.imageprocessing import ImageProcessing
@@ -27,6 +29,7 @@ class PhotosController(BaseController):
         """GET /photos: All items in the collection"""
         # url('photos')
 
+    @ActionProtector(has_permission('admin'))
     @jsonify
     def create(self):
         """POST /photos: Create a new item"""
@@ -108,6 +111,7 @@ class PhotosController(BaseController):
         """GET /photos/id/edit: Form to edit an existing item"""
         # url('edit_photo', id=ID)
 
+    @ActionProtector(has_permission('admin'))
     @jsonify
     def editcomment(self):
         uri = request.params.getone('uri')
@@ -123,6 +127,9 @@ class PhotosController(BaseController):
         }
 
 
+    # The photos gallery itself is publicly available.
+    # Add an ActionProtector to protect it
+    #@ActionProtector(has_permission('view_photos'))
     def galleria(self, page=None):
         photo_q = Session.query(PyGallPhoto).order_by(PyGallPhoto.time.asc())
         if page is None:
