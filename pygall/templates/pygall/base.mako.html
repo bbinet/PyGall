@@ -17,9 +17,16 @@ ${self.javascripts()}
     <div id="wrapper">
         <div id="header">
             <div style="float:right;">
+                % if h.not_anonymous().is_met(request.environ):
+                    % if h.has_permission('admin').is_met(request.environ):
                 <a href="${url(controller='photos', action='galleria')}">Gallerie</a> |
                 <a href="${url(controller='import', action='new')}">Upload</a> |
-                <a href="${url(controller='import', action='index')}">Import</a>
+                <a href="${url(controller='import', action='index')}">Import</a> |
+                    % endif
+                <a href="${url('/account/logout')}">Se déconnecter [${request.environ['repoze.who.identity']['repoze.who.userid']}]</a>
+                % else:
+                <a href="${url('/account/login')}">Se connecter</a>
+                % endif
             </div>
         </div>
         <div id="container">
