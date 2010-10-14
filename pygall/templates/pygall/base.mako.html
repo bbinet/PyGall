@@ -25,7 +25,7 @@ ${self.javascripts()}
                     % endif
                 <a href="${url('/account/logout')}">Se déconnecter [${request.environ['repoze.who.identity']['repoze.who.userid']}]</a>
                 % else:
-                <a href="${url('/account/login')}">Se connecter</a>
+                <a href="${url('/account/login', came_from=request.path_url, __logins=0)}">Se connecter</a>
                 % endif
             </div>
         </div>
