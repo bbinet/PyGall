@@ -51,17 +51,20 @@
             done
         </comment>
     </note>
+    <note priority="veryhigh" time="1284934767" done="1286837989">
+        only one checkbox for each photo is needed (not two)
+        <comment>
+            done
+        </comment>
+    </note>
     <note priority="low" time="1277067281" done="1286747562">
         export the modified version to pygall instead of the original
         <comment>
             done
         </comment>
     </note>
-    <note priority="veryhigh" time="1270075339">
+    <note priority="veryhigh" time="1270075339" done="1287017555">
         secure pygall with repoze.who/what (upload, import, deletion...)
-    </note>
-    <note priority="veryhigh" time="1284934767" done="1286837989">
-        only one checkbox for each photo is needed (not two)
         <comment>
             done
         </comment>
