@@ -11,7 +11,6 @@ log = logging.getLogger(__name__)
 
 class AccountController(BaseController):
 
-
     def login(self):
         """
         This is where the login form should be rendered.
@@ -19,23 +18,13 @@ class AccountController(BaseController):
         tried to log in with wrong credentials
         """
         identity = request.environ.get('repoze.who.identity')
-        came_from = str(request.GET.get('came_from', '')) or \
-                    url(controller='account', action='welcome')
+        came_from = str(request.GET.get('came_from', '')) or url('/')
         if identity:
             redirect(url(came_from))
         else:
             c.came_from = came_from
             c.login_counter = request.environ['repoze.who.logins'] + 1
             return render('/pygall/account/login.mako.html')
-
-    @ActionProtector(not_anonymous())
-    def welcome(self):
-        """
-        Greet the user if he logged in successfully or redirect back
-        to the login form otherwise(using ActionProtector decorator).
-        """
-        identity = request.environ.get('repoze.who.identity')
-        return 'Welcome back %s' % identity['repoze.who.userid']
 
     @ActionProtector(not_anonymous())
     def test_user_access(self):
