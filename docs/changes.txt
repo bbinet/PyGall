@@ -1,6 +1,19 @@
 Changes
 =======
 
+0.5
+---
+
+* Add support for authentication and authorization with repoze.who/what
+
+* Refactor model definition to use declarative syntax (default in Pylons 1.0)
+
+* Keep only one checkbox that will be used by both delete and import buttons
+
+* Upgrade to Pylons 1.0 and SQLAlchemy 0.6
+
+* Various small other fixes
+
 0.4.1
 -----
 
