@@ -23,7 +23,6 @@ def make_map(config):
     map.connect('/edit', controller='photos', action='editcomment')
     map.connect('/{page:\d+}', controller='photos', action='galleria')
     map.resource('photo', 'photos')
-    map.connect('/import/new', controller='import', action='new')
     map.connect('/import/upload', controller='import', action='upload')
     map.connect('/import/delete', controller='import', action='delete')
     map.connect('/import', controller='import', action='index')

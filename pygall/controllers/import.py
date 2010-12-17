@@ -77,11 +77,6 @@ class ImportController(BaseController):
         return render('/pygall/import/index.mako.html')
 
     @ActionProtector(has_permission('admin'))
-    def new(self, format='html'):
-        """GET /import/new: Form to create a new item"""
-        return render('/pygall/import/new.mako.html')
-
-    @ActionProtector(has_permission('admin'))
     @jsonify
     def delete(self):
         """GET /import/delete: Delete an existing item"""

@@ -81,9 +81,11 @@ class PhotosController(BaseController):
             "dest_uri": dest_uri
         }
 
+    @ActionProtector(has_permission('admin'))
     def new(self, format='html'):
         """GET /photos/new: Form to create a new item"""
         # url('new_photo')
+        return render('/pygall/import/new.mako.html')
 
     def update(self, id):
         """PUT /photos/id: Update an existing item"""
