@@ -15,11 +15,9 @@ SCALED = "scaled"
 class ImageProcessing:
 
     def __init__(self,
-                 src_dir,
                  dest_dir,
                  crop_dimension=700,
                  crop_quality=80):
-        self.src_dir = src_dir
         self.dest_dir = dest_dir
         self.abs_orig_dest_dir = os.path.join(self.dest_dir, ORIG)
         self.abs_scaled_dest_dir = os.path.join(self.dest_dir, SCALED)
@@ -27,12 +25,10 @@ class ImageProcessing:
         self.quality = crop_quality
 
 
-    def copy_orig(self, uri, dest_uri=None):
+    def copy_orig(self, src, dest_uri):
         """
         Copy the original image to orig dest directory
         """
-        src = os.path.join(self.src_dir, uri)
-        dest_uri = uri if dest_uri is None else dest_uri
         dest = os.path.join(self.abs_orig_dest_dir, dest_uri)
 
         self._check_paths(src, dest)
@@ -45,13 +41,11 @@ class ImageProcessing:
         log.info("Copied: %s" % dest)
 
 
-    def copy_scaled(self, uri, dest_uri=None):
+    def copy_scaled(self, src, dest_uri):
         """
         Rotate and scale image.
         Copy the processed image to scaled dest directory
         """
-        src = os.path.join(self.src_dir, uri)
-        dest_uri = uri if dest_uri is None else dest_uri
         dest = os.path.join(self.abs_scaled_dest_dir, dest_uri)
 
         self._check_paths(src, dest)
@@ -100,11 +94,10 @@ class ImageProcessing:
         im.save(dest, quality=self.quality)
 
 
-    def unlink(self, uri):
+    def unlink(self, src):
         """
         Remove the original image from disk
         """
-        src = os.path.join(self.src_dir, uri)
 
         self._check_paths(src)
 
@@ -113,7 +106,7 @@ class ImageProcessing:
         log.info("Removed: %s" % src)
 
 
-    def process_image(self, uri):
+    def process_image(self, src):
         """
         Standard processing for the given image:
         Built the destination relative path based on image timestamp
@@ -121,25 +114,22 @@ class ImageProcessing:
         Copy the scaled and rotated image to scaled dest directory
         Remove the original image from disk
         """
-        date = self._get_datetime(uri)
+        date = self._get_datetime(src)
         dest_uri = os.path.join(
             date.strftime("%Y"),
             date.strftime("%m"),
             date.strftime("%d"),
-            os.path.basename(os.path.join(self.src_dir, uri))
-        )
-        self.copy_orig(uri, dest_uri)
-        self.copy_scaled(uri, dest_uri)
-        self.unlink(uri)
+            os.path.basename(src))
+        self.copy_orig(src, dest_uri)
+        self.copy_scaled(src, dest_uri)
+        self.unlink(src)
         return (date, dest_uri)
 
 
-    def _get_datetime(self, uri):
+    def _get_datetime(self, src):
         """
         Built the destination relative path based on image timestamp
         """
-        src = os.path.join(self.src_dir, uri)
-
         self._check_paths(src)
 
         exif = pyexiv2.Image(src)
@@ -147,6 +137,7 @@ class ImageProcessing:
             exif.readMetadata()
             date = exif['Exif.Image.DateTime']
         except:
+            # TODO: return None and handle this at a higher level
             date = datetime.datetime.today()
 
         return date
