@@ -4,7 +4,7 @@ App.Upload = (function() {
     var setupForm = function() {
         $("#upload").html("");
         $("#upload").fileUpload({
-            action: App.constants.urls.import_upload,
+            action: App.constants.urls.photos,
             submit_label: "Envoyer",
             max_size_error_label: "Le fichier est trop gros",
             success: function() {

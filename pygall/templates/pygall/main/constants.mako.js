@@ -8,9 +8,7 @@ App.constants = {
 
         photos: "${url('photos')}",
 
-        import_delete: "${url(controller='import', action='delete')}",
-
-        import_upload: "${url(controller='import', action='upload')}"
+        import_delete: "${url(controller='import', action='delete')}"
     }
 };
 

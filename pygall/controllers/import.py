@@ -9,54 +9,10 @@ from repoze.what.plugins.pylonshq import ActionProtector
 
 from pygall.lib.base import BaseController, render
 from pygall.lib.helpers import unchroot_path, remove_empty_dirs
-from pygall.lib.archivefile import extractall
 
 log = logging.getLogger(__name__)
 
 class ImportController(BaseController):
-
-    @ActionProtector(has_permission('admin'))
-    def upload(self):
-        """POST /photos/upload: Upload archive of photo"""
-        # url(controller='import', action='upload')
-
-        # gp.fileupload stores uploaded filename in fieldstorage
-        fieldstorage = request.params.get('file', u'')
-        if fieldstorage == u'':
-            log.debug("Nothing uploaded")
-            abort(400)
-        filepath = os.path.join(
-            config['global_conf']['upload_dir'],
-            fieldstorage.file.read().strip(" \n\r"))
-        log.debug("File has been downloaded to %s" %(filepath))
-        fieldstorage.file.close()
-
-        try:
-            # extract archive to "import" directory
-            extractall(filepath, config['app_conf']['import_dir'])
-
-            # walk in import directory to delete all files that are not photos
-            for dirpath, dirs, files in os.walk(
-                config['app_conf']['import_dir'], topdown=False):
-                for filename in files:
-                    abspath = os.path.join(dirpath, filename)
-                    log.debug("walk on file: %s" %abspath)
-                    if os.path.splitext(abspath)[1].lower() not in ['.jpg', '.jpeg']:
-                        log.debug("Remove non jpeg file: %s" %abspath)
-                        os.remove(abspath)
-                for subdirname in dirs:
-                    abspath = os.path.join(dirpath, subdirname)
-                    log.debug("walk on dir: %s" %abspath)
-                    try:
-                        os.rmdir(abspath)
-                    except OSError:
-                        log.debug('directory is not empty')
-            log.debug("Extraction to %s has succeeded" %(config['app_conf']['import_dir']))
-        except Exception, e:
-            # TODO: log error in session (flash message)
-            raise e
-        # delete the uploaded archive if no exception is raised
-        os.remove(filepath)
 
     @ActionProtector(has_permission('admin'))
     def index(self):

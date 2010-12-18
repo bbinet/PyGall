@@ -11,11 +11,16 @@ from repoze.what.plugins.pylonshq import ActionProtector
 
 from pygall.lib.base import BaseController, render
 from pygall.lib.imageprocessing import ImageProcessing
+from pygall.lib.archivefile import extractall
 from pygall.lib.helpers import md5_for_file, unchroot_path, remove_empty_dirs
 from pygall.model.meta import Session
 from pygall.model import PyGallPhoto
 
 log = logging.getLogger(__name__)
+
+ip = ImageProcessing(os.path.join(
+        config['pylons.paths']['static_files'],
+        config['app_conf']['photos_public_dir']))
 
 class PhotosController(BaseController):
     """REST Controller styled on the Atom Publishing Protocol"""
@@ -28,23 +33,57 @@ class PhotosController(BaseController):
     def index(self, format='html'):
         """GET /photos: All items in the collection"""
         # url('photos')
+        log.debug('index')
+        return 'index'
 
     @ActionProtector(has_permission('admin'))
     @jsonify
     def create(self):
         """POST /photos: Create a new item"""
         # url('photos')
-        abspath, uri = unchroot_path(
-            request.params.get('path', None),
-            config['app_conf']['import_dir'])
+        log.debug('create')
 
-        ip = ImageProcessing(
-            config['app_conf']['import_dir'],
-            os.path.join(
-                config['pylons.paths']['static_files'],
-                config['app_conf']['photos_public_dir']))
+        # gp.fileupload stores uploaded filename in fieldstorage
+        fieldstorage = request.params.get('file', u'')
+        if fieldstorage == u'':
+            log.debug("Nothing uploaded")
+            abort(400)
+        filepath = os.path.join(
+            config['global_conf']['upload_dir'],
+            fieldstorage.file.read().strip(" \n\r"))
+        log.debug("File has been downloaded to %s" %(filepath))
+        fieldstorage.file.close()
 
-        error = False
+        try:
+            # TODO: extract to a tmp dir that we should delete immediately
+            # after import is done.
+
+            # extract archive to "import" directory
+            extractall(filepath, config['app_conf']['import_dir'])
+            # delete the uploaded archive once extracted
+            os.remove(filepath)
+
+            # walk in import directory to import all files that are jpeg
+            for dirpath, dirs, files in os.walk(
+                config['app_conf']['import_dir'], topdown=False):
+                for filename in files:
+                    abspath = os.path.join(dirpath, filename)
+                    log.debug("walk on file: %s" %abspath)
+                    if os.path.splitext(abspath)[1].lower() in ['.jpg', '.jpeg']:
+                        log.debug("Import jpeg file: %s" %abspath)
+                        self._import(abspath)
+                        # TODO: try/except block to skip current and continue
+            log.debug("Import finished")
+        except Exception, e:
+            # TODO: log error in session (flash message)
+            raise e
+
+        # TODO: rmtree on the new extracted directory
+
+        return { 'success': True }
+
+
+    def _import(self, abspath):
         msg = None
         dest_uri = None
         try:
@@ -59,7 +98,7 @@ class PhotosController(BaseController):
                 raise Exception("Same md5sum already exists in database")
 
             # process and import photos to public/data/photos dir
-            date, dest_uri = ip.process_image(uri)
+            date, dest_uri = ip.process_image(abspath)
 
             # import image in db
             photo = PyGallPhoto()
@@ -69,17 +108,13 @@ class PhotosController(BaseController):
             Session.add(photo)
             Session.commit()
 
-            remove_empty_dirs(config['app_conf']['import_dir'])
         except Exception, e:
-            error = True
             msg = "%s [%s]" %(str(e), request.params.get('path', ''))
+            # TODO: add msg to session
             log.error(msg)
+            return False
 
-        return {
-            "status": not error,
-            "msg": msg,
-            "dest_uri": dest_uri
-        }
+        return True
 
     @ActionProtector(has_permission('admin'))
     def new(self, format='html'):

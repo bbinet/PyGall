@@ -21,7 +21,6 @@ ${self.javascripts()}
                     % if h.has_permission('admin').is_met(request.environ):
                 <a href="${url(controller='photos', action='galleria')}">Gallerie</a> |
                 <a href="${url('new_photo')}">Upload</a> |
-                <a href="${url(controller='import', action='index')}">Import</a> |
                     % endif
                 <a href="${url('/account/logout')}">Se déconnecter [${request.environ['repoze.who.identity']['repoze.who.userid']}]</a>
                 % else:
