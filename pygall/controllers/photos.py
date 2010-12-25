@@ -1,13 +1,15 @@
 import logging
 import os
 from math import ceil
-from webhelpers import paginate
+from tempfile import mkdtemp
+from shutil import rmtree
 
 from pylons import url, config, request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect
 from pylons.decorators import jsonify
 from repoze.what.predicates import not_anonymous, has_permission
 from repoze.what.plugins.pylonshq import ActionProtector
+from webhelpers import paginate
 
 from pygall.lib.base import BaseController, render
 from pygall.lib.imageprocessing import ImageProcessing
@@ -54,31 +56,28 @@ class PhotosController(BaseController):
         log.debug("File has been downloaded to %s" %(filepath))
         fieldstorage.file.close()
 
-        try:
-            # TODO: extract to a tmp dir that we should delete immediately
-            # after import is done.
+        # extract to a tmpdir that we should delete immediately
+        # after import is done.
+        tmpdir = mkdtemp(dir=config['app_conf']['import_dir'])
 
-            # extract archive to "import" directory
-            extractall(filepath, config['app_conf']['import_dir'])
+        try:
+            extractall(filepath, tmpdir)
             # delete the uploaded archive once extracted
             os.remove(filepath)
 
             # walk in import directory to import all files that are jpeg
-            for dirpath, dirs, files in os.walk(
-                config['app_conf']['import_dir'], topdown=False):
+            for dirpath, dirs, files in os.walk(tmpdir, topdown=False):
                 for filename in files:
                     abspath = os.path.join(dirpath, filename)
                     log.debug("walk on file: %s" %abspath)
                     if os.path.splitext(abspath)[1].lower() in ['.jpg', '.jpeg']:
                         log.debug("Import jpeg file: %s" %abspath)
                         self._import(abspath)
-                        # TODO: try/except block to skip current and continue
-            log.debug("Import finished")
         except Exception, e:
             # TODO: log error in session (flash message)
             raise e
-
-        # TODO: rmtree on the new extracted directory
+        finally:
+            rmtree(tmpdir)
 
         return { 'success': True }
 
