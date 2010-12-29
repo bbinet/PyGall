@@ -7,4 +7,4 @@ vp
 data/
 storage/
 pygall/public/data/
-import/*
+dist/
