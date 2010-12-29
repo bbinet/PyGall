@@ -58,7 +58,7 @@ class PhotosController(BaseController):
 
         # extract to a tmpdir that we should delete immediately
         # after import is done.
-        tmpdir = mkdtemp(dir=config['app_conf']['import_dir'])
+        tmpdir = mkdtemp(dir=config['app_conf']['upload_dir'])
 
         try:
             extractall(filepath, tmpdir)
