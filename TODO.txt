@@ -1,0 +1,34 @@
+TODO
+====
+
+Should have
+-----------
+
+* add support for deleting images
+
+* upgrade galleria to 1.2 (git submodule)
+
+* move to pyramid framework
+
+* add link to download orig high quality image
+
+Nice to have
+------------
+
+* add support for downloading photos through a basket
+
+* add support for uploading photos that has already been cropped
+  (send test.jpg and test-cropped.jpg at once)
+
+* add support to turn on/off the comment caption display visibilty
+
+* add support for dates (sorting)
+
+* investigate on formalchemy to build the admin interface
+
+* add support for private areas (share photos with few people)
+
+* implement part of flickr api
+
+* i18n support through babel
+
