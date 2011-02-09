@@ -6,18 +6,18 @@ except ImportError:
     use_setuptools()
     from setuptools import setup, find_packages
 
-# get long_description from docs/index.txt
-f = open(os.path.join(
-    os.path.dirname(os.path.abspath(__file__)), 'docs', 'index.txt'))
-long_description = f.read().strip()
-long_description = long_description.split('split here', 1)[1]
-f.close()
+here = os.path.abspath(os.path.dirname(__file__))
+try:
+    README = open(os.path.join(here, 'README.rst')).read()
+    CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
+except IOError:
+    README = CHANGES = ''
 
 setup(
     name='PyGall',
     version='0.5',
     description='Image gallery built with the Pylons web framework',
-    long_description=long_description,
+    long_description=README + '\n\n' +  CHANGES,
     author='Bruno Binet',
     author_email='binet.bruno@gmail.com',
     url='http://gitorious.org/PyGall',
