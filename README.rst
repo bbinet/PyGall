@@ -1,18 +1,6 @@
 PyGall
 ======
 
-* `Code available on gitorious <http://gitorious.org/PyGall>`_
-
-.. contents::
-
-.. toctree::
-   :maxdepth: 1
-
-   changes
-   license
-
-.. comment: split here
-
 About PyGall
 ------------
 
