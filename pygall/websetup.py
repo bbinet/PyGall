@@ -37,6 +37,7 @@ def setup_app(command, conf, vars):
     u.description = u'Admin user'
     u.groups.append(g)
     Session.add(u)
+    log.info("User 'admin' with password 'admin' has been added")
 
     u = User()
     u.name = u'test'
@@ -44,5 +45,6 @@ def setup_app(command, conf, vars):
     u.email_adress = u'test@example.com'
     u.description = u'Test user'
     Session.add(u)
+    log.info("User 'test' with password 'test' has been added")
 
     Session.commit()
