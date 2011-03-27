@@ -27,7 +27,7 @@ setup(
         "gp.fileupload>=1.0,<=1.0.99",
         "repoze.what-pylons>=1.0,<=1.0.99",
         "repoze.what-quickstart>=1.0,<=1.0.99",
-        "PIL>=1.1.0,<=1.1.99",
+        "PIL>=1.1.4,<=1.1.99",
     ],
     setup_requires=["PasteScript>=1.6.3"],
     packages=find_packages(exclude=['ez_setup']),
