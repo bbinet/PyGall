@@ -94,7 +94,11 @@ class PhotosController(BaseController):
             raise Exception("Same md5sum already exists in database")
 
         # process and import photos to public/data/photos dir
-        date, dest_uri = ip.process_image(abspath)
+        try:
+            date, dest_uri = ip.process_image(abspath)
+        except Exception as e:
+            ip.remove_image(abspath)
+            raise e
 
         # import image in db
         photo = PyGallPhoto()
