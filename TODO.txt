@@ -12,6 +12,8 @@ Should have
 
 * add link to download orig high quality image
 
+* add/update/remove users
+
 Nice to have
 ------------
 
