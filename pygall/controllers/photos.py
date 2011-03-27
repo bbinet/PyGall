@@ -83,37 +83,27 @@ class PhotosController(BaseController):
 
 
     def _import(self, abspath):
-        msg = None
-        dest_uri = None
+        # check same image has not already been imported
+        f = open(abspath)
         try:
-            # check same image has not already been imported
-            f = open(abspath)
-            try:
-                hash = md5_for_file(f)
-            finally:
-                f.close()
-            photo = Session.query(PyGallPhoto).filter_by(md5sum=hash)
-            if photo.count() > 0:
-                raise Exception("Same md5sum already exists in database")
+            hash = md5_for_file(f)
+        finally:
+            f.close()
+        photo = Session.query(PyGallPhoto).filter_by(md5sum=hash)
+        if photo.count() > 0:
+            raise Exception("Same md5sum already exists in database")
 
-            # process and import photos to public/data/photos dir
-            date, dest_uri = ip.process_image(abspath)
+        # process and import photos to public/data/photos dir
+        date, dest_uri = ip.process_image(abspath)
 
-            # import image in db
-            photo = PyGallPhoto()
-            photo.uri = dest_uri
-            photo.md5sum = hash
-            photo.time = date
-            Session.add(photo)
-            Session.commit()
+        # import image in db
+        photo = PyGallPhoto()
+        photo.uri = dest_uri
+        photo.md5sum = hash
+        photo.time = date
+        Session.add(photo)
+        Session.commit()
 
-        except Exception, e:
-            msg = "%s [%s]" %(str(e), request.params.get('path', ''))
-            # TODO: add msg to session
-            log.error(msg)
-            return False
-
-        return True
 
     @ActionProtector(has_permission('admin'))
     def new(self, format='html'):
