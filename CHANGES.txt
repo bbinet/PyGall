@@ -1,6 +1,11 @@
 Changes
 =======
 
+0.6
+---
+
+* Refactoring and cleanups
+
 0.5
 ---
 
