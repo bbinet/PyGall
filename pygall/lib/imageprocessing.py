@@ -140,8 +140,8 @@ class ImageProcessing:
         Remove the original image from disk
         """
         date, dest_uri = self._date_uri(src)
-        self.copy_orig(src, dest_uri)
         self.copy_scaled(src, dest_uri)
+        self.copy_orig(src, dest_uri)
         self.unlink(src)
         return (date, dest_uri)
 
