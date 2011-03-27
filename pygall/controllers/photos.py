@@ -65,14 +65,12 @@ class PhotosController(BaseController):
             # delete the uploaded archive once extracted
             os.remove(filepath)
 
-            # walk in import directory to import all files that are jpeg
+            # walk in import directory to import all image files
             for dirpath, dirs, files in os.walk(tmpdir, topdown=False):
                 for filename in files:
                     abspath = os.path.join(dirpath, filename)
                     log.debug("walk on file: %s" %abspath)
-                    if os.path.splitext(abspath)[1].lower() in ['.jpg', '.jpeg']:
-                        log.debug("Import jpeg file: %s" %abspath)
-                        self._import(abspath)
+                    self._import(abspath)
         except Exception, e:
             # TODO: log error in session (flash message)
             raise e

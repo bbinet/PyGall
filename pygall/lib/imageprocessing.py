@@ -175,11 +175,6 @@ class ImageProcessing:
         if not os.path.exists(src):
             raise Exception("Source photo does not exists")
 
-        # abort if src photo is not jpeg
-        base, extension = os.path.splitext(src)
-        if extension.lower() != ".jpg" and extension.lower() != ".jpeg":
-            raise Exception("Source photo is not jpg")
-
         # abort if dest photo already exists
         if dest is not None and os.path.exists(dest):
             raise Exception("Destination photo already exists")
