@@ -1,10 +1,16 @@
 Changes
 =======
 
+0.7
+---
+
+* add support for other image formats than jpeg (these formats should be
+  supported by PIL though)
+
 0.6
 ---
 
-* Refactoring and cleanups
+* refactoring and cleanups
 
 0.5
 ---
