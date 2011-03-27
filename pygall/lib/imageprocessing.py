@@ -118,24 +118,17 @@ class ImageProcessing:
         Copy the scaled and rotated image to scaled dest directory
         Remove the original image from disk
         """
-        date = self._get_datetime(src)
-        dest_uri = os.path.join(
-            date.strftime("%Y"),
-            date.strftime("%m"),
-            date.strftime("%d"),
-            os.path.basename(src))
+        date, dest_uri = self._date_uri(src)
         self.copy_orig(src, dest_uri)
         self.copy_scaled(src, dest_uri)
         self.unlink(src)
         return (date, dest_uri)
 
 
-    def _get_datetime(self, src):
+    def _date_uri(self, src):
         """
         Built the destination relative path based on image timestamp
         """
-        self._check_paths(src)
-
         try:
             exif = pyexiv2.Image(src)
             exif.readMetadata()
@@ -144,7 +137,13 @@ class ImageProcessing:
             # TODO: return None and handle this at a higher level
             date = datetime.datetime.today()
 
-        return date
+        uri = os.path.join(
+            date.strftime("%Y"),
+            date.strftime("%m"),
+            date.strftime("%d"),
+            os.path.basename(src))
+
+        return (date, uri)
 
 
     def _check_paths(self, src, dest=None):
