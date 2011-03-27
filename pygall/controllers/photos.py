@@ -69,8 +69,13 @@ class PhotosController(BaseController):
             for dirpath, dirs, files in os.walk(tmpdir, topdown=False):
                 for filename in files:
                     abspath = os.path.join(dirpath, filename)
-                    log.debug("walk on file: %s" %abspath)
-                    self._import(abspath)
+                    log.debug("Importing image: %s" %abspath)
+                    try:
+                        self._import(abspath)
+                    except Exception as e:
+                        # TODO: log error in session (flash message)
+                        log.error("Error while importing image, skip" \
+                                "file: %s\nException: %s" %(abspath, str(e)))
         except Exception, e:
             # TODO: log error in session (flash message)
             raise e
