@@ -110,6 +110,27 @@ class ImageProcessing:
         log.info("Removed: %s" % src)
 
 
+    def remove_image(self, src):
+        """
+        Remove scaled and orig images associated with the given src image
+        """
+        _, uri = self._date_uri(src)
+
+        # remove scaled image
+        dest = os.path.join(self.abs_scaled_dest_dir, uri)
+        try:
+            os.unlink(dest)
+        except:
+            pass
+
+        # remove orig image
+        dest = os.path.join(self.abs_orig_dest_dir, uri)
+        try:
+            os.unlink(dest)
+        except:
+            pass
+
+
     def process_image(self, src):
         """
         Standard processing for the given image:
