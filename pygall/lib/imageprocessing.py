@@ -3,7 +3,11 @@ import os
 import datetime
 import shutil
 import Image
-import pyexiv2
+try:
+    import pyexiv2
+except:
+    # if pyexiv2 is not available, we won't extract dates or rotate images
+    pass
 import logging
 
 log = logging.getLogger(__name__)
@@ -51,8 +55,8 @@ class ImageProcessing:
         self._check_paths(src, dest)
 
         # copy scaled and rotated photo
-        exif = pyexiv2.Image(src)
         try:
+            exif = pyexiv2.Image(src)
             exif.readMetadata()
             orientation=exif['Exif.Image.Orientation']
         except:
@@ -132,8 +136,8 @@ class ImageProcessing:
         """
         self._check_paths(src)
 
-        exif = pyexiv2.Image(src)
         try:
+            exif = pyexiv2.Image(src)
             exif.readMetadata()
             date = exif['Exif.Image.DateTime']
         except:
