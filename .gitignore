@@ -8,3 +8,5 @@ data/
 upload/
 pygall/public/data/
 dist/
+pygall/i18n/en/LC_MESSAGES/pygall.mo
+pygall/i18n/fr/LC_MESSAGES/pygall.mo
