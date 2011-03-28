@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 <%inherit file="/pygall/base.mako.html"/>\
 <div id="side-a">
-    <h1>La galerie photo!</h1>
+    <h1>${_('PyGall photo gallery!')}</h1>
     <ul class="gallery_demo">
         <% first=True %>
         % for photo in c.photos:
@@ -17,13 +17,13 @@
     </ul>
     <div class="nav">
         <p>
-            <a href="#" onclick="$.galleria.prev(); return false;">&laquo; previous</a> | <a href="#" onclick="$.galleria.next(); return false;">next &raquo;</a>
+            <a href="#" onclick="$.galleria.prev(); return false;">&laquo; ${_('previous')}</a> | <a href="#" onclick="$.galleria.next(); return false;">${_('next')} &raquo;</a>
         </p>
         <p>
             % if c.edit:
-            ${c.photos.pager('Page: $link_previous ~4~ $link_next', edit=c.edit)}
+            ${c.photos.pager(_('Page') + ': $link_previous ~4~ $link_next', edit=c.edit)}
             % else:
-            ${c.photos.pager('Page: $link_previous ~4~ $link_next')}
+            ${c.photos.pager(_('Page') + ': $link_previous ~4~ $link_next')}
             % endif
         </p>
     </div>
@@ -33,12 +33,12 @@
 <div id="side-b">
     <!--image box-->
 </div>
-############
+\
 <%def name="stylesheets()">\
     <link href="${url('/css/galleria.css')}" rel="stylesheet" type="text/css" media="screen">
 ${parent.stylesheets()}
 </%def>\
-############
+\
 <%def name="javascripts()">\
 ${parent.javascripts()}
     <script type="text/javascript" src="${url('/js/jquery.galleria.js')}"></script>
@@ -50,4 +50,3 @@ ${parent.javascripts()}
         });
     </script>
 </%def>\
-############
