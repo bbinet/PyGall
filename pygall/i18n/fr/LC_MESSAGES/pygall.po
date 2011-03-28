@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PyGall 0.6\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2011-03-29 00:32+0200\n"
+"POT-Creation-Date: 2011-03-29 00:48+0200\n"
 "PO-Revision-Date: 2011-03-28 22:35+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: fr <LL@li.org>\n"
@@ -36,6 +36,30 @@ msgstr "Se connecter"
 #: pygall/templates/pygall/base.mako.html:42
 msgid "PyGall image gallery"
 msgstr "Gallerie photo PyGall"
+
+#: pygall/templates/pygall/constants.mako.js:10
+msgid "Send file"
+msgstr "Envoyer"
+
+#: pygall/templates/pygall/constants.mako.js:11
+msgid "File is too big"
+msgstr "Le fichier est trop gros"
+
+#: pygall/templates/pygall/constants.mako.js:12
+msgid "Upload was successful"
+msgstr "L'upload a réussi"
+
+#: pygall/templates/pygall/constants.mako.js:13
+msgid "Upload has failed"
+msgstr "L'upload a échoué"
+
+#: pygall/templates/pygall/constants.mako.js:14
+msgid "Enter a comment"
+msgstr "Saisir un commentaire"
+
+#: pygall/templates/pygall/constants.mako.js:15
+msgid "Edit"
+msgstr "Editer"
 
 #: pygall/templates/pygall/account/login.mako.html:3
 #: pygall/templates/pygall/account/login.mako.html:15
