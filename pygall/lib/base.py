@@ -4,6 +4,8 @@ Provides the BaseController class for subclassing.
 """
 from pylons.controllers import WSGIController
 from pylons.templating import render_mako as render
+from pylons import request
+from pylons.i18n.translation import set_lang
 
 from pygall.model import meta
 
@@ -18,3 +20,8 @@ class BaseController(WSGIController):
             return WSGIController.__call__(self, environ, start_response)
         finally:
             meta.Session.remove()
+
+    def __before__(self):
+        lang = request.params.get('lang', None)
+        if lang:
+            set_lang(lang)
