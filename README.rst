@@ -10,16 +10,23 @@ PyGall is a web photo gallery written in Python and built on the
 PyGall is written by Bruno Binet and is licensed under a
 BSD permissive license.
 
+Code is hosted on github: https://github.com/inneos/PyGall
+
+Be warned that this image gallery is beta software, and not full featured.
+It has been developped to fit my own needs, and may not suit your wishes.
+
+But that being said, feel free to create a new issue to report bugs or ask for
+new features at https://github.com/inneos/PyGall/issues.
+Even better, since the code is hosted on github, feel free to fork and send
+pull requests.
+
 Features
 --------
 
 PyGall currently provides the following features:
 
-* Upload photos either through the browser or manually on your webserver
-  (scp, ftp, ...).
-
-* Import photos in the gallery: they are automatically scaled and rotated
-  using exif informations.
+* Upload photos through the browser. The photos are then imported in the
+  gallery, they are automatically scaled and rotated if needed.
   If using `F-Spot <http://f-spot.org/>`_ as your personal photo management
   desktop application, PyGall can automatically import photos from F-Spot.
 
@@ -33,7 +40,14 @@ You should have a working setuptools (or distribute) environment. I advise
 you to use `virtualenv <http://pypi.python.org/pypi/virtualenv>`_ to create
 an isolated Python environment.
 
-You can install PyGall with the following command::
+Prior to actually install PyGall and its dependencies, you should install the
+libjpeg development files, which are needed to compile the Python Imaging
+Library dependency.
+On Debian Linux you can do::
+
+    $ sudo aptitude install libjpeg-dev
+
+Then you can install PyGall with the following command::
 
     $ easy_install PyGall
 
