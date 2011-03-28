@@ -26,11 +26,3 @@ class AccountController(BaseController):
             c.login_counter = request.environ['repoze.who.logins'] + 1
             return render('/pygall/account/login.mako.html')
 
-    @ActionProtector(not_anonymous())
-    def test_user_access(self):
-        return 'You are inside user section'
-
-    @ActionProtector(has_permission('admin'))
-    def test_admin_access(self):
-        return 'You are inside admin section'
-

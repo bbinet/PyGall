@@ -34,8 +34,6 @@ def make_map(config):
     map.connect('/account/login', controller='account', action='login')
     map.connect('/account/login_handler', controller='account', action='login_handler')
     map.connect('/account/logout', controller='account', action='logout')
-    map.connect('/account/test_admin_access', controller='account', action='test_admin_access')
-    map.connect('/account/test_user_access', controller='account', action='test_user_access')
 
     #map.connect('/{controller}/{action}')
     #map.connect('/{controller}/{action}/{id}')
