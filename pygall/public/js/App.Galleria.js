@@ -14,7 +14,7 @@ App.Galleria = {
                     caption.css('display','none').fadeIn(500);
                 }
 
-                if (App.constants.edit) {
+                if (App.edit) {
                     // TODO put css in a separate stylesheet
                     var edit_caption = $(document.createElement('a')).css({
                         background: '#000',
