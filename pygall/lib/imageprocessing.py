@@ -3,11 +3,7 @@ import os
 import datetime
 import shutil
 import Image
-try:
-    import pyexiv2
-except:
-    # if pyexiv2 is not available, we won't extract dates or rotate images
-    pass
+import ExifTags
 import logging
 
 log = logging.getLogger(__name__)
@@ -35,7 +31,8 @@ class ImageProcessing:
         """
         dest = os.path.join(self.abs_orig_dest_dir, dest_uri)
 
-        self._check_paths(src, dest)
+        if not self._check_paths(src, dest):
+            return
 
         # copy original photo
         dirpath = os.path.dirname(dest)
@@ -52,15 +49,14 @@ class ImageProcessing:
         """
         dest = os.path.join(self.abs_scaled_dest_dir, dest_uri)
 
-        self._check_paths(src, dest)
+        if not self._check_paths(src, dest):
+            return
 
         # copy scaled and rotated photo
         try:
-            exif = pyexiv2.Image(src)
-            exif.readMetadata()
-            orientation=exif['Exif.Image.Orientation']
+            orientation = self._get_exif(src)['Orientation']
         except:
-            orientation=0
+            orientation = 0
 
         dirpath = os.path.dirname(dest)
         if not os.path.exists(dirpath):
@@ -103,7 +99,8 @@ class ImageProcessing:
         Remove the original image from disk
         """
 
-        self._check_paths(src)
+        if not self._check_paths(src):
+            return
 
         # unlink original photo
         os.unlink(src)
@@ -151,9 +148,9 @@ class ImageProcessing:
         Built the destination relative path based on image timestamp
         """
         try:
-            exif = pyexiv2.Image(src)
-            exif.readMetadata()
-            date = exif['Exif.Image.DateTime']
+            exif = self._get_exif(src)
+            date = datetime.datetime.strptime(
+                    exif['DateTimeOriginal'], '%Y:%m:%d %H:%M:%S')
         except:
             # TODO: return None and handle this at a higher level
             date = datetime.datetime.today()
@@ -167,15 +164,29 @@ class ImageProcessing:
         return (date, uri)
 
 
+    def _get_exif(self, src):
+        ret = {}
+        im = Image.open(src)
+        info = im._getexif()
+        if info == None:
+            raise Exception("can't get exif")
+        for tag, value in info.items():
+            decoded = ExifTags.TAGS.get(tag, tag)
+            ret[decoded] = value
+        return ret
+
+
     def _check_paths(self, src, dest=None):
         """
         Checks validity of src and/or dest paths
         """
-        # abort if src photo does not exist
+        # fail if src photo does not exist
         if not os.path.exists(src):
-            raise Exception("Source photo does not exists")
-
-        # abort if dest photo already exists
+            log.info("Source photo does not exists: %s" % src)
+            return False
+        # fail if dest photo already exists
         if dest is not None and os.path.exists(dest):
-            raise Exception("Destination photo already exists")
+            log.info("Destination photo already exists: %s" % dest)
+            return False
+        return True
 
