@@ -45,7 +45,7 @@ ${parent.javascripts()}
     <script type="text/javascript" src="${url('/js/App.Galleria.js')}"></script>
     <script type="text/javascript">
         $(document).ready(function() {
-            App.constants.edit = ${"true" if c.edit else "false"};
+            App.edit = ${"true" if c.edit else "false"};
             App.Galleria.init();
         });
     </script>
