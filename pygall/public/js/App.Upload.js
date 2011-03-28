@@ -5,14 +5,14 @@ App.Upload = (function() {
         $("#upload").html("");
         $("#upload").fileUpload({
             action: App.urls.photos,
-            submit_label: "Envoyer",
-            max_size_error_label: "Le fichier est trop gros",
+            submit_label: App._["Send file"],
+            max_size_error_label: App._["File is too big"],
             success: function() {
-                $('#flash').text("L'envoi a réussi");
+                $('#flash').text(App._["Upload was successful"]);
                 setupForm();
             },
             error: function() {
-                $('#flash').text("L'envoi a échoué");
+                $('#flash').text(App._["Upload has failed"]);
                 setupForm();
             },
             submit_empty_forms: false

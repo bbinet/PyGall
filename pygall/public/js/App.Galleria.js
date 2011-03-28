@@ -31,9 +31,10 @@ App.Galleria = {
                         '-khtml-opacity': 0.6,
                         opacity: 0.6
                     });
-                    edit_caption.text('Edit');
+                    edit_caption.text(App._["Edit"]);
                     edit_caption.click(function () {
-                        var comment = prompt("Saisir un commentaire : ", caption.text() || "");
+                        var comment = prompt(App._["Enter a comment"] +
+                            ": ", caption.text() || "");
                         if(comment == null) {
                             return;
                         }
