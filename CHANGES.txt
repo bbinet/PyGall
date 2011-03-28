@@ -7,6 +7,10 @@ Changes
 * add support for other image formats than jpeg (these formats should be
   supported by PIL though)
 
+* add missing PIL dependency and remove pyexiv2 system dependency so that
+  pygall now works in an isolated virtual environment built with
+  "virtualenv --no-site-packages"
+
 0.6
 ---
 
