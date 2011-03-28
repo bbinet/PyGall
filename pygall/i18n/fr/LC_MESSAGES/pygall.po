@@ -79,12 +79,3 @@ msgstr ""
 msgid "Photos upload"
 msgstr ""
 
-#~ msgid "La galerie photo!"
-#~ msgstr ""
-
-#~ msgid "Uploader des photos dans la gallerie PyGall"
-#~ msgstr ""
-
-#~ msgid "Upload de photos"
-#~ msgstr ""
-
