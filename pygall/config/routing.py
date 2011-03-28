@@ -25,7 +25,6 @@ def make_map(config):
     map.resource('photo', 'photos')
     map.connect('/dates', controller='dates', action='index')
     map.connect('/tags', controller='tags', action='index')
-    map.connect('/js/App.constants.js', controller='main', action='constants')
 
     # XXX: These URLs are hardcoded into pygall.lib.auth and
     # pygall.templates.pygall.account.login.mako.html.
