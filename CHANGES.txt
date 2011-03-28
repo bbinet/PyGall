@@ -11,6 +11,8 @@ Changes
   pygall now works in an isolated virtual environment built with
   "virtualenv --no-site-packages"
 
+* improve installation instructions
+
 0.6
 ---
 
