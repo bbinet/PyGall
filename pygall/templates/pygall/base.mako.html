@@ -47,5 +47,7 @@ ${self.javascripts()}
 \
 <%def name="javascripts()">\
     <script type="text/javascript" src="${url('/js/jquery.min.js')}"></script>
-    <script type="text/javascript" src="${url(controller='main', action='constants')}"></script>
+    <script type="text/javascript">
+        <%include file="main/constants.mako.js"/>
+    </script>
 </%def>\
