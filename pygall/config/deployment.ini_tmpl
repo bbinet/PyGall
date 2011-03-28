@@ -29,6 +29,7 @@ upload_to = %(upload_dir)s
 
 [app:pygall]
 use = egg:PyGall
+lang = en
 full_stack = true
 static_files = true
 
