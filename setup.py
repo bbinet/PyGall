@@ -15,7 +15,7 @@ except IOError:
 
 setup(
     name='PyGall',
-    version='0.6',
+    version='0.7',
     description='Image gallery built with the Pylons web framework',
     long_description=README + '\n\n' +  CHANGES,
     author='Bruno Binet',
