@@ -4,13 +4,13 @@ PyGall
 About PyGall
 ------------
 
-PyGall is a web photo gallery written in Python and built on the
+PyGall is a simple web photo gallery written in Python and built on the
 `Pylons <http://pylonshq.com>`_ web framework.
 
 PyGall is written by Bruno Binet and is licensed under a
 BSD permissive license.
 
-Code is hosted on github: https://github.com/inneos/PyGall
+Code is hosted on github: https://github.com/inneos/PyGall.
 
 Be warned that this image gallery is beta software, and not full featured.
 It has been developped to fit my own needs, and may not suit your wishes.
@@ -23,12 +23,13 @@ pull requests.
 Features
 --------
 
-PyGall currently provides the following features:
+PyGall currently provides the following basic features:
 
-* Upload photos through the browser. The photos are then imported in the
-  gallery, they are automatically scaled and rotated if needed.
+* Upload photos through the browser. The photos are automatically scaled and
+  rotated if needed.
   If using `F-Spot <http://f-spot.org/>`_ as your personal photo management
-  desktop application, PyGall can automatically import photos from F-Spot.
+  desktop application, PyGall provides a script to automatically import photos
+  from F-Spot.
 
 * Browse and view photos through a nice interface borrowed from
   `Galleria <http://galleria.aino.se/>`_.
@@ -41,17 +42,17 @@ you to use `virtualenv <http://pypi.python.org/pypi/virtualenv>`_ to create
 an isolated Python environment.
 
 Prior to actually install PyGall and its dependencies, you should install the
-libjpeg development files, which are needed to compile the Python Imaging
-Library dependency.
+libjpeg and python development files, which are needed to compile the Python
+Imaging Library dependency.
 On Debian Linux you can do::
 
-    $ sudo aptitude install libjpeg-dev
+    $ sudo aptitude install build-essential libjpeg-dev python-dev
 
 Then you can install PyGall with the following command::
 
     $ easy_install PyGall
 
-PyGall is now installed. Let's create a configuration file for you PyGall
+PyGall is now installed. Let's generate a configuration file for your PyGall
 photo gallery::
 
     $ paster make-config PyGall pygall.ini
