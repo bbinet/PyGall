@@ -20,7 +20,7 @@ setup(
     long_description=README + '\n\n' +  CHANGES,
     author='Bruno Binet',
     author_email='binet.bruno@gmail.com',
-    url='http://gitorious.org/PyGall',
+    url='https://github.com/inneos/PyGall',
     install_requires=[
         "Pylons>=1.0,<=1.0.90",
         "SQLAlchemy>=0.6,<=0.6.99",
