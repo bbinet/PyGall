@@ -1,3 +1,4 @@
 include pygall/config/deployment.ini_tmpl
 recursive-include pygall/public *
 recursive-include pygall/templates *
+recursive-include pygall/i18n *.mo
