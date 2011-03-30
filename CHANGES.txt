@@ -13,6 +13,10 @@ Changes
 
 * improve installation instructions
 
+* add support for i18n (with translations for "en" and "fr" languages)
+
+* prompt for admin password when setting up PyGall
+
 0.6
 ---
 
