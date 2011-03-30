@@ -1,0 +1,18 @@
+Releasing PyGall
+================
+
+* Compile localization files::
+
+  $ python setup.py compile_catalog
+
+* Change setup.py version to the new version number.
+
+* Make sure PyPI long description renders (requires ``collective.dist``
+  installed into your Python)::
+
+  $ python setup.py check --restructuredtext
+
+* Release to PyPI::
+
+  $ python setup.py sdist upload
+
