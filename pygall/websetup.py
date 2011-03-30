@@ -40,12 +40,4 @@ def setup_app(command, conf, vars):
     Session.add(u)
     log.info("User 'admin' with password '%s' has been added" % u.password)
 
-    u = User()
-    u.name = u'test'
-    u.password = u'test'
-    u.email_adress = u'test@example.com'
-    u.description = u'Test user'
-    Session.add(u)
-    log.info("User 'test' with password 'test' has been added")
-
     Session.commit()
