@@ -32,12 +32,13 @@ def setup_app(command, conf, vars):
 
     u = User()
     u.name = u'admin'
-    u.password = u'admin'
+    u.password = raw_input("Enter password for user 'admin' [admin]: ") \
+            or "admin"
     u.email_adress = u'admin@example.com'
     u.description = u'Admin user'
     u.groups.append(g)
     Session.add(u)
-    log.info("User 'admin' with password 'admin' has been added")
+    log.info("User 'admin' with password '%s' has been added" % u.password)
 
     u = User()
     u.name = u'test'
