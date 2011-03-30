@@ -16,8 +16,6 @@ Should have
 
 * add/update/remove users
 
-* i18n support through babel
-
 * add support for importing image by scp or ftp
 
 * add support for private areas (share photos with few people)
