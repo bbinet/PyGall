@@ -1,6 +1,27 @@
 Changes
 =======
 
+0.7
+---
+
+* add support for other image formats than jpeg (these formats should be
+  supported by PIL though)
+
+* add missing PIL dependency and remove pyexiv2 system dependency so that
+  pygall now works in an isolated virtual environment built with
+  "virtualenv --no-site-packages"
+
+* improve installation instructions
+
+* add support for i18n (with translations for "en" and "fr" languages)
+
+* prompt for admin password when setting up PyGall
+
+0.6
+---
+
+* refactoring and cleanups
+
 0.5
 ---
 
