@@ -1,5 +1,4 @@
 import os
-import sys
 
 from setuptools import setup, find_packages
 
@@ -9,15 +8,11 @@ CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
 
 requires = [
     'pyramid',
-    'SQLAlchemy',
-    'transaction',
-    'repoze.tm2>=1.0b1', # default_commit_veto
-    'zope.sqlalchemy',
+    'SQLAlchemy>=0.6,<=0.6.99',
+    'SQLAHelper',
+    'pyramid_tm',
     'WebError',
     ]
-
-if sys.version_info[:3] < (2,5,0):
-    requires.append('pysqlite')
 
 setup(name='PyGall',
       version='0.0',
@@ -32,12 +27,13 @@ setup(name='PyGall',
       author='',
       author_email='',
       url='',
-      keywords='web wsgi bfg pylons pyramid',
+      keywords='web wsgi pylons pyramid',
       packages=find_packages(),
       include_package_data=True,
       zip_safe=False,
-      test_suite='pygall',
-      install_requires = requires,
+      install_requires=requires,
+      tests_require=requires,
+      test_suite="pygall",
       entry_points = """\
       [paste.app_factory]
       main = pygall:main
