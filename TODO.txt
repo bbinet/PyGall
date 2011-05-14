@@ -6,11 +6,23 @@ Should have
 
 * add support for deleting images
 
+* add support for updating images (date, tags)
+
 * upgrade galleria to 1.2 (git submodule)
 
 * move to pyramid framework
 
 * add link to download orig high quality image
+
+* add/update/remove users
+
+* i18n support through babel
+
+* add support for importing image by scp or ftp
+
+* add support for private areas (share photos with few people)
+
+* log errors to the session (and display them on client side)
 
 Nice to have
 ------------
@@ -26,9 +38,5 @@ Nice to have
 
 * investigate on formalchemy to build the admin interface
 
-* add support for private areas (share photos with few people)
-
 * implement part of flickr api
-
-* i18n support through babel
 
