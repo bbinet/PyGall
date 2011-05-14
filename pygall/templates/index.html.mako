@@ -32,5 +32,6 @@
 
     <body>
         <h1>Pygall home page</h1>
+        <p>model.name = ${model.name}</p>
     </body>
 </html>
