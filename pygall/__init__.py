@@ -24,8 +24,7 @@ def main(global_config, **settings):
     config.include(pyramid_tm.includeme)
 
     # bind the mako renderer to other file extensions
-    config.add_renderer('.mako.html', mako_renderer_factory)
-    config.add_renderer('.mako.js', mako_renderer_factory)
+    config.add_renderer('.mako', mako_renderer_factory)
 
     # add routes to the entry view class
     config.add_route('home', '/')

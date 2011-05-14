@@ -9,7 +9,7 @@ class Entry(object):
         self.debug = "debug" in request.params
         self.lang = get_locale_name(request)
 
-    @view_config(route_name='home', renderer='index.mako.html')
+    @view_config(route_name='home', renderer='index.html.mako')
     def home(self):
         dbsession = DBSession()
         model = dbsession.query(MyModel).filter(MyModel.name==u'root').first()

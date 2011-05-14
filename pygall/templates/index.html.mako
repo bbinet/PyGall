@@ -26,7 +26,7 @@
 %     endif
 % endif
         <script type="text/javascript">
-            <%include file="globals.mako.js" />
+            <%include file="globals.js.mako" />
         </script>
     </head>
 
