@@ -1,6 +1,13 @@
 TODO
 ====
 
+In progress
+-----------
+
+* move to pyramid framework, remaining points:
+    * add support for anthentication
+    * script equivalent to paster setup-app
+
 Should have
 -----------
 
@@ -9,8 +16,6 @@ Should have
 * add support for updating images (date, tags)
 
 * upgrade galleria to 1.2 (git submodule)
-
-* move to pyramid framework
 
 * add link to download orig high quality image
 
