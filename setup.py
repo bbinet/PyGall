@@ -12,8 +12,10 @@ requires = [
     'SQLAHelper',
     'pyramid_tm',
     'WebError',
-    "gp.fileupload>=1.0,<=1.0.99",
-    "PIL>=1.1.4,<=1.1.99",
+    'WebHelpers>=1.3,<=1.99',
+    'gp.fileupload>=1.0,<=1.0.99',
+    'PIL>=1.1.4,<=1.1.99',
+    'Babel',
     ]
 
 setup(name='PyGall',
@@ -35,7 +37,6 @@ setup(name='PyGall',
         'Topic :: Internet :: WWW/HTTP',
         'Topic :: Internet :: WWW/HTTP :: WSGI',
         'Topic :: Internet :: WWW/HTTP :: WSGI :: Application',
-        'Topic :: Multimedia :: Graphics :: Viewers',
         ],
       keywords='web wsgi pylons pyramid image photo web gallery',
       license='BSD',
@@ -44,10 +45,16 @@ setup(name='PyGall',
       zip_safe=False,
       install_requires=requires,
       tests_require=requires,
+      message_extractors = {'pygall': [
+            ('**.py', 'python', None),
+            ('templates/**.mako', 'mako', None),
+            ('static/**', 'ignore', None)]},
       test_suite="pygall",
       entry_points = """\
       [paste.app_factory]
       main = pygall:main
+      [console_scripts]
+      setup-PyGall = pygall.scripts.setup:main
       """,
       paster_plugins=['PasteScript', 'pyramid'],
       )
