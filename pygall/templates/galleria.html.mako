@@ -11,7 +11,7 @@
         % else:
         <li title="${photo.time.strftime('%d/%m/%Y')}">
         % endif
-            <img src="${request.static_url('pygall:static/data/photos/scaled/'+str(photo.uri))}" alt="${photo.uri}" title="${photo.description}">
+            <img src="${request.static_url('pygall:static/data/photos/scaled/'+str(photo.uri))}" alt="${photo.uri}" title="${photo.description or ''}">
         </li>
         % endfor
     </ul>
