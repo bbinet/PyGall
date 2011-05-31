@@ -16,15 +16,21 @@ ${self.javascripts()}
     <div id="wrapper">
         <div id="header">
             <div style="float:right;">
-##                % if h.not_anonymous().is_met(request.environ):
-##                    % if h.has_permission('admin').is_met(request.environ):
-                    <a href="${request.route_url('photos_index')}">${_('Gallery')}</a> |
-                    <a href="${request.route_url('photos_new')}">${_('Upload')}</a> |
-##                    % endif
-##                    <a href="${url('/account/logout')}">${_('Logout')} [${request.environ['repoze.who.identity']['repoze.who.userid']}]</a>
-##                % else:
-##                <a href="${url('/account/login', came_from=request.path_url, __logins=0)}">${_('Login')}</a>
-##                % endif
+                <%!
+                    from pyramid.security import has_permission
+                    from pyramid.url import current_route_url
+                %>
+                % if has_permission('view', request.context, request):
+                <a href="${request.route_url('photos_index')}">${_('Gallery')}</a> |
+                % endif
+                % if has_permission('edit', request.context, request):
+                <a href="${request.route_url('photos_new')}">${_('Upload')}</a> |
+                % endif
+                % if logged_in:
+                <a href="${request.route_url('logout')}">${_('Logout')} [${logged_in}]</a>
+                % else:
+                <a href="${request.route_url('login', came_from=current_route_url(request))}">${_('Login')}</a>
+                % endif
             </div>
         </div>
         <div id="container">
