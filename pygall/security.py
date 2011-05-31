@@ -3,6 +3,6 @@ USERS = {
     'user': []
 }
 
-def findgroup(userid, request):
+def groupfinder(userid, request):
     if userid in USERS:
         return USERS[userid]

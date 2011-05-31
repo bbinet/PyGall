@@ -7,7 +7,7 @@ import sqlahelper
 import pyramid_tm
 
 from pygall.resources import RootFactory
-from pygall.security import findgroup
+from pygall.security import groupfinder
 
 def locale_negotiator(request):
     """ Our locale negotiator. Returns a locale name or None.
@@ -22,7 +22,7 @@ def main(global_config, **settings):
     settings['static_path'] = 'pygall:static'
 
     authentication_policy = AuthTktAuthenticationPolicy(
-            'my_secret', callback=findgroup)
+            'my_secret', callback=groupfinder)
     authorization_policy = ACLAuthorizationPolicy()
     config = Configurator(root_factory=RootFactory, settings=settings,
                           locale_negotiator=locale_negotiator,
