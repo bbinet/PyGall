@@ -4,7 +4,6 @@ from pyramid.security import Everyone, Authenticated
 class RootFactory(object):
     __acl__ = [ (Allow, Everyone, 'publicview'),
                 (Allow, Authenticated, 'view'),
-                (Allow, 'group:admin', 'edit'),
-                (Allow, 'group:admin', 'upload') ]
+                (Allow, 'group:admin', 'edit')]
     def __init__(self, request):
         pass
