@@ -8,7 +8,7 @@ from pyramid.view import view_config
 from pyramid.i18n import get_locale_name
 from pyramid.asset import abspath_from_asset_spec
 from pyramid.httpexceptions import HTTPBadRequest, HTTPFound
-from pyramid.exceptions import NotFound
+from pyramid.exceptions import NotFound, Forbidden
 from pyramid.security import remember, forget, authenticated_userid
 from pyramid.url import route_url
 from webhelpers import paginate
@@ -21,6 +21,10 @@ from pygall.security import USERS
 
 log = logging.getLogger(__name__)
 
+
+@view_config(context=Forbidden)
+def forbidden_view(request):
+    return HTTPFound(location = route_url('login', request))
 
 @view_config(route_name='login', renderer='login.html.mako')
 def login(request):
