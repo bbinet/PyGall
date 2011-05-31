@@ -9,14 +9,55 @@ from pyramid.i18n import get_locale_name
 from pyramid.asset import abspath_from_asset_spec
 from pyramid.httpexceptions import HTTPBadRequest, HTTPFound
 from pyramid.exceptions import NotFound
+from pyramid.security import remember, forget, authenticated_userid
+from pyramid.url import route_url
 from webhelpers import paginate
 
 from pygall.models import DBSession, PyGallTag, PyGallPhoto
 from pygall.lib.imageprocessing import ImageProcessing
 from pygall.lib.archivefile import extractall
 from pygall.lib.helpers import md5_for_file, unchroot_path, remove_empty_dirs
+from pygall.security import USERS
 
 log = logging.getLogger(__name__)
+
+
+@view_config(route_name='login', renderer='login.html.mako')
+def login(request):
+    referrer = request.url
+    login_url = route_url('login', request)
+    if referrer == login_url:
+        # never use the login form itself as came_from
+        referrer = route_url('photos_index', request)
+    came_from = request.params.get('came_from', referrer)
+    message = ''
+    login = ''
+    password = ''
+    if 'form.submitted' in request.params:
+        login = request.params['login']
+        password = request.params['password']
+        #if USERS.get(login) == password:
+        if login in USERS:
+            headers = remember(request, login)
+            return HTTPFound(location = came_from,
+                             headers = headers)
+        message = 'Failed login'
+
+    return dict(
+        message = message,
+        url = login_url,
+        #url = request.application_url + '/login',
+        came_from = came_from,
+        login = login,
+        #password = password,
+        )
+
+@view_config(route_name='logout')
+def logout(request):
+    headers = forget(request)
+    return HTTPFound(location = route_url('login', request),
+                     headers = headers)
+
 
 # class to emulate tmpl_context from pylons 1.0
 class ContextObj(object):
@@ -49,7 +90,7 @@ class Photos(object):
             abspath_from_asset_spec(request.registry.settings['static_path']),
             request.registry.settings['photos_public_dir']))
 
-    @view_config(route_name='photos_create', renderer='json')
+    @view_config(route_name='photos_create', renderer='json', permission='edit')
     def create(self):
         """POST /photos: Create a new item"""
         log.error("create")
@@ -121,10 +162,12 @@ class Photos(object):
         DBSession.add(photo)
         DBSession.flush()
 
-    @view_config(route_name='photos_new', renderer='new.html.mako')
+    @view_config(route_name='photos_new', renderer='new.html.mako', permission='edit')
     def new(self, format='html'):
         """GET /photos/new: Form to create a new item"""
-        return {}
+        return {
+            'logged_in': authenticated_userid(self.request)
+        }
 
     @view_config(route_name='photos_editcomment', renderer='json')
     def editcomment(self):
@@ -141,7 +184,7 @@ class Photos(object):
         }
 
 
-    @view_config(route_name='photos_index', renderer='galleria.html.mako')
+    @view_config(route_name='photos_index', renderer='galleria.html.mako', permission='view')
     def index(self, page=None):
         photo_q = DBSession.query(PyGallPhoto).order_by(PyGallPhoto.time.asc())
         if page is None:
@@ -154,4 +197,7 @@ class Photos(object):
         #c.photos = paginate.Page(photo_q, page=page, items_per_page=33)
         c.photos = photo_q.all()
         c.edit = bool(self.request.params.get('edit', False))
-        return {'c': c}
+        return {
+            'logged_in': authenticated_userid(self.request),
+            'c': c
+        }

@@ -1,10 +1,13 @@
 from pyramid.config import Configurator
 from pyramid.mako_templating import renderer_factory as mako_renderer_factory
+from pyramid.authentication import AuthTktAuthenticationPolicy
+from pyramid.authorization import ACLAuthorizationPolicy
 import sqlalchemy
 import sqlahelper
 import pyramid_tm
 
-from pygall.resources import Root
+from pygall.resources import RootFactory
+from pygall.security import findgroup
 
 def locale_negotiator(request):
     """ Our locale negotiator. Returns a locale name or None.
@@ -18,8 +21,13 @@ def main(global_config, **settings):
     # force some global settings
     settings['static_path'] = 'pygall:static'
 
-    config = Configurator(root_factory=Root, settings=settings,
-                          locale_negotiator=locale_negotiator)
+    authentication_policy = AuthTktAuthenticationPolicy(
+            'my_secret', callback=findgroup)
+    authorization_policy = ACLAuthorizationPolicy()
+    config = Configurator(root_factory=RootFactory, settings=settings,
+                          locale_negotiator=locale_negotiator,
+                          authentication_policy=authentication_policy,
+                          authorization_policy=authorization_policy)
 
     # initialize database
     engine = sqlalchemy.engine_from_config(settings, 'sqlalchemy.')
@@ -41,6 +49,9 @@ def main(global_config, **settings):
     config.add_route('photos_new', '/photos/new')
     config.add_route('photos_create', '/photos/create')
     config.add_route('photos_editcomment', '/photos/editcomment')
+
+    config.add_route('login', '/login')
+    config.add_route('logout', '/logout')
 
     # we need to call scan() for the "home" routes
     config.scan()

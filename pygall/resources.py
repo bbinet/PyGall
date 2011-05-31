@@ -1,3 +1,10 @@
-class Root(object):
+from pyramid.security import Allow
+from pyramid.security import Everyone, Authenticated
+
+class RootFactory(object):
+    __acl__ = [ (Allow, Everyone, 'publicview'),
+                (Allow, Authenticated, 'view'),
+                (Allow, 'group:admin', 'edit'),
+                (Allow, 'group:admin', 'upload') ]
     def __init__(self, request):
-        self.request = request
+        pass
