@@ -17,7 +17,7 @@ from pygall.models import DBSession, PyGallTag, PyGallPhoto
 from pygall.lib.imageprocessing import ImageProcessing
 from pygall.lib.archivefile import extractall
 from pygall.lib.helpers import md5_for_file, unchroot_path, remove_empty_dirs
-from pygall.security import USERS
+from pygall.security import authenticate
 
 log = logging.getLogger(__name__)
 
@@ -42,8 +42,7 @@ def login(request):
     if 'form.submitted' in request.params:
         login = request.params['login']
         password = request.params['password']
-        #if USERS.get(login) == password:
-        if login in USERS:
+        if authenticate(login, password):
             headers = remember(request, login)
             return HTTPFound(location = came_from,
                              headers = headers)
