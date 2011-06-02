@@ -24,7 +24,9 @@ log = logging.getLogger(__name__)
 
 @view_config(context=Forbidden)
 def forbidden_view(request):
-    return HTTPFound(location = route_url('login', request))
+    if not authenticated_userid(request):
+        return HTTPFound(location = route_url('login', request))
+    return Forbidden()
 
 @view_config(route_name='login', renderer='login.html.mako')
 def login(request):
