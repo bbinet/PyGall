@@ -6,6 +6,7 @@ In progress
 
 * move to pyramid framework, remaining points:
     * remove use of tmpl_context in mako templates
+    * add pagination
 
 Should have
 -----------
