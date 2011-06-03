@@ -4,9 +4,6 @@ TODO
 In progress
 -----------
 
-* move to pyramid framework, remaining points:
-    * add pagination
-
 Should have
 -----------
 
