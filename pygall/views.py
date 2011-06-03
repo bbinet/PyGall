@@ -40,7 +40,7 @@ def login(request):
     login = ''
     password = ''
     if 'form.submitted' in request.params:
-        login = request.params['login']
+        login = request.params['login'].strip()
         password = request.params['password']
         if authenticate(login, password):
             headers = remember(request, login)
