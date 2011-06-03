@@ -7,6 +7,7 @@
     <meta http-equiv="imagetoolbar" content="false">
     <meta name="description" content="PyGall image gallery based on the Pylons web framework">
     <meta name="keywords" content="PyGall, image, photo, gallery, Pylons, Galleria">
+    <link rel="shortcut icon" type="image/x-icon" href="${request.static_url('pygall:static/app/img/favicon.ico')}" />
 ${self.stylesheets()}
 ${self.javascripts()}
 </head>
