@@ -64,28 +64,6 @@ def logout(request):
                      headers = headers)
 
 
-# class to emulate tmpl_context from pylons 1.0
-class ContextObj(object):
-    """The :term:`tmpl_context` object, with strict attribute access
-    (raises an Exception when the attribute does not exist)"""
-    def __repr__(self):
-        attrs = sorted((name, value)
-                       for name, value in self.__dict__.iteritems()
-                       if not name.startswith('_'))
-        parts = []
-        for name, value in attrs:
-            value_repr = repr(value)
-            if len(value_repr) > 70:
-                value_repr = value_repr[:60] + '...' + value_repr[-5:]
-            parts.append(' %s=%s' % (name, value_repr))
-        return '<%s.%s at %s%s>' % (
-            self.__class__.__module__,
-            self.__class__.__name__,
-            hex(id(self)),
-            ','.join(parts))
-
-
-
 class Photos(object):
     def __init__(self, request):
         self.request = request
@@ -198,11 +176,11 @@ class Photos(object):
             # FIXME: following imply recursion
             #return HTTPFound(location=self.request.route_url('photos_index', page=page))
 
-        c = ContextObj()
-        #c.photos = paginate.Page(photo_q, page=page, items_per_page=33)
-        c.photos = photo_q.all()
-        c.edit = bool(self.request.params.get('edit', False))
+        #photos = paginate.Page(photo_q, page=page, items_per_page=33)
+        photos = photo_q.all()
+        edit = bool(self.request.params.get('edit', False))
         return {
             'logged_in': authenticated_userid(self.request),
-            'c': c
+            'photos': photos,
+            'edit': edit
         }
