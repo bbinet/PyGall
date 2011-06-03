@@ -5,7 +5,6 @@ In progress
 -----------
 
 * move to pyramid framework, remaining points:
-    * add support for anthentication
     * remove use of tmpl_context in mako templates
 
 Should have
