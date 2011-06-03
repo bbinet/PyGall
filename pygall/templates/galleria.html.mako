@@ -19,13 +19,13 @@
         <p>
             <a href="#" onclick="$.galleria.prev(); return false;">&laquo; ${_('previous')}</a> | <a href="#" onclick="$.galleria.next(); return false;">${_('next')} &raquo;</a>
         </p>
-##        <p>
-##            % if edit:
-##            ${photos.pager(_('Page') + ': $link_previous ~4~ $link_next', edit=edit)}
-##            % else:
-##            ${photos.pager(_('Page') + ': $link_previous ~4~ $link_next')}
-##            % endif
-##        </p>
+        <p>
+            % if edit:
+            ${photos.pager(_('Page') + ': $link_previous ~4~ $link_next', edit=edit)}
+            % else:
+            ${photos.pager(_('Page') + ': $link_previous ~4~ $link_next')}
+            % endif
+        </p>
     </div>
 
 </div>

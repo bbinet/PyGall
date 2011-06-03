@@ -45,7 +45,7 @@ def main(global_config, **settings):
     config.add_renderer('.mako', mako_renderer_factory)
 
     # add routes to the entry view class
-    config.add_route('photos_index', '/')
+    config.add_route('photos_index', '/{page:\d*}')
     config.add_route('photos_new', '/photos/new')
     config.add_route('photos_create', '/photos/create')
     config.add_route('photos_editcomment', '/photos/editcomment')

@@ -11,7 +11,7 @@ from pyramid.httpexceptions import HTTPBadRequest, HTTPFound
 from pyramid.exceptions import NotFound, Forbidden
 from pyramid.security import remember, forget, authenticated_userid
 from pyramid.url import route_url
-from webhelpers import paginate
+from webhelpers.paginate import Page
 
 from pygall.models import DBSession, PyGallTag, PyGallPhoto
 from pygall.lib.imageprocessing import ImageProcessing
@@ -34,7 +34,7 @@ def login(request):
     login_url = route_url('login', request)
     if referrer == login_url:
         # never use the login form itself as came_from
-        referrer = route_url('photos_index', request)
+        referrer = route_url('photos_index', request, page='')
     came_from = request.params.get('came_from', referrer)
     message = ''
     login = ''
@@ -73,7 +73,8 @@ class Photos(object):
             abspath_from_asset_spec(request.registry.settings['static_path']),
             request.registry.settings['photos_public_dir']))
 
-    @view_config(route_name='photos_create', renderer='json', permission='edit')
+    @view_config(route_name='photos_create', renderer='json',
+            permission='edit')
     def create(self):
         """POST /photos: Create a new item"""
         log.error("create")
@@ -145,7 +146,8 @@ class Photos(object):
         DBSession.add(photo)
         DBSession.flush()
 
-    @view_config(route_name='photos_new', renderer='new.html.mako', permission='edit')
+    @view_config(route_name='photos_new', renderer='new.html.mako',
+            permission='edit')
     def new(self, format='html'):
         """GET /photos/new: Form to create a new item"""
         return {
@@ -167,17 +169,21 @@ class Photos(object):
         }
 
 
-    @view_config(route_name='photos_index', renderer='galleria.html.mako', permission='view')
-    def index(self, page=None):
+    @view_config(route_name='photos_index', renderer='galleria.html.mako',
+            permission='view')
+    def index(self):
+        page = self.request.matchdict.get('page')
         photo_q = DBSession.query(PyGallPhoto).order_by(PyGallPhoto.time.asc())
-        if page is None:
+        if page == '':
             # default to last page
             page = int(ceil(float(photo_q.count()) / 33))
-            # FIXME: following imply recursion
-            #return HTTPFound(location=self.request.route_url('photos_index', page=page))
+            return HTTPFound(
+                    location=self.request.route_url('photos_index', page=page))
 
-        #photos = paginate.Page(photo_q, page=page, items_per_page=33)
-        photos = photo_q.all()
+        # Inside a view method -- ``self`` comes from the surrounding scope.
+        def url_generator(page):
+            return self.request.route_url('photos_index', page=page)
+        photos = Page(photo_q, page=page, items_per_page=33, url=url_generator)
         edit = bool(self.request.params.get('edit', False))
         return {
             'logged_in': authenticated_userid(self.request),

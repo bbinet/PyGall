@@ -22,7 +22,7 @@ ${self.javascripts()}
                     from pyramid.url import current_route_url
                 %>
                 % if has_permission('view', request.context, request):
-                <a href="${request.route_url('photos_index')}">${_('Gallery')}</a> |
+                <a href="${request.route_url('photos_index', page='')}">${_('Gallery')}</a> |
                 % endif
                 % if has_permission('edit', request.context, request):
                 <a href="${request.route_url('photos_new')}">${_('Upload')}</a> |

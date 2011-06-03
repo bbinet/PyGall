@@ -2,7 +2,7 @@ App = window.App || {};
 
 App.urls = {
     photos_editcomment: "${request.route_url('photos_editcomment')}",
-    photos_index: "${request.route_url('photos_index')}",
+    photos_index: "${request.route_url('photos_index', page='')}",
     photos_new: "${request.route_url('photos_new')}",
     photos_create: "${request.route_url('photos_create')}"
 };
