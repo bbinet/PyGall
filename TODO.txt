@@ -4,6 +4,10 @@ TODO
 In progress
 -----------
 
+* the static view should be secured too
+
+* i18n support through babel
+
 Should have
 -----------
 
@@ -16,8 +20,6 @@ Should have
 * add link to download orig high quality image
 
 * add/update/remove users
-
-* i18n support through babel
 
 * add support for importing image by scp or ftp
 
