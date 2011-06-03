@@ -5,6 +5,8 @@ In progress
 -----------
 
 * the static view should be secured too
+  this will be fixed in next pyramid release, see:
+  https://github.com/Pylons/pyramid/issues/161
 
 * i18n support through babel
 
