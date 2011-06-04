@@ -8,6 +8,10 @@ In progress
   this will be fixed in next pyramid release, see:
   https://github.com/Pylons/pyramid/issues/161
 
+* update readme
+
+* make an equivalent to paster make-config
+
 * i18n support through babel
 
 Should have
