@@ -20,6 +20,7 @@ def main(global_config, **settings):
 
     # force some global settings
     settings['static_path'] = 'pygall:static'
+    settings['mako.directories'] = ['pygall:templates']
 
     authentication_policy = AuthTktAuthenticationPolicy(
             'my_secret', callback=groupfinder)
