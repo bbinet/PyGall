@@ -69,9 +69,7 @@ class Photos(object):
         self.request = request
         self.debug = "debug" in request.params
         self.lang = get_locale_name(request)
-        self.ip = ImageProcessing(os.path.join(
-            abspath_from_asset_spec(request.registry.settings['static_path']),
-            request.registry.settings['photos_public_dir']))
+        self.ip = ImageProcessing(request.registry.settings['photos_dir'])
 
     @view_config(route_name='photos_create', renderer='json',
             permission='edit')

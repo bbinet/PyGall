@@ -57,8 +57,9 @@ def main(global_config, **settings):
     # we need to call scan() for the "home" routes
     config.scan()
 
-    # add the static view (for static resources)
+    # add the static views (for static resources)
     config.add_static_view('static', settings['static_path'])
+    config.add_static_view('photos', settings['photos_dir'])
 
     return config.make_wsgi_app()
 
