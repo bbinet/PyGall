@@ -51,7 +51,3 @@ class PyGallPhoto(Base):
             self.description = fspot_photo.description
             self.rating = fspot_photo.rating
             self.time = datetime.fromtimestamp(fspot_photo.time) # Convert to datetime
-
-def initialize_sql(engine):
-    DBSession.configure(bind=engine)
-    Base.metadata.bind = engine
