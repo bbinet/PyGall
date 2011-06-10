@@ -1,28 +1,43 @@
-import os
-import pkg_resources
+"""Create the application's database.
+
+Run this once after installing the application::
+
+    python -m pygall.scripts.setup development.ini [-d|--drop]
+"""
+import logging
 import sys
+
+from pyramid.paster import get_app
 import transaction
 
-from paste.deploy.loadwsgi import appconfig
-from sqlalchemy import engine_from_config
+from pygall import models
 
-from pygall.models import initialize_sql
-from pygall.models import Base
-from pygall.models import DBSession
-#from pygall.models import MyModel
+def main():
+    if len(sys.argv) < 2:
+        sys.exit("Usage: python -m pygall.scripts.setup INI_FILE [-d|--drop]")
+    ini_file = sys.argv[1]
+    logging.config.fileConfig(ini_file)
+    log = logging.getLogger(__name__)
+    app = get_app(ini_file, "PyGall")
+    #settings = app.registry.settings
 
-def main(argv=sys.argv):
-    dist = pkg_resources.get_distribution('pygall')
-    root = dist.location
-    config = 'config:' + os.path.join(root, 'development.ini')
-    settings = appconfig(config, "PyGall")
-    engine = engine_from_config(settings, 'sqlalchemy.')
+    if len(sys.argv) > 2 and sys.argv[2] in ['-d', '--drop']:
+        log.info("Dropping tables")
+        models.Base.metadata.drop_all()
+    # Abort if any tables exist to prevent accidental overwriting
+    for table in models.Base.metadata.sorted_tables:
+        log.debug("checking if table '%s' exists", table.name)
+        if table.exists():
+            raise RuntimeError("database table '%s' exists" % table.name)
 
-    initialize_sql(engine)
+    log.info("Creating tables")
+    models.Base.metadata.create_all()
 
-    Base.metadata.create_all(engine)
-    #session = DBSession()
-    #model = MyModel(name=u'root',value=55)
-    #session.add(model)
-    #session.flush()
-    #transaction.commit()
+    log.info("Inserting data")
+    sess = models.DBSession()
+    # insert data here #
+    transaction.commit()
+
+
+if __name__ == "__main__":
+    main()
