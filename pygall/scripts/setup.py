@@ -6,6 +6,7 @@ Run this once after installing the application::
 """
 import logging
 import sys
+import os
 
 from pyramid.paster import get_app
 import transaction
@@ -37,6 +38,17 @@ def main():
     sess = models.DBSession()
     # insert data here #
     transaction.commit()
+
+    log.info("Generating auth.cfg file")
+    auth_file = os.path.join(os.path.dirname(ini_file), "auth.cfg")
+    with open(auth_file, 'w') as f:
+        f.write("# This file contains the credentials of users allowed to\n" \
+                "# access to the PyGall photo gallery.\n" \
+                "# Currently pygall contains only one group: 'admin'.\n" \
+                "# The format of each line should look like:\n" \
+                "# 'username:password[:group]'\n" \
+                "administrator:36gFp2rbkbd5Ui:admin\n" \
+                "user:vCzX.LyFC5Hqo\n")
 
 
 if __name__ == "__main__":
