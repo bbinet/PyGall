@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PyGall 0.8dev\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2011-05-18 00:35+0200\n"
+"POT-Creation-Date: 2011-06-16 23:47+0200\n"
 "PO-Revision-Date: 2011-05-18 00:35+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: fr <LL@li.org>\n"
@@ -17,15 +17,23 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 0.9.6\n"
 
-#: pygall/templates/base.html.mako:21
+#: pygall/templates/base.html.mako:25
 msgid "Gallery"
 msgstr "Gallerie"
 
-#: pygall/templates/base.html.mako:22
+#: pygall/templates/base.html.mako:28
 msgid "Upload"
 msgstr "Upload"
 
-#: pygall/templates/base.html.mako:41
+#: pygall/templates/base.html.mako:31
+msgid "Logout"
+msgstr "Se déconnecter"
+
+#: pygall/templates/base.html.mako:33 pygall/templates/login.html.mako:3
+msgid "Login"
+msgstr "Se connecter"
+
+#: pygall/templates/base.html.mako:48
 msgid "PyGall image gallery"
 msgstr "Galerie d'images PyGall"
 
@@ -40,6 +48,11 @@ msgstr "précédent"
 #: pygall/templates/galleria.html.mako:20
 msgid "next"
 msgstr "suivant"
+
+#: pygall/templates/galleria.html.mako:24
+#: pygall/templates/galleria.html.mako:26
+msgid "Page"
+msgstr "Page"
 
 #: pygall/templates/globals.js.mako:12
 msgid "Send file"
