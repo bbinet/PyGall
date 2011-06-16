@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 <%inherit file="base.html.mako"/>\
-<h3>Login</h3><br/>
+<h3>${_('Login')}</h3><br/>
 <span>${message}</span>
 <form action="${url}" method="post">
     <input type="hidden" name="came_from" value="${came_from}"/>
