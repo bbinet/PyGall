@@ -20,7 +20,7 @@ def main():
     logging.config.fileConfig(ini_file)
     log = logging.getLogger(__name__)
     app = get_app(ini_file, "PyGall")
-    #settings = app.registry.settings
+    settings = app.registry.settings
 
     if len(sys.argv) > 2 and sys.argv[2] in ['-d', '--drop']:
         log.info("Dropping tables")
@@ -40,8 +40,7 @@ def main():
     transaction.commit()
 
     log.info("Generating auth.cfg file")
-    auth_file = os.path.join(os.path.dirname(ini_file), "auth.cfg")
-    with open(auth_file, 'w') as f:
+    with open(settings['auth_cfg'], 'w') as f:
         f.write("# This file contains the credentials of users allowed to\n" \
                 "# access to the PyGall photo gallery.\n" \
                 "# Currently pygall contains only one group: 'admin'.\n" \
