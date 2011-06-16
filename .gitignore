@@ -9,3 +9,4 @@ data/
 upload/
 pygall/public/data/
 dist/
+auth.cfg
