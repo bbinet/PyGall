@@ -28,7 +28,7 @@ PyGall currently provides the following basic features:
   rotated if needed.
   If using `F-Spot <http://f-spot.org/>`_ as your personal photo management
   desktop application, PyGall provides a script to automatically import photos
-  from F-Spot and keep in sync your PyGall gallery with .
+  from F-Spot and keep in sync your PyGall gallery.
 
 * Browse and view photos through a nice interface borrowed from
   `Galleria <http://galleria.aino.se/>`_.
