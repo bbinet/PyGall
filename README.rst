@@ -70,7 +70,8 @@ repository and customize it to your needs::
 This ``production.ini`` file will be used by Paster to initialize the
 application, create the database, and serve your application.
 
-So you need to setup PyGall and create the database::
+So you need to setup PyGall, generate a configuration for
+authentication (auth.cfg) and create the database (PyGall.db)::
 
     $ venv/bin/python -m pygall.scripts.setup production.ini
 
@@ -82,7 +83,21 @@ That's all, you can point your browser to http://127.0.0.1:6543 and start
 using PyGall.
 
 By default, the following 2 users are set up:
-1. login/password: admin/admin
+1. login/password: administrator/admin
 2. login/password: user/user
 
-Log in as admin and you're ready to import your first photos!
+.. note::
+
+    You can edit these users by editing the auth.cfg file located in the same
+    directory as your production.ini file. Note that password hashes are
+    generated using the htpasswd utility. For example, to add a user named
+    "john", you will generate his password hash with::
+
+        $ htpasswd -n john
+
+    Then you just have to append a new line to the file auth.cfg copying the
+    output of the previous htpasswd command.
+
+    If john should be in group admin, then just append ":admin" to the line.
+
+Log in as administrator and you're ready to import your first photos!
