@@ -8,18 +8,18 @@ In progress
   this will be fixed in next pyramid release, see:
   https://github.com/Pylons/pyramid/issues/161
 
+* investigate on formalchemy to build the admin interface
+
+  * add support for deleting images
+
+  * add support for updating images (date, tags)
+
 Should have
 -----------
-
-* add support for deleting images
-
-* add support for updating images (date, tags)
 
 * upgrade galleria to 1.2 (git submodule)
 
 * add link to download orig high quality image
-
-* add/update/remove users
 
 * add support for importing image by scp or ftp
 
@@ -38,8 +38,6 @@ Nice to have
 * add support to turn on/off the comment caption display visibilty
 
 * add support for dates (sorting)
-
-* investigate on formalchemy to build the admin interface
 
 * implement part of flickr api
 
