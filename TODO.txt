@@ -14,10 +14,10 @@ In progress
 
   * add support for updating images (date, tags)
 
+* upgrade galleria to 1.2 (git submodule)
+
 Should have
 -----------
-
-* upgrade galleria to 1.2 (git submodule)
 
 * add link to download orig high quality image
 
@@ -29,6 +29,8 @@ Should have
 
 Nice to have
 ------------
+
+* do we still gp.fileupload?
 
 * add support for downloading photos through a basket
 
