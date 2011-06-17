@@ -1,6 +1,12 @@
 Changes
 =======
 
+0.8
+---
+
+* port PyGall to the pyramid web framework
+  http://pylonsproject.org/
+
 0.7
 ---
 
