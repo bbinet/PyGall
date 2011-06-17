@@ -5,18 +5,17 @@ About PyGall
 ------------
 
 PyGall is a simple web photo gallery written in Python and built on the
-`Pylons <http://pylonshq.com>`_ web framework.
+`Pyramid <http://docs.pylonsproject.org/docs/pyramid.html>`_ web framework.
 
-PyGall is written by Bruno Binet and is licensed under a
-BSD permissive license.
+PyGall is licensed under a BSD permissive license.
 
 Code is hosted on github: https://github.com/inneos/PyGall.
 
 Be warned that this image gallery is beta software, and not full featured.
 It has been developped to fit my own needs, and may not suit your wishes.
 
-But that being said, feel free to create a new issue to report bugs or ask for
-new features at https://github.com/inneos/PyGall/issues.
+But that being said, feel free to report bugs or ask for new features at
+https://github.com/inneos/PyGall/issues.
 Even better, since the code is hosted on github, feel free to fork and send
 pull requests.
 
@@ -29,17 +28,16 @@ PyGall currently provides the following basic features:
   rotated if needed.
   If using `F-Spot <http://f-spot.org/>`_ as your personal photo management
   desktop application, PyGall provides a script to automatically import photos
-  from F-Spot.
+  from F-Spot and keep in sync your PyGall gallery with .
 
 * Browse and view photos through a nice interface borrowed from
   `Galleria <http://galleria.aino.se/>`_.
 
+For upcoming features, you can have a look at
+https://github.com/inneos/PyGall/blob/master/TODO.txt
+
 Install
 -------
-
-You should have a working setuptools (or distribute) environment. I advise
-you to use `virtualenv <http://pypi.python.org/pypi/virtualenv>`_ to create
-an isolated Python environment.
 
 Prior to actually install PyGall and its dependencies, you should install the
 libjpeg and python development files, which are needed to compile the Python
@@ -48,26 +46,58 @@ On Debian Linux you can do::
 
     $ sudo aptitude install build-essential libjpeg-dev python-dev
 
-Then you can install PyGall with the following command::
+You should have a working setuptools (or distribute) environment. I advise
+you to use `virtualenv <http://pypi.python.org/pypi/virtualenv>`_ to create
+an isolated Python environment.
+On Linux you can do::
 
-    $ easy_install PyGall
+    $ wget https://raw.github.com/pypa/virtualenv/master/virtualenv.py 
+    $ python virtualenv.py --no-site-packages venv
 
-PyGall is now installed. Let's generate a configuration file for your PyGall
-photo gallery::
+This will create a virtual environment named `venv` that we'll use to install
+PyGall. See http://www.virtualenv.org for more information on virtualenv.
 
-    $ paster make-config PyGall pygall.ini
+So let's install PyGall in the freshly created venv::
 
-The newly created ``pygall.ini`` file will be used by Paster to initialize
-the application, create the database, and serve your application.
+    $ venv/bin/pip install PyGall
 
-So you need to create the database::
+PyGall is now installed. We need to make a configuration file for your
+PyGall photo gallery. The easiest way is to copy the file from the PyGall
+repository and customize it to your needs::
 
-    $ paster setup-app pygall.ini#pygall
+    $ wget https://raw.github.com/inneos/PyGall/pyramid/production.ini
+
+This ``production.ini`` file will be used by Paster to initialize the
+application, create the database, and serve your application.
+
+So you need to setup PyGall, generate a configuration for
+authentication (auth.cfg) and create the database (PyGall.db)::
+
+    $ venv/bin/python -m pygall.scripts.setup production.ini
 
 And finally, you can serve your PyGall application::
 
-    $ paster serve pygall.ini
+    $ venv/bin/paster serve production.ini
 
-That's all, you can point your browser to http://127.0.0.1:5000 and start
-using PyGall. You're ready to import your first photos!
+That's all, you can point your browser to http://127.0.0.1:6543 and start
+using PyGall.
 
+By default, the following 2 users are set up:
+1. login/password: administrator/admin
+2. login/password: user/user
+
+.. note::
+
+    You can edit these users by editing the auth.cfg file located in the same
+    directory as your production.ini file. Note that password hashes are
+    generated using the htpasswd utility. For example, to add a user named
+    "john", you will generate his password hash with::
+
+        $ htpasswd -n john
+
+    Then you just have to append a new line to the file auth.cfg copying the
+    output of the previous htpasswd command.
+
+    If john should be in group admin, then just append ":admin" to the line.
+
+Log in as administrator and you're ready to import your first photos!

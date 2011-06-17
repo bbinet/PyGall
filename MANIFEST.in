@@ -1,4 +1,2 @@
-include pygall/config/deployment.ini_tmpl
-recursive-include pygall/public *
-recursive-include pygall/templates *
-recursive-include pygall/i18n *.mo
+include *.txt *.ini *.cfg *.rst
+recursive-include pygall *.ico *.png *.css *.gif *.jpg *.pt *.txt *.mak *.mako *.js *.html *.xml *.mo

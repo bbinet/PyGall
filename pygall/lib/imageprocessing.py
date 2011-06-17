@@ -2,9 +2,10 @@
 import os
 import datetime
 import shutil
+import logging
+
 import Image
 import ExifTags
-import logging
 
 log = logging.getLogger(__name__)
 
@@ -13,7 +14,6 @@ ORIG = "orig"
 SCALED = "scaled"
 
 class ImageProcessing:
-
     def __init__(self,
                  dest_dir,
                  crop_dimension=700,

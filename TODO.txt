@@ -1,6 +1,13 @@
 TODO
 ====
 
+In progress
+-----------
+
+* the static view should be secured too
+  this will be fixed in next pyramid release, see:
+  https://github.com/Pylons/pyramid/issues/161
+
 Should have
 -----------
 
@@ -10,13 +17,9 @@ Should have
 
 * upgrade galleria to 1.2 (git submodule)
 
-* move to pyramid framework
-
 * add link to download orig high quality image
 
 * add/update/remove users
-
-* i18n support through babel
 
 * add support for importing image by scp or ftp
 

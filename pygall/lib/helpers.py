@@ -8,7 +8,6 @@ available to Controllers. This module is available to templates as 'h'.
 import os
 import hashlib
 from types import StringType, UnicodeType
-from repoze.what.predicates import not_anonymous, has_permission
 
 def md5_for_file(f, block_size=2**20):
     md5 = hashlib.md5()
