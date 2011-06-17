@@ -19,7 +19,7 @@ requires = [
     ]
 
 setup(name='PyGall',
-      version='0.8',
+      version='0.9dev',
       description='Image gallery built with Pyramid web framework',
       long_description=README + '\n\n' +  CHANGES,
       author='Bruno Binet',
