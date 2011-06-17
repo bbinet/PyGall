@@ -35,7 +35,7 @@ class PyGallPhoto(Base):
     # Columns
     id = Column(Integer, Sequence('photos_seq', optional=True),
             primary_key=True)
-    uri = Column(Unicode, nullable=False)
+    uri = Column(Unicode, nullable=False, index=True)
     md5sum = Column(Unicode, unique=True)
     description = Column(Unicode)
     rating = Column(Integer)
