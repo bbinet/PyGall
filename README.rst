@@ -65,7 +65,7 @@ PyGall is now installed. We need to make a configuration file for your
 PyGall photo gallery. The easiest way is to copy the file from the PyGall
 repository and customize it to your needs::
 
-    $ wget https://raw.github.com/inneos/PyGall/pyramid/production.ini
+    $ wget https://raw.github.com/inneos/PyGall/master/production.ini
 
 This ``production.ini`` file will be used by Paster to initialize the
 application, create the database, and serve your application.
