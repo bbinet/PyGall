@@ -16,6 +16,8 @@ In progress
 
 * upgrade galleria to 1.2 (git submodule)
 
+* rework the script that do the synchronization from f-spot
+
 Should have
 -----------
 
