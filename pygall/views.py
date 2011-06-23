@@ -128,10 +128,10 @@ class Photos(object):
 
         # process and import photos to public/data/photos dir
         try:
-            date, dest_uri = self.ip.process_image(abspath)
+            date, dest_uri = self.ip.process_image(abspath, md5sum=hash)
             os.unlink(abspath)
         except Exception as e:
-            self.ip.remove_image(abspath)
+            self.ip.remove_image(abspath, md5sum=hash)
             raise e
 
         # import image in db
