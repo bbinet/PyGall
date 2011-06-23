@@ -132,6 +132,7 @@ class Photos(object):
         # process and import photos to public/data/photos dir
         try:
             date, dest_uri = self.ip.process_image(abspath)
+            os.unlink(abspath)
         except Exception as e:
             self.ip.remove_image(abspath)
             raise e

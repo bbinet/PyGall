@@ -94,19 +94,6 @@ class ImageProcessing:
         im.save(dest, quality=self.quality)
 
 
-    def unlink(self, src):
-        """
-        Remove the original image from disk
-        """
-
-        if not self._check_paths(src):
-            return
-
-        # unlink original photo
-        os.unlink(src)
-        log.info("Removed: %s" % src)
-
-
     def remove_image(self, src):
         """
         Remove scaled and orig images associated with the given src image
@@ -139,7 +126,6 @@ class ImageProcessing:
         date, dest_uri = self._date_uri(src)
         self.copy_scaled(src, dest_uri)
         self.copy_orig(src, dest_uri)
-        self.unlink(src)
         return (date, dest_uri)
 
 
