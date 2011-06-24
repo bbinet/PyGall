@@ -163,6 +163,8 @@ def main():
         DBSession.delete(photo)
         transaction.commit()
         msgs.append("Photo %s has been deleted from PyGall" % photo.uri)
+        sys.stdout.write('.')
+        sys.stdout.flush()
 
     print ''
     if len(msgs) > 0:
