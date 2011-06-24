@@ -37,39 +37,39 @@ def get_options(argv):
     def usage():
         print "Usage: %s [options] production.ini" % argv[0]
         print "	--help"
-        print "	--drop_db"
-        print "	--cleanup_files"
-        print "	--src_dir="
-        print "	--fspot_db="
-        print "	--export_tag="
+        print "	--drop-db"
+        print "	--cleanup-files"
+        print "	--fspot-photosdir="
+        print "	--fspot-db="
+        print "	--fspot-exporttag="
 
     try:
         opts, args = getopt.getopt(
                 argv[1:],
                 "h", [
                     "help",
-                    "drop_db",
-                    "cleanup_files",
-                    "src_dir=",
-                    "fspot_db=",
-                    "export_tag=", ])
+                    "drop-db",
+                    "cleanup-files",
+                    "fspot-photosdir=",
+                    "fspot-db=",
+                    "fspot-exporttag=", ])
     except getopt.error, msg:
             usage()
             sys.exit(1)
 
     # set default values for options
     options = {
-            "src_dir": os.path.expanduser("~/photos"),
-            "fspot_db": os.path.expanduser("~/.config/f-spot/photos.db"),
-            "export_tag": u"pygall",
-            "drop_db": False,
-            "cleanup_files": False,
+            "fspot-photosdir": os.path.expanduser("~/Photos"),
+            "fspot-db": os.path.expanduser("~/.config/f-spot/photos.db"),
+            "fspot-exporttag": u"pygall",
+            "drop-db": False,
+            "cleanup-files": False,
             }
     for opt, arg in opts:
         if opt in ("-h", "--help"):
             usage()
             sys.exit(0)
-        elif opt in ("--drop_db", "--cleanup_files"):
+        elif opt in ("--drop-db", "--cleanup-files"):
             options[opt[2:]] = True
         else:
             options[opt[2:]] = arg
@@ -112,13 +112,10 @@ def process(row, msgs):
 
 
 def decode_fspot_uri(uri):
-    """
-    Takes F-Spot file uri. Returns the relative path to be used on PyGall
-    """
     decoded_uri = unquote(uri)
-    if not decoded_uri.startswith('file://%s' % OPTIONS['src_dir']):
+    if not decoded_uri.startswith('file://%s' % OPTIONS['fspot-photosdir']):
         raise Exception("Don't know how to handle image %s\n" \
-                "Make sure that the --src_dir is valid" % decoded_uri)
+                "Make sure that the --fspot-photosdir is valid" % decoded_uri)
     return decoded_uri.replace('file://', '')
 
 
@@ -133,14 +130,14 @@ def main():
     IP = ImageProcessing(settings['photos_dir'])
 
     # configure engine for fspot database
-    FS_initialize_sql(create_engine("sqlite:///%s" % OPTIONS['fspot_db']))
+    FS_initialize_sql(create_engine("sqlite:///%s" % OPTIONS['fspot-db']))
 
-    if OPTIONS['drop_db']:
+    if OPTIONS['drop-db']:
         Base.metadata.drop_all()
         print "All tables has been dropped"
     Base.metadata.create_all(checkfirst=True)
 
-    if OPTIONS['cleanup_files'] and os.path.exists(settings['photos_dir']):
+    if OPTIONS['cleanup-files'] and os.path.exists(settings['photos_dir']):
         print "Photos dir %s has been cleaned up" % settings['photos_dir']
         shutil.rmtree(settings['photos_dir'])
     
@@ -148,7 +145,7 @@ def main():
     msgs = []
     for row in FS_DBSession.query(FS_Photo).options(
             joinedload('tags', innerjoin=True)).filter(
-                    FS_Tag.name==OPTIONS['export_tag']):
+                    FS_Tag.name==OPTIONS['fspot-exporttag']):
         # process the photo and appends fspot_id to the list of processed
         # fspot photos
         fs_ids.append(process(row, msgs))
