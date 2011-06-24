@@ -35,13 +35,13 @@ OPTIONS = None
 def get_options(argv):
 
     def usage():
-        print >>sys.stdout, "Usage: %s [options] production.ini" % argv[0]
-        print >>sys.stdout, "	--help"
-        print >>sys.stdout, "	--drop_db"
-        print >>sys.stdout, "	--cleanup_files"
-        print >>sys.stdout, "	--src_dir="
-        print >>sys.stdout, "	--fspot_db="
-        print >>sys.stdout, "	--export_tag="
+        print "Usage: %s [options] production.ini" % argv[0]
+        print "	--help"
+        print "	--drop_db"
+        print "	--cleanup_files"
+        print "	--src_dir="
+        print "	--fspot_db="
+        print "	--export_tag="
 
     try:
         opts, args = getopt.getopt(
@@ -61,7 +61,7 @@ def get_options(argv):
     options = {
             "src_dir": os.path.expanduser("~/photos"),
             "fspot_db": os.path.expanduser("~/.config/f-spot/photos.db"),
-            "export_tag": "pygall",
+            "export_tag": u"pygall",
             "drop_db": False,
             "cleanup_files": False,
             }
@@ -82,7 +82,7 @@ def get_options(argv):
     return args, options
 
 
-def process(row):
+def process(row, msgs):
     fspot_id = row.id
     src = decode_fspot_uri(
             row.uri if row.last_version is None else row.last_version.uri)
@@ -103,7 +103,7 @@ def process(row):
     try:
         DBSession.add(photo)
         transaction.commit()
-        print "Photo %s has been imported" % uri
+        msgs.append("Photo %s has been imported in PyGall" % uri)
     except IntegrityError:
         #print "Photo %s already exists in db" % uri
         transaction.abort()
@@ -127,8 +127,6 @@ def main():
     args, OPTIONS = get_options(sys.argv)
 
     ini_file = args[0]
-    logging.config.fileConfig(ini_file)
-    log = logging.getLogger(__name__)
     app = get_app(ini_file, "PyGall")
     settings = app.registry.settings
     OPTIONS['photos_dir'] = settings['photos_dir']
@@ -138,22 +136,24 @@ def main():
     FS_initialize_sql(create_engine("sqlite:///%s" % OPTIONS['fspot_db']))
 
     if OPTIONS['drop_db']:
-        log.info("Dropping tables")
         Base.metadata.drop_all()
-    log.info("Creating tables if needed")
+        print "All tables has been dropped"
     Base.metadata.create_all(checkfirst=True)
 
     if OPTIONS['cleanup_files'] and os.path.exists(settings['photos_dir']):
-            log.info("Removing photos in dir %s" % settings['photos_dir'])
-            shutil.rmtree(settings['photos_dir'])
+        print "Photos dir %s has been cleaned up" % settings['photos_dir']
+        shutil.rmtree(settings['photos_dir'])
     
     fs_ids = []
+    msgs = []
     for row in FS_DBSession.query(FS_Photo).options(
             joinedload('tags', innerjoin=True)).filter(
                     FS_Tag.name==OPTIONS['export_tag']):
         # process the photo and appends fspot_id to the list of processed
         # fspot photos
-        fs_ids.append(process(row))
+        fs_ids.append(process(row, msgs))
+        sys.stdout.write('.')
+        sys.stdout.flush()
 
     # remove photos coming from fspot that are not associated with tag pygall
     # anymore
@@ -162,7 +162,14 @@ def main():
         IP.remove_image(photo.uri)
         DBSession.delete(photo)
         transaction.commit()
-        print "Photo %s has been deleted from PyGall" % photo.uri
+        msgs.append("Photo %s has been deleted from PyGall" % photo.uri)
+
+    print ''
+    if len(msgs) > 0:
+        for msg in msgs:
+            print msg
+    else:
+        print "Nothing to do..."
 
 
 if __name__ == "__main__":
