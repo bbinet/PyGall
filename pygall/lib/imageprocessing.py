@@ -96,19 +96,16 @@ class ImageProcessing:
         im.save(dest, quality=self.quality)
 
 
-    def remove_image(self, src, md5sum=None):
+    def remove_image(self, uri):
         """
         Remove scaled and orig images associated with the given src image
         """
-        _, uri = self._date_uri(src, md5sum)
-
         # remove scaled image
         dest = os.path.join(self.abs_scaled_dest_dir, uri)
         try:
             os.unlink(dest)
         except:
             pass
-
         # remove orig image
         dest = os.path.join(self.abs_orig_dest_dir, uri)
         try:
