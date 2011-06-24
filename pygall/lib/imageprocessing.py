@@ -7,6 +7,8 @@ import logging
 import Image
 import ExifTags
 
+from pygall.lib.helpers import md5_for_file
+
 log = logging.getLogger(__name__)
 
 # CONSTANTS
@@ -94,11 +96,11 @@ class ImageProcessing:
         im.save(dest, quality=self.quality)
 
 
-    def remove_image(self, src):
+    def remove_image(self, src, md5sum=None):
         """
         Remove scaled and orig images associated with the given src image
         """
-        _, uri = self._date_uri(src)
+        _, uri = self._date_uri(src, md5sum)
 
         # remove scaled image
         dest = os.path.join(self.abs_scaled_dest_dir, uri)
@@ -115,7 +117,7 @@ class ImageProcessing:
             pass
 
 
-    def process_image(self, src):
+    def process_image(self, src, md5sum=None):
         """
         Standard processing for the given image:
         Built the destination relative path based on image timestamp
@@ -123,13 +125,13 @@ class ImageProcessing:
         Copy the scaled and rotated image to scaled dest directory
         Remove the original image from disk
         """
-        date, dest_uri = self._date_uri(src)
+        date, dest_uri = self._date_uri(src, md5sum)
         self.copy_scaled(src, dest_uri)
         self.copy_orig(src, dest_uri)
         return (date, dest_uri)
 
 
-    def _date_uri(self, src):
+    def _date_uri(self, src, md5sum=None):
         """
         Built the destination relative path based on image timestamp
         """
@@ -141,11 +143,14 @@ class ImageProcessing:
             # TODO: return None and handle this at a higher level
             date = datetime.datetime.today()
 
+        if not md5sum:
+            with open(src) as f:
+                md5sum = md5_for_file(f)
         uri = os.path.join(
             date.strftime("%Y"),
             date.strftime("%m"),
             date.strftime("%d"),
-            os.path.basename(src))
+            md5sum + os.path.splitext(src)[1])
 
         return (date, uri)
 
