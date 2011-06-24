@@ -18,7 +18,6 @@ In progress
 
 * rework the script that do the synchronization from f-spot
   remaining points:
-  * use a logger instead of print to stdout
   * also synchronise the tags
 
 Should have

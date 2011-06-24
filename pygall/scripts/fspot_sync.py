@@ -4,7 +4,6 @@ Run this every time you want to synchronize with f-spot::
 
     python -m pygall.scripts.fspot_sync [options] development.ini
 """
-import logging
 import sys
 import os
 import shutil
@@ -106,7 +105,7 @@ def process(row):
         transaction.commit()
         print "Photo %s has been imported" % uri
     except IntegrityError:
-        print "Photo %s already exists in db" % uri
+        #print "Photo %s already exists in db" % uri
         transaction.abort()
 
     return fspot_id
