@@ -45,10 +45,3 @@ class PyGallPhoto(Base):
     # Relations
     tags = relation('PyGallTag', secondary=photos_tags_table)
 
-    def __init__(self, fspot_photo=None):
-        if fspot_photo is not None:
-            self.uri = fspot_uri_to_pygall(fspot_photo.uri)
-            self.md5sum = fspot_photo.md5sum
-            self.description = fspot_photo.description
-            self.rating = fspot_photo.rating
-            self.time = datetime.fromtimestamp(fspot_photo.time) # Convert to datetime
