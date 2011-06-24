@@ -151,7 +151,7 @@ def process(row):
         DBSession.add(photo)
         transaction.commit()
     except IntegrityError:
-        print "Photo %s already exists in db"
+        print "Photo %s already exists in db" % uri
         transaction.abort()
 
     return fspot_id
