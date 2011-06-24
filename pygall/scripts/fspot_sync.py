@@ -83,6 +83,45 @@ def get_options(argv):
     return args, options
 
 
+def process(row):
+    fspot_id = row.id
+    src = decode_fspot_uri(
+            row.uri if row.last_version is None else row.last_version.uri,
+            options)
+    with open(src) as f:
+        md5sum = md5_for_file(f)
+
+    # copy and scale image if needed
+    time, uri = ip.process_image(src, md5sum=md5sum)
+
+    # insert row in db
+    photo = PyGallPhoto()
+    photo.fspot_id = fspot_id
+    photo.uri = uri
+    photo.md5sum = md5sum
+    photo.description = row.description
+    photo.rating = row.rating
+    photo.time = time
+    try:
+        DBSession.add(photo)
+        transaction.commit()
+    except IntegrityError:
+        print "Photo %s already exists in db" % uri
+        transaction.abort()
+
+    return fspot_id
+
+
+def decode_fspot_uri(uri, options):
+    """
+    Takes F-Spot file uri. Returns the relative path to be used on PyGall
+    """
+    decoded_uri = unquote(uri)
+    if not decoded_uri.startswith('file://%s' % options['src_dir']):
+        raise Exception("Don't know how to handle image %s" % decoded_uri)
+    return decoded_uri.replace('file://', '')
+
+
 def main():
     global ip, options
     args, options = get_options(sys.argv)
@@ -125,51 +164,6 @@ def main():
         print "[db] Removed : %d photo(s)" % count
     transaction.commit()
 
-    sys.exit(0)
-
-
-def process(row):
-    fspot_id = row.id
-    src = _decode_fspot_uri(
-            row.uri if row.last_version is None else row.last_version.uri,
-            options)
-    with open(src) as f:
-        md5sum = md5_for_file(f)
-
-    # copy and scale image if needed
-    time, uri = ip.process_image(src, md5sum=md5sum)
-
-    # insert row in db
-    photo = PyGallPhoto()
-    photo.fspot_id = fspot_id
-    photo.uri = uri
-    photo.md5sum = md5sum
-    photo.description = row.description
-    photo.rating = row.rating
-    photo.time = time
-    try:
-        DBSession.add(photo)
-        transaction.commit()
-    except IntegrityError:
-        print "Photo %s already exists in db" % uri
-        transaction.abort()
-
-    return fspot_id
-
-
-def _decode_fspot_uri(uri, options):
-    """
-    Takes F-Spot file uri. Returns the relative path to be used on PyGall
-    """
-    decoded_uri = unquote(uri)
-    if not decoded_uri.startswith('file://%s' % options['src_dir']):
-        raise Exception("Don't know how to handle image %s" % decoded_uri)
-    return decoded_uri.replace('file://', '')
-
-
-
-
 
 if __name__ == "__main__":
     main()
-
