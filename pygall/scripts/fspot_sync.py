@@ -104,6 +104,7 @@ def process(row):
     try:
         DBSession.add(photo)
         transaction.commit()
+        print "Photo %s has been imported" % uri
     except IntegrityError:
         print "Photo %s already exists in db" % uri
         transaction.abort()
@@ -157,12 +158,12 @@ def main():
 
     # remove photos coming from fspot that are not associated with tag pygall
     # anymore
-    count = DBSession.query(PyGallPhoto).filter(and_(
-        PyGallPhoto.fspot_id!=None, not_(PyGallPhoto.fspot_id.in_(fs_ids))
-        )).delete(synchronize_session=False)
-    if count > 0:
-        print "[db] Removed : %d photo(s)" % count
-    transaction.commit()
+    for photo in DBSession.query(PyGallPhoto).filter(and_(
+        PyGallPhoto.fspot_id!=None, not_(PyGallPhoto.fspot_id.in_(fs_ids)))):
+        IP.remove_image(photo.uri)
+        DBSession.delete(photo)
+        transaction.commit()
+        print "Photo %s has been deleted from PyGall" % photo.uri
 
 
 if __name__ == "__main__":
