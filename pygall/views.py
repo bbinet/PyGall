@@ -120,11 +120,8 @@ class Photos(object):
 
     def _import(self, abspath):
         # check same image has not already been imported
-        f = open(abspath)
-        try:
+        with open(abspath) as f:
             hash = md5_for_file(f)
-        finally:
-            f.close()
         photo = DBSession.query(PyGallPhoto).filter_by(md5sum=hash)
         if photo.count() > 0:
             raise Exception("Same md5sum already exists in database")
