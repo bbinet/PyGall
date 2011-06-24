@@ -150,7 +150,7 @@ class ImageProcessing:
             date.strftime("%Y"),
             date.strftime("%m"),
             date.strftime("%d"),
-            md5sum + os.path.splitext(src)[1])
+            md5sum + os.path.splitext(src)[1].lower())
 
         return (date, uri)
 
