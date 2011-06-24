@@ -28,9 +28,9 @@ from pygall.models.fspot import \
         initialize_sql as FS_initialize_sql, \
         DBSession as FS_DBSession
 
-# imageprocessing instance
-ip = None
-options = None
+# globals
+IP = None
+OPTIONS = None
 
 
 def get_options(argv):
@@ -86,13 +86,12 @@ def get_options(argv):
 def process(row):
     fspot_id = row.id
     src = decode_fspot_uri(
-            row.uri if row.last_version is None else row.last_version.uri,
-            options)
+            row.uri if row.last_version is None else row.last_version.uri)
     with open(src) as f:
         md5sum = md5_for_file(f)
 
     # copy and scale image if needed
-    time, uri = ip.process_image(src, md5sum=md5sum)
+    time, uri = IP.process_image(src, md5sum=md5sum)
 
     # insert row in db
     photo = PyGallPhoto()
@@ -112,45 +111,46 @@ def process(row):
     return fspot_id
 
 
-def decode_fspot_uri(uri, options):
+def decode_fspot_uri(uri):
     """
     Takes F-Spot file uri. Returns the relative path to be used on PyGall
     """
     decoded_uri = unquote(uri)
-    if not decoded_uri.startswith('file://%s' % options['src_dir']):
-        raise Exception("Don't know how to handle image %s" % decoded_uri)
+    if not decoded_uri.startswith('file://%s' % OPTIONS['src_dir']):
+        raise Exception("Don't know how to handle image %s\n" \
+                "Make sure that the --src_dir is valid" % decoded_uri)
     return decoded_uri.replace('file://', '')
 
 
 def main():
-    global ip, options
-    args, options = get_options(sys.argv)
+    global IP, OPTIONS
+    args, OPTIONS = get_options(sys.argv)
 
     ini_file = args[0]
     logging.config.fileConfig(ini_file)
     log = logging.getLogger(__name__)
     app = get_app(ini_file, "PyGall")
     settings = app.registry.settings
-    options['photos_dir'] = settings['photos_dir']
-    ip = ImageProcessing(settings['photos_dir'])
+    OPTIONS['photos_dir'] = settings['photos_dir']
+    IP = ImageProcessing(settings['photos_dir'])
 
     # configure engine for fspot database
-    FS_initialize_sql(create_engine("sqlite:///%s" % options['fspot_db']))
+    FS_initialize_sql(create_engine("sqlite:///%s" % OPTIONS['fspot_db']))
 
-    if options['drop_db']:
+    if OPTIONS['drop_db']:
         log.info("Dropping tables")
         Base.metadata.drop_all()
     log.info("Creating tables if needed")
     Base.metadata.create_all(checkfirst=True)
 
-    if options['cleanup_files'] and os.path.exists(settings['photos_dir']):
+    if OPTIONS['cleanup_files'] and os.path.exists(settings['photos_dir']):
             log.info("Removing photos in dir %s" % settings['photos_dir'])
             shutil.rmtree(settings['photos_dir'])
     
     fs_ids = []
     for row in FS_DBSession.query(FS_Photo).options(
             joinedload('tags', innerjoin=True)).filter(
-                    FS_Tag.name==options['export_tag']):
+                    FS_Tag.name==OPTIONS['export_tag']):
         # process the photo and appends fspot_id to the list of processed
         # fspot photos
         fs_ids.append(process(row))
