@@ -123,8 +123,13 @@ class ImageProcessing:
         Remove the original image from disk
         """
         date, dest_uri = self._date_uri(src, md5sum)
-        self.copy_orig(src, dest_uri)
-        self.copy_scaled(src, dest_uri)
+        try:
+            self.copy_orig(src, dest_uri)
+            self.copy_scaled(src, dest_uri)
+        except Exception, e:
+            # clean up if an exception occured during import
+            self.remove_image(dest_uri)
+            raise e
         return (date, dest_uri)
 
 
