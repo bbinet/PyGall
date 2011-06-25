@@ -105,6 +105,11 @@ def process(row, msgs):
     with open(src) as f:
         md5sum = md5_for_file(f)
 
+    ###################################################
+    # FIXME: if tags has changed, then md5sum has changed:
+    # so we will create duplicated photos
+    ###################################################
+
     # copy and scale image if needed
     time, uri = IP.process_image(src, md5sum=md5sum)
 
