@@ -162,9 +162,8 @@ def main():
     
     fs_ids = []
     msgs = []
-    for row in FS_DBSession.query(FS_Photo).options(
-            joinedload('tags', innerjoin=True)).filter(
-                    FS_Tag.name==OPTIONS['fspot-exporttag']):
+    for row in FS_DBSession.query(FS_Tag)\
+            .filter_by(name=OPTIONS['fspot-exporttag']).one().photos:
         # process the photo and appends fspot_id to the list of processed
         # fspot photos
         fs_ids.append(process(row, msgs))
@@ -174,7 +173,7 @@ def main():
     # remove photos coming from fspot that are not associated with tag pygall
     # anymore
     for photo in DBSession.query(PyGallPhoto).filter(and_(
-        PyGallPhoto.fspot_id!=None, not_(PyGallPhoto.fspot_id.in_(fs_ids)))):
+        PyGallPhoto.fspot_id!=None, not_(PyGallPhoto.fspot_id.in_(fs_ids)))).all():
         IP.remove_image(photo.uri)
         DBSession.delete(photo)
         transaction.commit()
