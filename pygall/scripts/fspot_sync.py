@@ -30,6 +30,7 @@ from pygall.models.fspot import \
 # globals
 IP = None
 OPTIONS = None
+TAGS = None
 
 
 def get_options(argv):
@@ -82,6 +83,21 @@ def get_options(argv):
     return args, options
 
 
+def get_tags(tags):
+    global TAGS
+    if TAGS is None:
+        TAGS = {}
+        for t in DBSession.query(PyGallTag):
+            TAGS[t.name] = t
+    res = []
+    for tname in tags:
+        if tname not in TAGS:
+            TAGS[tname] = PyGallTag(tname)
+            DBSession.add(TAGS[tname])
+        res.append(TAGS[tname])
+    return res
+
+
 def process(row, msgs):
     fspot_id = row.id
     src = decode_fspot_uri(
@@ -100,6 +116,8 @@ def process(row, msgs):
     photo.description = row.description
     photo.rating = row.rating
     photo.time = time
+    photo.tags = get_tags([t.name for t in row.tags])
+
     try:
         DBSession.add(photo)
         transaction.commit()
@@ -107,6 +125,7 @@ def process(row, msgs):
     except IntegrityError:
         #print "Photo %s already exists in db" % uri
         transaction.abort()
+        #TODO: make it possible to update record
 
     return fspot_id
 
