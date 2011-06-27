@@ -100,27 +100,25 @@ def get_tags(tags):
 
 def process(row, msgs):
     fspot_id = row.id
-    src = decode_fspot_uri(
-            row.uri if row.last_version is None else row.last_version.uri)
-    with open(src) as f:
-        md5sum = md5_for_file(f)
+    photo = DBSession.query(PyGallPhoto).filter_by(fspot_id=fspot_id).first()
+    if photo is None:
+        photo = PyGallPhoto()
+        src = decode_fspot_uri(
+                row.uri if row.last_version is None else row.last_version.uri)
+        with open(src) as f:
+            md5sum = md5_for_file(f)
+        # copy and scale image if needed
+        time, uri = IP.process_image(src, md5sum=md5sum)
+        # set photo db record
+        photo.fspot_id = fspot_id
+        photo.uri = uri
+        photo.md5sum = md5sum
+        photo.time = time
 
-    ###################################################
-    # FIXME: if tags has changed, then md5sum has changed:
-    # so we will create duplicated photos
-    ###################################################
-
-    # copy and scale image if needed
-    time, uri = IP.process_image(src, md5sum=md5sum)
-
-    # insert row in db
-    photo = PyGallPhoto()
-    photo.fspot_id = fspot_id
-    photo.uri = uri
-    photo.md5sum = md5sum
-    photo.description = row.description
+    # update row in db [TODO: this should be optionnal for speed reasons]
+    if row.description:
+        photo.description = row.description
     photo.rating = row.rating
-    photo.time = time
     photo.tags = get_tags([t.name for t in row.tags])
 
     try:
