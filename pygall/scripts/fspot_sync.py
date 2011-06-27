@@ -18,7 +18,7 @@ from sqlalchemy.exc import IntegrityError
 import transaction
 
 from pygall.lib.imageprocessing import ImageProcessing
-from pygall.lib.helpers import md5_for_file
+from pygall.lib.helpers import img_md5
 from pygall.models import PyGallTag, PyGallPhoto, DBSession, Base
 from pygall.models.fspot import \
         Tag as FS_Tag, \
@@ -105,8 +105,7 @@ def process(row, msgs):
         photo = PyGallPhoto()
         src = decode_fspot_uri(
                 row.uri if row.last_version is None else row.last_version.uri)
-        with open(src) as f:
-            md5sum = md5_for_file(f)
+        md5sum = img_md5(src)
         # copy and scale image if needed
         time, uri = IP.process_image(src, md5sum=md5sum)
         # set photo db record

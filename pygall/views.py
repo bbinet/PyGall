@@ -16,7 +16,7 @@ from webhelpers.paginate import Page
 from pygall.models import DBSession, PyGallTag, PyGallPhoto
 from pygall.lib.imageprocessing import ImageProcessing
 from pygall.lib.archivefile import extractall
-from pygall.lib.helpers import md5_for_file, unchroot_path, remove_empty_dirs
+from pygall.lib.helpers import img_md5, unchroot_path, remove_empty_dirs
 from pygall.security import authenticate
 
 log = logging.getLogger(__name__)
@@ -120,8 +120,7 @@ class Photos(object):
 
     def _import(self, abspath):
         # check same image has not already been imported
-        with open(abspath) as f:
-            hash = md5_for_file(f)
+        hash = img_md5(abspath)
         photo = DBSession.query(PyGallPhoto).filter_by(md5sum=hash)
         if photo.count() > 0:
             raise Exception("Same md5sum already exists in database")

@@ -7,7 +7,7 @@ import logging
 import Image
 import ExifTags
 
-from pygall.lib.helpers import md5_for_file
+from pygall.lib.helpers import img_md5
 
 log = logging.getLogger(__name__)
 
@@ -146,8 +146,7 @@ class ImageProcessing:
             date = datetime.datetime.today()
 
         if not md5sum:
-            with open(src) as f:
-                md5sum = md5_for_file(f)
+            md5sum = img_md5(src)
         uri = os.path.join(
             date.strftime("%Y"),
             date.strftime("%m"),
