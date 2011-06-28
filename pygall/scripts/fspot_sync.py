@@ -97,7 +97,7 @@ def get_tags(tags):
         if tname not in TAGS:
             TAGS[tname] = PyGallTag(tname)
             DBSession.add(TAGS[tname])
-        res.append(TAGS[tname])
+        res.append(DBSession.merge(TAGS[tname]))
     return res
 
 
