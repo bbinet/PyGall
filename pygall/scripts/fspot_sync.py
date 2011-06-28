@@ -40,6 +40,7 @@ def get_options(argv):
         print "	--help"
         print "	--drop-db"
         print "	--cleanup-files"
+        print "	--skip-existing"
         print "	--fspot-photosdir="
         print "	--fspot-db="
         print "	--fspot-exporttag="
@@ -51,6 +52,7 @@ def get_options(argv):
                     "help",
                     "drop-db",
                     "cleanup-files",
+                    "skip-existing",
                     "fspot-photosdir=",
                     "fspot-db=",
                     "fspot-exporttag=", ])
@@ -65,12 +67,13 @@ def get_options(argv):
             "fspot-exporttag": u"pygall",
             "drop-db": False,
             "cleanup-files": False,
+            "skip-existing": False,
             }
     for opt, arg in opts:
         if opt in ("-h", "--help"):
             usage()
             sys.exit(0)
-        elif opt in ("--drop-db", "--cleanup-files"):
+        elif opt in ("--drop-db", "--cleanup-files", "--skip-existing"):
             options[opt[2:]] = True
         else:
             options[opt[2:]] = arg
@@ -100,8 +103,10 @@ def get_tags(tags):
 
 def process(row, msgs):
     fspot_id = row.id
+    insert = False
     photo = DBSession.query(PyGallPhoto).filter_by(fspot_id=fspot_id).first()
     if photo is None:
+        insert = True
         photo = PyGallPhoto()
         src = decode_fspot_uri(
                 row.uri if row.last_version is None else row.last_version.uri)
@@ -114,16 +119,21 @@ def process(row, msgs):
         photo.md5sum = md5sum
         photo.time = time
 
-    # update row in db [TODO: this should be optionnal for speed reasons]
-    if row.description:
-        photo.description = row.description
-    photo.rating = row.rating
-    photo.tags = get_tags([t.name for t in row.tags])
+    if insert or not OPTIONS['skip-existing']:
+        # update row in db
+        if row.description:
+            photo.description = row.description
+        photo.rating = row.rating
+        photo.tags = get_tags([t.name for t in row.tags])
+
+    #TODO: detect if photo version has changed and update photo accordingly
 
     try:
+        uri = photo.uri # keep track of photo.uri outside the DBSession
         DBSession.add(photo)
         transaction.commit()
-        msgs.append("Photo %s has been imported in PyGall" % uri)
+        if insert:
+            msgs.append("Photo %s has been imported in PyGall" % uri)
     except IntegrityError:
         #print "Photo %s already exists in db" % uri
         transaction.abort()
