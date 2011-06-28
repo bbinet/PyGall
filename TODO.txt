@@ -16,11 +16,6 @@ In progress
 
 * upgrade galleria to 1.2 (git submodule)
 
-* rework the script that do the synchronization from f-spot
-  remaining points:
-  * bug: if tags has changed, then md5sum has changed and we will create
-    duplicated photos
-
 Should have
 -----------
 
