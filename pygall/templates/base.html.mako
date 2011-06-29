@@ -26,6 +26,7 @@ ${self.javascripts()}
                 % endif
                 % if has_permission('edit', request.context, request):
                 <a href="${request.route_url('photos_new')}">${_('Upload')}</a> |
+                <a href="${request.route_url('admin', traverse='')}">${_('Admin')}</a> |
                 % endif
                 % if logged_in:
                 <a href="${request.route_url('logout')}">${_('Logout')} [${logged_in}]</a>
