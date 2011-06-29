@@ -6,13 +6,13 @@ import sqlalchemy
 import sqlahelper
 import pyramid_tm
 
-from pygall.resources import RootFactory
+from pygall.resources import RootFactory, FAModelsFactory
 from pygall.security import groupfinder
 
 def locale_negotiator(request):
     """ Our locale negotiator. Returns a locale name or None.
     """
-    return request.params.get('lang')
+    return request.params.get('lang') if request else None
 
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
@@ -34,6 +34,11 @@ def main(global_config, **settings):
     engine = sqlalchemy.engine_from_config(settings, 'sqlalchemy.')
     sqlahelper.add_engine(engine)
     config.include(pyramid_tm.includeme)
+
+    # formaclhemy
+    config.include('pyramid_formalchemy')
+    config.include('fa.jquery')
+    config.formalchemy_admin('admin', package='pygall', view='fa.jquery.pyramid.ModelView', factory=FAModelsFactory)
 
     # i18n
     config.add_subscriber('pygall.subscribers.add_renderer_globals',

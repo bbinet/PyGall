@@ -24,7 +24,7 @@ class PyGallTag(Base):
     # Relations
     photos = relation('PyGallPhoto', secondary=photos_tags_table)
 
-    def __init__(self, name):
+    def __init__(self, name=None):
         self.name = name
 
 

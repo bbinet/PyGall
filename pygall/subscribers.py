@@ -2,8 +2,9 @@ from pyramid.i18n import get_localizer, TranslationStringFactory
 
 def add_renderer_globals(event):
     request = event.get('request')
-    event['_'] = request.translate
-    event['localizer'] = request.localizer
+    if request:
+        event['_'] = request.translate
+        event['localizer'] = request.localizer
 
 tsf = TranslationStringFactory('PyGall')
 
