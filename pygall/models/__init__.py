@@ -27,6 +27,9 @@ class PyGallTag(Base):
     def __init__(self, name=None):
         self.name = name
 
+    def __unicode__(self):
+        return u'[%s]' % self.name
+
 
 class PyGallPhoto(Base):
 
@@ -44,4 +47,7 @@ class PyGallPhoto(Base):
 
     # Relations
     tags = relation('PyGallTag', secondary=photos_tags_table)
+
+    def __unicode__(self):
+        return u'[%s]' % self.uri
 
