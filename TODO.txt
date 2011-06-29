@@ -8,12 +8,6 @@ In progress
   this will be fixed in next pyramid release, see:
   https://github.com/Pylons/pyramid/issues/161
 
-* investigate on formalchemy to build the admin interface
-
-  * add support for deleting images
-
-  * add support for updating images (date, tags)
-
 * upgrade galleria to 1.2 (git submodule)
 
 Should have
