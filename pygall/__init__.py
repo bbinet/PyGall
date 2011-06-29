@@ -38,7 +38,8 @@ def main(global_config, **settings):
     # formaclhemy
     config.include('pyramid_formalchemy')
     config.include('fa.jquery')
-    config.formalchemy_admin('admin', package='pygall', view='fa.jquery.pyramid.ModelView', factory=FAModelsFactory)
+    config.formalchemy_admin('admin', package='pygall',
+            view='fa.jquery.pyramid.ModelView', factory=FAModelsFactory)
 
     # i18n
     config.add_subscriber('pygall.subscribers.add_renderer_globals',
