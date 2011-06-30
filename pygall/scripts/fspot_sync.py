@@ -37,13 +37,24 @@ def get_options(argv):
 
     def usage():
         print "Usage: %s [options] production.ini" % argv[0]
-        print "	--help"
-        print "	--drop-db"
-        print "	--cleanup-files"
-        print "	--skip-existing"
-        print "	--fspot-photosdir="
-        print "	--fspot-db="
-        print "	--fspot-exporttag="
+        print " --help"
+        print "     prints this usage message"
+        print " --drop-db"
+        print "     drop the pygall database which will then be repopulated"
+        print "     with photos imported from F-spot"
+        print " --cleanup-files"
+        print "     cleanup all existing photos in PyGall before importing new"
+        print "     photos from F-spot"
+        print " --skip-existing"
+        print "     don't try to update metadata for photos that already exist"
+        print "     in PyGall database"
+        print " --fspot-photosdir=[~/Photos]"
+        print "     specifiy the path to F-spot photos directory"
+        print " --fspot-db=[~/.config/f-spot/photos.db]"
+        print "     specifiy the path to F-spot database"
+        print " --fspot-exporttag=[pygall]"
+        print "     specifiy the tag which determines which photos are imported"
+        print "     from F-spot"
 
     try:
         opts, args = getopt.getopt(
