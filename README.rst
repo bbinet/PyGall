@@ -82,9 +82,15 @@ And finally, you can serve your PyGall application::
 That's all, you can point your browser to http://127.0.0.1:6543 and start
 using PyGall.
 
-By default, the following 2 users are set up:
-1. login/password: administrator/admin
-2. login/password: user/user
+By default, the following 2 user accounts are set up:
+
+An administrator account
+  | login: admin
+  | password: admin
+
+A guest account
+  | login: guest
+  | password: guest
 
 .. note::
 

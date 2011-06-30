@@ -46,8 +46,8 @@ def main():
                 "# Currently pygall contains only one group: 'admin'.\n" \
                 "# The format of each line should look like:\n" \
                 "# 'username:password[:group]'\n" \
-                "administrator:xGTJeDo9pPVvM:admin\n" \
-                "user:vCzX.LyFC5Hqo\n")
+                "admin:N5rIuAWOHGycs:admin\n" \
+                "guest:Z7TjkT9L.lUAM\n")
 
 
 if __name__ == "__main__":
