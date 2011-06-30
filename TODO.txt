@@ -24,6 +24,8 @@ Should have
 
 * show images thumbnails in the formalchemy admin interface
 
+* add unit tests
+
 Nice to have
 ------------
 
