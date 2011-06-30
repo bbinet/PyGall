@@ -9,6 +9,7 @@ In progress
   https://github.com/Pylons/pyramid/issues/161
 
 * upgrade galleria to 1.2 (git submodule)
+  we should create a pygall plugin for galleria similar to the flickr plugin
 
 Should have
 -----------
@@ -21,10 +22,14 @@ Should have
 
 * log errors to the session (and display them on client side)
 
+* show images thumbnails in the formalchemy admin interface
+
 Nice to have
 ------------
 
-* do we still gp.fileupload?
+* update the f-spot sync script to use marrow.script as an arg parser
+
+* do we still need gp.fileupload?
 
 * add support for downloading photos through a basket
 
