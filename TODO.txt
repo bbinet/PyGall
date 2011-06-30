@@ -52,3 +52,6 @@ Nice to have
 
 * implement part of flickr api
 
+* implement auth api (openid, oauth) that could enable an external service to
+  use a custom galleria client to query pygall photo server
+
