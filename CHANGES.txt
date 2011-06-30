@@ -1,6 +1,25 @@
 Changes
 =======
 
+0.9
+---
+
+* build an administration interface based on FormAlchemy
+
+* complete rewriting of the script that do the synchronization from f-spot
+
+* refactor and clean up the imageprocessing module so that it can be used by
+  the f-spot sync script
+
+* image md5sum does not take the exif metadata into account so that when a tag
+  is added or removed, the md5sum does not change anymore
+
+* add fspot_id to the PyGallPhoto model so that we are able to track photos
+  that have been imported from F-spot
+
+* remove upper limit on SQLAlchemy dependency, so that PyGall can be used with
+  SQLAlchemy 0.7
+
 0.8
 ---
 
