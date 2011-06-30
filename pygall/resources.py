@@ -9,6 +9,4 @@ class RootFactory(object):
         self.request = request
 
 class FAModelsFactory(Models):
-    __acl__ = [ (Allow, Everyone, 'publicview'),
-                (Allow, Authenticated, 'view'),
-                (Allow, 'admin', ALL_PERMISSIONS)]
+    __acl__ = [(Allow, 'admin', ALL_PERMISSIONS)]

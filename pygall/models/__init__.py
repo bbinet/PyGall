@@ -17,10 +17,7 @@ photos_tags_table = Table(
 
 class PyGallTag(Base):
 
-    __acl__ = [ (Allow, Everyone, 'publicview'),
-                (Allow, Authenticated, 'view'),
-                (Allow, 'admin', ALL_PERMISSIONS)]
-
+    __acl__ = [(Allow, 'admin', ALL_PERMISSIONS)]
     __tablename__ = 'tags'
 
     id = Column(Integer, primary_key=True)
@@ -38,10 +35,7 @@ class PyGallTag(Base):
 
 class PyGallPhoto(Base):
 
-    __acl__ = [ (Allow, Everyone, 'publicview'),
-                (Allow, Authenticated, 'view'),
-                (Allow, 'admin', ALL_PERMISSIONS)]
-
+    __acl__ = [(Allow, 'admin', ALL_PERMISSIONS)]
     __tablename__ = 'photos'
 
     # Columns
