@@ -26,6 +26,14 @@ Should have
 
 * add unit tests
 
+* add support to filter photos by tags
+
+* add support to filter photos by date
+
+* add support to filter photos by rating
+
+* add support to filter photos by import roll
+
 Nice to have
 ------------
 
