@@ -8,12 +8,16 @@ available to Controllers. This module is available to templates as 'h'.
 import os
 import hashlib
 from types import StringType, UnicodeType
-from repoze.what.predicates import not_anonymous, has_permission
+from cStringIO import StringIO
 
-def md5_for_file(f, block_size=2**20):
+import Image
+
+def img_md5(f, block_size=2**20):
+    # use PIL image to ignore exif tags when calculating md5sum
     md5 = hashlib.md5()
+    buf = StringIO(Image.open(f).tostring())
     while True:
-        data = f.read(block_size)
+        data = buf.read(block_size)
         if not data:
             break
         md5.update(data)
@@ -47,3 +51,12 @@ def remove_empty_dirs(root):
                 os.rmdir(os.path.join(dirpath, subdirname))
             except OSError:
                 pass
+
+
+def main(argv):
+    for arg in argv[1:]:
+        print "img_md5('%s') --> %s" % (arg, img_md5(arg))
+
+if __name__ == "__main__":
+    import sys
+    main(sys.argv)

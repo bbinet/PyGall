@@ -1,4 +1,7 @@
-import os, zipfile, tarfile, shutil
+import os
+import zipfile
+import tarfile
+import shutil
 
 def extractall(archive, dstdir):
     """ extract zip or tar content to dstdir"""

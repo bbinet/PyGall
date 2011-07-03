@@ -2,11 +2,11 @@ Paste*.egg
 **.pyc
 **.swp
 PyGall.egg-info/
+PyGall.db
 development.db
 vp
 data/
 upload/
 pygall/public/data/
 dist/
-pygall/i18n/en/LC_MESSAGES/pygall.mo
-pygall/i18n/fr/LC_MESSAGES/pygall.mo
+auth.cfg

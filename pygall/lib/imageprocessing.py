@@ -2,9 +2,12 @@
 import os
 import datetime
 import shutil
+import logging
+
 import Image
 import ExifTags
-import logging
+
+from pygall.lib.helpers import img_md5
 
 log = logging.getLogger(__name__)
 
@@ -13,7 +16,6 @@ ORIG = "orig"
 SCALED = "scaled"
 
 class ImageProcessing:
-
     def __init__(self,
                  dest_dir,
                  crop_dimension=700,
@@ -94,32 +96,16 @@ class ImageProcessing:
         im.save(dest, quality=self.quality)
 
 
-    def unlink(self, src):
-        """
-        Remove the original image from disk
-        """
-
-        if not self._check_paths(src):
-            return
-
-        # unlink original photo
-        os.unlink(src)
-        log.info("Removed: %s" % src)
-
-
-    def remove_image(self, src):
+    def remove_image(self, uri):
         """
         Remove scaled and orig images associated with the given src image
         """
-        _, uri = self._date_uri(src)
-
         # remove scaled image
         dest = os.path.join(self.abs_scaled_dest_dir, uri)
         try:
             os.unlink(dest)
         except:
             pass
-
         # remove orig image
         dest = os.path.join(self.abs_orig_dest_dir, uri)
         try:
@@ -128,7 +114,7 @@ class ImageProcessing:
             pass
 
 
-    def process_image(self, src):
+    def process_image(self, src, md5sum=None):
         """
         Standard processing for the given image:
         Built the destination relative path based on image timestamp
@@ -136,14 +122,18 @@ class ImageProcessing:
         Copy the scaled and rotated image to scaled dest directory
         Remove the original image from disk
         """
-        date, dest_uri = self._date_uri(src)
-        self.copy_scaled(src, dest_uri)
-        self.copy_orig(src, dest_uri)
-        self.unlink(src)
+        date, dest_uri = self._date_uri(src, md5sum)
+        try:
+            self.copy_orig(src, dest_uri)
+            self.copy_scaled(src, dest_uri)
+        except Exception, e:
+            # clean up if an exception occured during import
+            self.remove_image(dest_uri)
+            raise e
         return (date, dest_uri)
 
 
-    def _date_uri(self, src):
+    def _date_uri(self, src, md5sum=None):
         """
         Built the destination relative path based on image timestamp
         """
@@ -155,11 +145,13 @@ class ImageProcessing:
             # TODO: return None and handle this at a higher level
             date = datetime.datetime.today()
 
+        if not md5sum:
+            md5sum = img_md5(src)
         uri = os.path.join(
             date.strftime("%Y"),
             date.strftime("%m"),
             date.strftime("%d"),
-            os.path.basename(src))
+            md5sum + os.path.splitext(src)[1].lower())
 
         return (date, uri)
 

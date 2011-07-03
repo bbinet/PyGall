@@ -1,7 +1,7 @@
 Releasing PyGall
 ================
 
-* Compile localization files::
+* Compile localization files and commit generated .mo files::
 
   $ python setup.py compile_catalog
 
@@ -12,7 +12,11 @@ Releasing PyGall
 
   $ python setup.py check --restructuredtext
 
+* Build a source distribution and test it before upload to Pypi::
+
+  $ python setup.py sdist
+
 * Release to PyPI::
 
-  $ python setup.py sdist upload
+  $ python setup.py upload
 
