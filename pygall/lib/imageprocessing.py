@@ -3,6 +3,7 @@ import os
 import datetime
 import shutil
 import logging
+from types import StringType, UnicodeType
 
 import Image
 import ExifTags
@@ -36,11 +37,14 @@ class ImageProcessing:
         if not self._check_paths(src, dest):
             return
 
-        # copy original photo
         dirpath = os.path.dirname(dest)
         if not os.path.exists(dirpath):
             os.makedirs(dirpath, 0755)
-        shutil.copy2(src, dest)
+        if isinstance(src, (StringType, UnicodeType)):
+            shutil.copyfile(src, dest)
+        else:
+            with open(dest, 'wb') as f:
+                shutil.copyfileobj(src, f)
         log.info("Copied: %s" % dest)
 
 
@@ -173,7 +177,8 @@ class ImageProcessing:
         Checks validity of src and/or dest paths
         """
         # fail if src photo does not exist
-        if not os.path.exists(src):
+        if isinstance(path, (StringType, UnicodeType)) and \
+                not os.path.exists(src):
             log.info("Source photo does not exists: %s" % src)
             return False
         # fail if dest photo already exists
