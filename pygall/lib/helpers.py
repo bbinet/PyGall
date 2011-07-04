@@ -24,7 +24,7 @@ def img_md5(f, block_size=2**20):
     return unicode(md5.hexdigest())
 
 def unchroot_path(path, chroot):
-    if type(path) != StringType and type(path) != UnicodeType:
+    if not isinstance(path, (StringType, UnicodeType)):
         raise Exception('Bad path (type is not string)')
     while path.startswith(os.sep):
         path = path[len(os.sep):]
