@@ -58,7 +58,6 @@ class ImageProcessing:
         if not self._check_paths(src, dest):
             return
 
-        # copy scaled and rotated photo
         try:
             orientation = self._get_exif(src)['Orientation']
         except:
