@@ -14,6 +14,10 @@ In progress
 * remove gp.fileupload on server side, and make use of
   https://github.com/blueimp/jQuery-File-Upload on client side.
   See also: http://wiki.pylonshq.com/display/pylonscookbook/A+Better+Way+To+Limit+File+Upload+Size
+  and: http://www.reddit.com/r/Python/comments/gd9s8/uploading_files_with_pyramid/
+
+* add a custom formalchemy renderer for a pygall image (which should handle the
+  scaled image, and the custom url, md5sum...)
 
 Should have
 -----------
@@ -37,6 +41,8 @@ Should have
 * add support to filter photos by rating
 
 * add support to filter photos by import roll
+
+* make use of the html5 boilerplate default in templates
 
 Nice to have
 ------------
