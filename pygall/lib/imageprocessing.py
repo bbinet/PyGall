@@ -4,6 +4,7 @@ import datetime
 import shutil
 import logging
 from types import StringType, UnicodeType
+from imghdr import what
 
 import Image
 import ExifTags
@@ -26,7 +27,6 @@ class ImageProcessing:
         self.abs_scaled_dest_dir = os.path.join(self.dest_dir, SCALED)
         self.dimension = crop_dimension
         self.quality = crop_quality
-
 
     def copy_orig(self, src, dest_uri):
         """
@@ -154,7 +154,7 @@ class ImageProcessing:
             date.strftime("%Y"),
             date.strftime("%m"),
             date.strftime("%d"),
-            md5sum + os.path.splitext(src)[1].lower())
+            md5sum + '.' + what(src))
 
         return (date, uri)
 
