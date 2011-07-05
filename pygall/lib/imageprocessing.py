@@ -176,7 +176,7 @@ class ImageProcessing:
         Checks validity of src and/or dest paths
         """
         # fail if src photo does not exist
-        if isinstance(path, (StringType, UnicodeType)) and \
+        if isinstance(src, (StringType, UnicodeType)) and \
                 not os.path.exists(src):
             log.info("Source photo does not exists: %s" % src)
             return False
