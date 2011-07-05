@@ -3,6 +3,7 @@ from pyramid_formalchemy.utils import TemplateEngine
 from fa.jquery import renderers as fa_renderers
 
 from pygall import models
+from pygall.lib.formalchemy.pygallimage import PyGallImageFieldRenderer
 
 config.engine = TemplateEngine()
 
@@ -15,8 +16,8 @@ PyGallTagGrid.configure(exclude=[PyGallTagGrid.photos])
 
 PyGallPhoto = FieldSet(models.PyGallPhoto)
 PyGallPhoto.fspot_id.set(readonly=True)
-PyGallPhoto.uri.set(readonly=True)
 PyGallPhoto.md5sum.set(readonly=True)
+PyGallPhoto.uri.set(renderer=PyGallImageFieldRenderer)
 PyGallPhoto.configure()
 PyGallPhotoGrid = Grid(models.PyGallPhoto)
 PyGallPhotoGrid.configure(exclude=[PyGallPhotoGrid.md5sum])
