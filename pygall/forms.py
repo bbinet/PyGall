@@ -14,11 +14,23 @@ PyGallTag.configure(exclude=[PyGallTag.photos])
 PyGallTagGrid = Grid(models.PyGallTag)
 PyGallTagGrid.configure(exclude=[PyGallTagGrid.photos])
 
-PyGallPhoto = FieldSet(models.PyGallPhoto)
-PyGallPhoto.fspot_id.set(readonly=True)
-PyGallPhoto.md5sum.set(readonly=True)
-PyGallPhoto.uri.set(renderer=PyGallImageFieldRenderer)
-PyGallPhoto.configure()
+PyGallPhotoView = FieldSet(models.PyGallPhoto)
+PyGallPhotoView.fspot_id.set(readonly=True)
+PyGallPhotoView.md5sum.set(readonly=True)
+PyGallPhotoView.uri.set(renderer=PyGallImageFieldRenderer)
+PyGallPhotoView.configure()
+
+PyGallPhotoEdit = FieldSet(models.PyGallPhoto)
+PyGallPhotoEdit.fspot_id.set(readonly=True)
+PyGallPhotoEdit.md5sum.set(readonly=True)
+PyGallPhotoEdit.uri.set(renderer=PyGallImageFieldRenderer, readonly=True)
+PyGallPhotoEdit.configure()
+
+PyGallPhotoAdd = FieldSet(models.PyGallPhoto)
+PyGallPhotoAdd.uri.set(renderer=PyGallImageFieldRenderer)
+PyGallPhotoAdd.configure(exclude=[
+    PyGallPhotoAdd.time, PyGallPhotoAdd.fspot_id, PyGallPhotoAdd.md5sum])
+
 PyGallPhotoGrid = Grid(models.PyGallPhoto)
 PyGallPhotoGrid.configure(exclude=[PyGallPhotoGrid.md5sum])
 
