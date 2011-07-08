@@ -29,21 +29,21 @@ def add_localizer(event):
     request.localizer = localizer
     request.translate = auto_translate
 
-    @fa_subscriber([PyGallPhoto, IAfterSyncEvent])
-    def after_photo_sync(context, event):
-        if context.time and context.md5sum:
-            return
-        uri = context.uri
-        info = get_info(os.path.join(
-            event.request.registry.settings['photos_dir'], ORIG, uri))
-        if not context.time:
-            context.time = info['date']
-            log.debug("context.time = %s" % info['date'])
-        if not context.md5sum:
-            context.md5sum = info['md5sum']
-            log.debug("context.md5sum = %s" % info['md5sum'])
+@fa_subscriber([PyGallPhoto, IAfterSyncEvent])
+def after_photo_sync(context, event):
+    if context.time and context.md5sum:
+        return
+    uri = context.uri
+    info = get_info(os.path.join(
+        event.request.registry.settings['photos_dir'], ORIG, uri))
+    if not context.time:
+        context.time = info['date']
+        log.debug("context.time = %s" % info['date'])
+    if not context.md5sum:
+        context.md5sum = info['md5sum']
+        log.debug("context.md5sum = %s" % info['md5sum'])
 
-    @fa_subscriber([PyGallPhoto, IBeforeDeleteEvent])
-    def before_photo_delete(context, event):
-        ip.remove_image(context.uri)
-        log.debug('ip.remove_image(%s)' % context.uri)
+@fa_subscriber([PyGallPhoto, IBeforeDeleteEvent])
+def before_photo_delete(context, event):
+    ip.remove_image(context.uri)
+    log.debug('ip.remove_image(%s)' % context.uri)
