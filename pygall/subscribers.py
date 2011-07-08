@@ -1,9 +1,14 @@
+import logging
+
 from pyramid.i18n import get_localizer, TranslationStringFactory
 from pyramid.events import subscriber, BeforeRender, NewRequest
 from pyramid_formalchemy.events import subscriber as fa_subscriber, \
         IBeforeValidateEvent, IBeforeDeleteEvent
 
 from pygall.models import PyGallPhoto
+from pygall.lib.imageprocessing import ip
+
+log = logging.getLogger(__name__)
 
 @subscriber(BeforeRender)
 def add_renderer_globals(event):
@@ -30,5 +35,5 @@ def add_localizer(event):
 
     @fa_subscriber([PyGallPhoto, IBeforeDeleteEvent])
     def before_photo_delete(context, event):
-        print "%r will be deleted" % context
-        # TODO: ip.remove_image(context.uri)
+        ip.remove_image(context.uri)
+        log.debug('ip.remove_image(%s)' % context.uri)
