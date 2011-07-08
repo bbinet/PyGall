@@ -14,7 +14,7 @@ class PyGallImageFieldRenderer(ImageFieldRenderer):
 
     @property
     def storage_path(self):
-        self.request.registry.settings['photos_dir']
+        return self.request.registry.settings['photos_dir']
 
     def get_url(self, relative_path):
         """ override ImageFieldRenderer get_url """
