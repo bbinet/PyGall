@@ -17,6 +17,39 @@ log = logging.getLogger(__name__)
 ORIG = "orig"
 SCALED = "scaled"
 
+
+def get_exif(info):
+    ret = {}
+    if info == None:
+        raise Exception("can't get exif")
+    for tag, value in info.items():
+        decoded = ExifTags.TAGS.get(tag, tag)
+        ret[decoded] = value
+    return ret
+
+
+def get_info(img, info={}):
+    """
+    Get infos about the given image
+    """
+    loc = seek(img, 0)
+    im = Image.open(img)
+    if 'date' not in info:
+        try:
+            exif = get_exif(im._getexif())
+            info['date'] = datetime.datetime.strptime(
+                    exif['DateTimeOriginal'], '%Y:%m:%d %H:%M:%S')
+        except:
+            info['date'] = None
+    if 'md5sum' not in info:
+        info['md5sum'] = img_md5(im)
+    if 'ext' not in info:
+        info['ext'] = im.format.lower()
+    if loc: seek(f, loc)
+
+    return info
+
+
 class ImageProcessing:
     def __init__(self,
                  dest_dir=None,
@@ -69,7 +102,7 @@ class ImageProcessing:
         loc = seek(src, 0)
         im = Image.open(src)
         try:
-            orientation = self._get_exif(im._getexif())['Orientation']
+            orientation = get_exif(im._getexif())['Orientation']
         except:
             orientation = 0
 
@@ -138,7 +171,7 @@ class ImageProcessing:
         info = {}
         if md5sum is not None:
             info['md5sum'] = md5sum
-        info = self._get_info(src, info)
+        info = get_info(src, info)
         uri = os.path.join(
             info['date'].strftime("%Y"),
             info['date'].strftime("%m"),
@@ -155,38 +188,6 @@ class ImageProcessing:
         return info
 
 
-    def _get_info(self, img, info={}):
-        """
-        Get infos about the given image
-        """
-        loc = seek(img, 0)
-        im = Image.open(img)
-        if 'date' not in info:
-            try:
-                exif = self._get_exif(im._getexif())
-                info['date'] = datetime.datetime.strptime(
-                        exif['DateTimeOriginal'], '%Y:%m:%d %H:%M:%S')
-            except:
-                info['date'] = None
-        if 'md5sum' not in info:
-            info['md5sum'] = img_md5(im)
-        if 'ext' not in info:
-            info['ext'] = im.format.lower()
-        if loc: seek(f, loc)
-
-        return info
-
-
-    def _get_exif(self, info):
-        ret = {}
-        if info == None:
-            raise Exception("can't get exif")
-        for tag, value in info.items():
-            decoded = ExifTags.TAGS.get(tag, tag)
-            ret[decoded] = value
-        return ret
-
-
     def _check_paths(self, src, dest=None):
         """
         Checks validity of src and/or dest paths
@@ -201,5 +202,6 @@ class ImageProcessing:
             log.info("Destination photo already exists: %s" % dest)
             return False
         return True
+
 
 ip = ImageProcessing()
