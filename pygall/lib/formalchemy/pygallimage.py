@@ -27,7 +27,6 @@ class PyGallImageFieldRenderer(ImageFieldRenderer):
             return self._path
         data = FieldRenderer.deserialize(self)
         if isinstance(data, cgi.FieldStorage):
-            time, self._path
             info = self.ip.process_image(data.file)
             self._path = info['uri']
             ##########################################
