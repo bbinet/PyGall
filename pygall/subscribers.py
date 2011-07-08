@@ -1,5 +1,7 @@
 from pyramid.i18n import get_localizer, TranslationStringFactory
+from pyramid.events import subscriber, BeforeRender, NewRequest
 
+@subscriber(BeforeRender)
 def add_renderer_globals(event):
     request = event.get('request')
     if request:
@@ -8,6 +10,7 @@ def add_renderer_globals(event):
 
 tsf = TranslationStringFactory('PyGall')
 
+@subscriber(NewRequest)
 def add_localizer(event):
     request = event.request
     localizer = get_localizer(request)

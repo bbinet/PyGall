@@ -42,10 +42,6 @@ def main(global_config, **settings):
             view='fa.jquery.pyramid.ModelView', factory=FAModelsFactory)
 
     # i18n
-    config.add_subscriber('pygall.subscribers.add_renderer_globals',
-            'pyramid.events.BeforeRender')
-    config.add_subscriber('pygall.subscribers.add_localizer',
-            'pyramid.events.NewRequest')
     config.add_translation_dirs('pygall:locale')
 
     # bind the mako renderer to other file extensions
