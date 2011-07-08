@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 import os
-import datetime
+from datetime import datetime
 import shutil
 import logging
 from types import StringType, UnicodeType
-from imghdr import what
 
 import Image
 import ExifTags
@@ -37,7 +36,7 @@ def get_info(img, info={}):
     if 'date' not in info:
         try:
             exif = get_exif(im._getexif())
-            info['date'] = datetime.datetime.strptime(
+            info['date'] = datetime.strptime(
                     exif['DateTimeOriginal'], '%Y:%m:%d %H:%M:%S')
         except:
             info['date'] = None
