@@ -29,8 +29,7 @@ PyGallPhotoEdit.configure()
 PyGallPhotoAdd = FieldSet(models.PyGallPhoto)
 PyGallPhotoAdd.uri.set(renderer=PyGallImageFieldRenderer)
 PyGallPhotoAdd.configure(exclude=[
-    PyGallPhotoAdd.fspot_id, PyGallPhotoAdd.md5sum])
-del PyGallPhotoAdd.time # so that we even don't validate time
+    PyGallPhotoAdd.fspot_id, PyGallPhotoAdd.md5sum, PyGallPhotoAdd.time])
 
 PyGallPhotoGrid = Grid(models.PyGallPhoto)
 PyGallPhotoGrid.configure(exclude=[PyGallPhotoGrid.md5sum])
