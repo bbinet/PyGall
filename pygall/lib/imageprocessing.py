@@ -27,10 +27,11 @@ def get_exif(info):
     return ret
 
 
-def get_info(img, info={}):
+def get_info(img, info=None):
     """
     Get infos about the given image
     """
+    if info is None: info = {}
     loc = seek(img, 0)
     im = Image.open(img)
     if 'date' not in info:
