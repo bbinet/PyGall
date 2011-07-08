@@ -14,7 +14,7 @@ from pyramid.url import route_url
 from webhelpers.paginate import Page
 
 from pygall.models import DBSession, PyGallTag, PyGallPhoto
-from pygall.lib.imageprocessing import ImageProcessing
+from pygall.lib.imageprocessing import ip
 from pygall.lib.archivefile import extractall
 from pygall.lib.helpers import img_md5, unchroot_path, remove_empty_dirs
 from pygall.security import authenticate
@@ -69,7 +69,6 @@ class Photos(object):
         self.request = request
         self.debug = "debug" in request.params
         self.lang = get_locale_name(request)
-        self.ip = ImageProcessing(request.registry.settings['photos_dir'])
 
     @view_config(route_name='photos_create', renderer='json',
             permission='edit')
@@ -126,7 +125,7 @@ class Photos(object):
             raise Exception("Same md5sum already exists in database")
 
         # process and import photos to public/data/photos dir
-        info = self.ip.process_image(abspath, md5sum=hash)
+        info = ip.process_image(abspath, md5sum=hash)
         os.unlink(abspath)
 
         # import image in db

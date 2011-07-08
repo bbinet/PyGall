@@ -8,6 +8,7 @@ import pyramid_tm
 
 from pygall.resources import RootFactory, FAModelsFactory
 from pygall.security import groupfinder
+from pygall.lib.imageprocessing import ip
 
 def locale_negotiator(request):
     """ Our locale negotiator. Returns a locale name or None.
@@ -21,6 +22,7 @@ def main(global_config, **settings):
     # force some global settings
     settings['static_path'] = 'pygall:static'
     settings['mako.directories'] = ['pygall:templates']
+    ip.set_dest_dir(settings['photos_dir'])
 
     authentication_policy = AuthTktAuthenticationPolicy(
             'my_secret', callback=groupfinder)

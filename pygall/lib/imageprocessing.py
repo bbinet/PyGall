@@ -202,3 +202,4 @@ class ImageProcessing:
             return False
         return True
 
+ip = ImageProcessing()

@@ -3,13 +3,12 @@ import cgi
 from formalchemy.fields import FieldRenderer, FileFieldRenderer
 from formalchemy.ext.fsblob import ImageFieldRenderer
 
-from pygall.lib.imageprocessing import ImageProcessing
+from pygall.lib.imageprocessing import ip
 
 class PyGallImageFieldRenderer(ImageFieldRenderer):
 
     def __init__(self, *args, **kwargs):
         FileFieldRenderer.__init__(self, *args, **kwargs)
-        self.ip = ImageProcessing(self.request.registry.settings['photos_dir'])
         self._path = None
 
     @property
@@ -27,7 +26,7 @@ class PyGallImageFieldRenderer(ImageFieldRenderer):
             return self._path
         data = FieldRenderer.deserialize(self)
         if isinstance(data, cgi.FieldStorage):
-            info = self.ip.process_image(data.file)
+            info = ip.process_image(data.file)
             self._path = info['uri']
             ##########################################
             # ugly hack to also set the time in db
