@@ -9,7 +9,7 @@ from imghdr import what
 import Image
 import ExifTags
 
-from pygall.lib.helpers import img_md5
+from pygall.lib.helpers import img_md5, seek
 
 log = logging.getLogger(__name__)
 
@@ -58,8 +58,10 @@ class ImageProcessing:
         if not self._check_paths(src, dest):
             return
 
+        loc = seek(src, 0)
+        im = Image.open(src)
         try:
-            orientation = self._get_exif(src)['Orientation']
+            orientation = self._get_exif(im._getexif())['Orientation']
         except:
             orientation = 0
 
@@ -67,7 +69,6 @@ class ImageProcessing:
         if not os.path.exists(dirpath):
             os.makedirs(dirpath, 0755)
 
-        im = Image.open(src)
         # auto rotate if needed
         if orientation == 6:
             im=im.rotate(270)
@@ -97,6 +98,7 @@ class ImageProcessing:
 
         # save processed image
         im.save(dest, quality=self.quality)
+        if loc: seek(src, loc)
 
 
     def remove_image(self, uri):
@@ -140,8 +142,10 @@ class ImageProcessing:
         """
         Built the destination relative path based on image timestamp
         """
+        loc = seek(src, 0)
+        im = Image.open(src)
         try:
-            exif = self._get_exif(src)
+            exif = self._get_exif(im._getexif())
             date = datetime.datetime.strptime(
                     exif['DateTimeOriginal'], '%Y:%m:%d %H:%M:%S')
         except:
@@ -149,20 +153,19 @@ class ImageProcessing:
             date = datetime.datetime.today()
 
         if not md5sum:
-            md5sum = img_md5(src)
+            md5sum = img_md5(im)
         uri = os.path.join(
             date.strftime("%Y"),
             date.strftime("%m"),
             date.strftime("%d"),
-            md5sum + '.' + what(src))
+            md5sum + '.' + im.format.lower())
+        if loc: seek(f, loc)
 
         return (date, uri)
 
 
-    def _get_exif(self, src):
+    def _get_exif(self, info):
         ret = {}
-        im = Image.open(src)
-        info = im._getexif()
         if info == None:
             raise Exception("can't get exif")
         for tag, value in info.items():

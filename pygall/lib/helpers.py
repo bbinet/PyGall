@@ -9,12 +9,26 @@ import hashlib
 from types import StringType, UnicodeType
 from cStringIO import StringIO
 
+from ImageFile import ImageFile
 import Image
+
+def seek(f, pos):
+    loc = None
+    if not isinstance(f, (StringType, UnicodeType)):
+        loc = f.tell()
+        f.seek(pos)
+    return loc
 
 def img_md5(f, block_size=2**20):
     # use PIL image to ignore exif tags when calculating md5sum
     md5 = hashlib.md5()
-    buf = StringIO(Image.open(f).tostring())
+    buf = None
+    if isinstance(f, ImageFile):
+        buf = StringIO(f.tostring())
+    else:
+        loc = seek(f, 0)
+        buf = StringIO(Image.open(f).tostring())
+        if loc: seek(f, loc)
     while True:
         data = buf.read(block_size)
         if not data:
