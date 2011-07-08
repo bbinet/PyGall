@@ -19,14 +19,22 @@ SCALED = "scaled"
 
 class ImageProcessing:
     def __init__(self,
-                 dest_dir,
+                 dest_dir=None,
                  crop_dimension=700,
                  crop_quality=80):
-        self.dest_dir = dest_dir
-        self.abs_orig_dest_dir = os.path.join(self.dest_dir, ORIG)
-        self.abs_scaled_dest_dir = os.path.join(self.dest_dir, SCALED)
+        self.set_dest_dir(dest_dir)
         self.dimension = crop_dimension
         self.quality = crop_quality
+
+    def set_dest_dir(self, dest_dir):
+        if dest_dir is None:
+            self.dest_dir = None
+            self.abs_orig_dest_dir = None
+            self.abs_scaled_dest_dir = None
+        else:
+            self.dest_dir = dest_dir
+            self.abs_orig_dest_dir = os.path.join(self.dest_dir, ORIG)
+            self.abs_scaled_dest_dir = os.path.join(self.dest_dir, SCALED)
 
     def copy_orig(self, src, uri):
         """
