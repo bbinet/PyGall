@@ -16,9 +16,6 @@ In progress
   See also: http://wiki.pylonshq.com/display/pylonscookbook/A+Better+Way+To+Limit+File+Upload+Size
   and: http://www.reddit.com/r/Python/comments/gd9s8/uploading_files_with_pyramid/
 
-* add a custom formalchemy renderer for a pygall image (which should handle the
-  scaled image, and the custom url, md5sum...)
-
 Should have
 -----------
 
