@@ -126,14 +126,14 @@ class Photos(object):
             raise Exception("Same md5sum already exists in database")
 
         # process and import photos to public/data/photos dir
-        date, dest_uri = self.ip.process_image(abspath, md5sum=hash)
+        info = self.ip.process_image(abspath, md5sum=hash)
         os.unlink(abspath)
 
         # import image in db
         photo = PyGallPhoto()
-        photo.uri = dest_uri
+        photo.uri = info['dest_uri']
         photo.md5sum = hash
-        photo.time = date
+        photo.time = info['date']
         DBSession.add(photo)
         DBSession.flush()
 

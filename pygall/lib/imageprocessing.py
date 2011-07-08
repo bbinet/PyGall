@@ -127,7 +127,16 @@ class ImageProcessing:
         Copy the scaled and rotated image to scaled dest directory
         Remove the original image from disk
         """
-        date, dest_uri = self._date_uri(src, md5sum)
+        info = {}
+        if md5sum is not None:
+            info['md5sum'] = md5sum
+        info = self._get_info(src, info)
+        dest_uri = os.path.join(
+            info['date'].strftime("%Y"),
+            info['date'].strftime("%m"),
+            info['date'].strftime("%d"),
+            info['md5sum'] + '.' + info['ext'])
+        info['dest_uri'] = dest_uri
         try:
             self.copy_orig(src, dest_uri)
             self.copy_scaled(src, dest_uri)
@@ -135,33 +144,29 @@ class ImageProcessing:
             # clean up if an exception occured during import
             self.remove_image(dest_uri)
             raise e
-        return (date, dest_uri)
+        return info
 
 
-    def _date_uri(self, src, md5sum=None):
+    def _get_info(self, img, info={}):
         """
-        Built the destination relative path based on image timestamp
+        Get infos about the given image
         """
-        loc = seek(src, 0)
-        im = Image.open(src)
-        try:
-            exif = self._get_exif(im._getexif())
-            date = datetime.datetime.strptime(
-                    exif['DateTimeOriginal'], '%Y:%m:%d %H:%M:%S')
-        except:
-            # TODO: return None and handle this at a higher level
-            date = datetime.datetime.today()
-
-        if not md5sum:
-            md5sum = img_md5(im)
-        uri = os.path.join(
-            date.strftime("%Y"),
-            date.strftime("%m"),
-            date.strftime("%d"),
-            md5sum + '.' + im.format.lower())
+        loc = seek(img, 0)
+        im = Image.open(img)
+        if 'date' not in info:
+            try:
+                exif = self._get_exif(im._getexif())
+                info['date'] = datetime.datetime.strptime(
+                        exif['DateTimeOriginal'], '%Y:%m:%d %H:%M:%S')
+            except:
+                info['date'] = None
+        if 'md5sum' not in info:
+            info['md5sum'] = img_md5(im)
+        if 'ext' not in info:
+            info['ext'] = img_md5(im.format.lower())
         if loc: seek(f, loc)
 
-        return (date, uri)
+        return info
 
 
     def _get_exif(self, info):

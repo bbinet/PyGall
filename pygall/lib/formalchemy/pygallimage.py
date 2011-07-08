@@ -27,10 +27,12 @@ class PyGallImageFieldRenderer(ImageFieldRenderer):
             return self._path
         data = FieldRenderer.deserialize(self)
         if isinstance(data, cgi.FieldStorage):
-            time, self._path = self.ip.process_image(data.file)
+            time, self._path
+            info = self.ip.process_image(data.file)
+            self._path = info['dest_uri']
             ##########################################
             # ugly hack to also set the time in db
-            self.field.model.time = time
+            self.field.model.time = info['date'] or datetime.now()
             ##########################################
             return self._path
         checkbox_name = '%s--remove' % self.name
