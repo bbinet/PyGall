@@ -85,7 +85,9 @@ class ImageProcessing:
             shutil.copyfile(src, dest)
         else:
             with open(dest, 'wb') as f:
+                loc = seek(src, 0)
                 shutil.copyfileobj(src, f)
+                src.seek(loc)
         log.info("Copied: %s" % dest)
 
 
