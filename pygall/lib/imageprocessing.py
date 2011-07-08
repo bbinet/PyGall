@@ -171,7 +171,7 @@ class ImageProcessing:
         if 'md5sum' not in info:
             info['md5sum'] = img_md5(im)
         if 'ext' not in info:
-            info['ext'] = img_md5(im.format.lower())
+            info['ext'] = im.format.lower()
         if loc: seek(f, loc)
 
         return info
