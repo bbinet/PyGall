@@ -131,7 +131,7 @@ class Photos(object):
 
         # import image in db
         photo = PyGallPhoto()
-        photo.uri = info['dest_uri']
+        photo.uri = info['uri']
         photo.md5sum = hash
         photo.time = info['date']
         DBSession.add(photo)

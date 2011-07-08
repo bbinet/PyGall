@@ -29,7 +29,7 @@ class PyGallImageFieldRenderer(ImageFieldRenderer):
         if isinstance(data, cgi.FieldStorage):
             time, self._path
             info = self.ip.process_image(data.file)
-            self._path = info['dest_uri']
+            self._path = info['uri']
             ##########################################
             # ugly hack to also set the time in db
             self.field.model.time = info['date'] or datetime.now()

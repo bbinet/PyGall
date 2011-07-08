@@ -28,11 +28,11 @@ class ImageProcessing:
         self.dimension = crop_dimension
         self.quality = crop_quality
 
-    def copy_orig(self, src, dest_uri):
+    def copy_orig(self, src, uri):
         """
         Copy the original image to orig dest directory
         """
-        dest = os.path.join(self.abs_orig_dest_dir, dest_uri)
+        dest = os.path.join(self.abs_orig_dest_dir, uri)
 
         if not self._check_paths(src, dest):
             return
@@ -48,12 +48,12 @@ class ImageProcessing:
         log.info("Copied: %s" % dest)
 
 
-    def copy_scaled(self, src, dest_uri):
+    def copy_scaled(self, src, uri):
         """
         Rotate and scale image.
         Copy the processed image to scaled dest directory
         """
-        dest = os.path.join(self.abs_scaled_dest_dir, dest_uri)
+        dest = os.path.join(self.abs_scaled_dest_dir, uri)
 
         if not self._check_paths(src, dest):
             return
@@ -131,18 +131,18 @@ class ImageProcessing:
         if md5sum is not None:
             info['md5sum'] = md5sum
         info = self._get_info(src, info)
-        dest_uri = os.path.join(
+        uri = os.path.join(
             info['date'].strftime("%Y"),
             info['date'].strftime("%m"),
             info['date'].strftime("%d"),
             info['md5sum'] + '.' + info['ext'])
-        info['dest_uri'] = dest_uri
+        info['uri'] = uri
         try:
-            self.copy_orig(src, dest_uri)
-            self.copy_scaled(src, dest_uri)
+            self.copy_orig(src, uri)
+            self.copy_scaled(src, uri)
         except Exception, e:
             # clean up if an exception occured during import
-            self.remove_image(dest_uri)
+            self.remove_image(uri)
             raise e
         return info
 
