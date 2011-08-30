@@ -13,7 +13,6 @@ requires = [
     'pyramid_tm',
     'WebError',
     'WebHelpers>=1.3,<=1.99',
-    'gp.fileupload>=1.0,<=1.0.99',
     'PIL>=1.1.4,<=1.1.99',
     'Babel',
     'pyramid_formalchemy',
