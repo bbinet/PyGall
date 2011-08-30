@@ -63,7 +63,7 @@ def main(global_config, **settings):
 
     # add the static views (for static resources)
     config.add_static_view('static', settings['static_path'])
-    config.add_static_view('photos', settings['photos_dir'])
+    config.add_static_view('photos', settings['photos_dir'], permission='view')
 
     return config.make_wsgi_app()
 

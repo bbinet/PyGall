@@ -4,10 +4,6 @@ TODO
 In progress
 -----------
 
-* the static view should be secured too
-  this will be fixed in next pyramid release, see:
-  https://github.com/Pylons/pyramid/issues/161
-
 * upgrade galleria to 1.2 (git submodule)
   we should create a pygall plugin for galleria similar to the flickr plugin
 
