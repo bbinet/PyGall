@@ -20,6 +20,8 @@ Changes
 * remove upper limit on SQLAlchemy dependency, so that PyGall can be used with
   SQLAlchemy 0.7
 
+* the static view is now also secured
+
 0.8
 ---
 
