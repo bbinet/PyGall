@@ -122,8 +122,8 @@ class Photos(object):
                             })
                     except Exception as e:
                         # TODO: log error in session (flash message)
-                        log.error("Error while importing image, skip" \
-                                "file: %s\nException: %s" %(abspath, str(e)))
+                        log.exception("Error while importing image, skip" \
+                                "file: %s" % abspath)
         except Exception, e:
             # TODO: log error in session (flash message)
             raise e
