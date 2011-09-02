@@ -117,7 +117,7 @@ class Photos(object):
                                 settings['photos_dir']+'/scaled/'+info['uri']),
                             #TODO: delete_url
                             "delete_url": self.request.route_url(
-                                'photos/', subpath='/orig/'+info['uri']),
+                                'photos_delete', _query=[('uri', info['uri'])]),
                             "delete_type":"DELETE"
                             })
                     except Exception as e:
