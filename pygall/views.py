@@ -1,4 +1,5 @@
 import logging
+import cgi
 import os
 from math import ceil
 from tempfile import mkdtemp
@@ -70,40 +71,48 @@ class Photos(object):
         self.debug = "debug" in request.params
         self.lang = get_locale_name(request)
 
+    @view_config(route_name='photos_delete', renderer='json',
+            permission='edit', request_method='DELETE')
+    def delete(self):
+        """POST /photos: Create a new item"""
+
     @view_config(route_name='photos_create', renderer='json',
-            permission='edit')
+            permission='edit', request_method='POST')
     def create(self):
         """POST /photos: Create a new item"""
-        log.error("create")
 
-        # gp.fileupload stores uploaded filename in fieldstorage
-        fieldstorage = self.request.params.get('file', u'')
-        if fieldstorage == u'':
-            log.debug("Nothing uploaded")
+        f = self.request.params.get('files[]', None)
+        if not isinstance(f, cgi.FieldStorage):
             return HTTPBadRequest()
-        upload_dir = self.request.registry.settings['upload_dir']
-        filepath = os.path.join(
-                upload_dir,
-                fieldstorage.file.read().strip(" \n\r"))
-        log.debug("File has been downloaded to %s" %(filepath))
-        fieldstorage.file.close()
 
+        done = []
+        upload_dir = self.request.registry.settings['upload_dir']
         # extract to a tmpdir that we should delete immediately
         # after import is done.
         tmpdir = mkdtemp(dir=upload_dir)
 
         try:
-            extractall(filepath, tmpdir)
-            # delete the uploaded archive once extracted
-            os.remove(filepath)
+            extractall(f.file, tmpdir, name=f.filename)
 
             # walk in import directory to import all image files
             for dirpath, dirs, files in os.walk(tmpdir, topdown=False):
                 for filename in files:
                     abspath = os.path.join(dirpath, filename)
-                    log.debug("Importing image: %s" %abspath)
+                    log.debug("Importing image: %s" % abspath)
                     try:
-                        self._import(abspath)
+                        info = self._import(abspath)
+                        done.append({
+                            "name": f.filename,
+                            "size": info['size'],
+                            "url": self.request.route_url(
+                                'photos/', subpath='/orig/'+info['uri']),
+                            "thumbnail_url": self.request.route_url(
+                                'photos/', subpath='/scaled/'+info['uri']),
+                            #TODO: delete_url
+                            "delete_url": self.request.route_url(
+                                'photos/', subpath='/orig/'+info['uri']),
+                            "delete_type":"DELETE"
+                            })
                     except Exception as e:
                         # TODO: log error in session (flash message)
                         log.error("Error while importing image, skip" \
@@ -114,7 +123,7 @@ class Photos(object):
         finally:
             rmtree(tmpdir)
 
-        return { 'success': True }
+        return done
 
 
     def _import(self, abspath):
@@ -136,13 +145,19 @@ class Photos(object):
         DBSession.add(photo)
         DBSession.flush()
 
+        return info
+
+
     @view_config(route_name='photos_new', renderer='new.html.mako',
-            permission='edit')
+            permission='edit', request_method='GET')
     def new(self, format='html'):
         """GET /photos/new: Form to create a new item"""
         return {
-            'logged_in': authenticated_userid(self.request)
+            'logged_in': authenticated_userid(self.request),
+            'maxfilesize': 10000000,
+            'minfilesize': 10,
         }
+
 
     @view_config(route_name='photos_editcomment', renderer='json')
     def editcomment(self):
