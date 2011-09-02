@@ -45,6 +45,12 @@ def get_info(img, info=None):
         info['md5sum'] = img_md5(im)
     if 'ext' not in info:
         info['ext'] = im.format.lower()
+    if 'size' not in info:
+        if isinstance(img, (StringType, UnicodeType)):
+            info['size'] = os.path.getsize(img)
+        else:
+            img.seek(0, os.SEEK_END)
+            info['size'] = img.tell()
     if loc: seek(f, loc)
 
     return info
