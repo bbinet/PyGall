@@ -7,7 +7,10 @@ README = open(os.path.join(here, 'README.rst')).read()
 CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
 
 requires = [
-    'pyramid',
+    # pyramid > 1.1 because we need static_url to accept an asbolutes
+    # filename as a "path" argument. See:
+    # https://docs.pylonsproject.org/projects/pyramid/1.2/whatsnew-1.2.html#minor-feature-additions
+    'pyramid>1.1',
     'SQLAlchemy>=0.6',
     'SQLAHelper',
     'pyramid_tm',

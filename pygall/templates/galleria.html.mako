@@ -11,7 +11,7 @@
         % else:
         <li title="${photo.time.strftime('%d/%m/%Y') if photo.time else ''}">
         % endif
-            <img src="${request.route_url('photos/',subpath='/scaled/'+str(photo.uri))}" alt="${photo.uri}" title="${photo.description or ''}">
+            <img src="${request.static_url(photos_dir+'/scaled/'+str(photo.uri))}" alt="${photo.uri}" title="${photo.description or ''}">
         </li>
         % endfor
     </ul>

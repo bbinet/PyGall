@@ -86,10 +86,10 @@ class Photos(object):
             return HTTPBadRequest()
 
         done = []
-        upload_dir = self.request.registry.settings['upload_dir']
+        settings = self.request.registry.settings
         # extract to a tmpdir that we should delete immediately
         # after import is done.
-        tmpdir = mkdtemp(dir=upload_dir)
+        tmpdir = mkdtemp(dir=settings['upload_dir'])
 
         try:
             extractall(f.file, tmpdir, name=f.filename)
@@ -104,10 +104,10 @@ class Photos(object):
                         done.append({
                             "name": f.filename,
                             "size": info['size'],
-                            "url": self.request.route_url(
-                                'photos/', subpath='/orig/'+info['uri']),
-                            "thumbnail_url": self.request.route_url(
-                                'photos/', subpath='/scaled/'+info['uri']),
+                            "url": self.request.static_url(
+                                settings['photos_dir']+'/orig/'+info['uri']),
+                            "thumbnail_url": self.request.static_url(
+                                settings['photos_dir']+'/scaled/'+info['uri']),
                             #TODO: delete_url
                             "delete_url": self.request.route_url(
                                 'photos/', subpath='/orig/'+info['uri']),
@@ -193,5 +193,6 @@ class Photos(object):
         return {
             'logged_in': authenticated_userid(self.request),
             'photos': photos,
+            'photos_dir': self.request.registry.settings['photos_dir'],
             'edit': edit
         }
