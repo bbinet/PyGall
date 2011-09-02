@@ -2,11 +2,17 @@ import os
 import zipfile
 import tarfile
 import shutil
+from types import StringType, UnicodeType
 
-def extractall(archive, dstdir):
-    """ extract zip or tar content to dstdir"""
+
+def extractall(archive, dstdir, name='file'):
+    """
+    extract zip or tar content to dstdir
+    archive can be either a filename or a file-like object
+    """
+    extracted = False
     
-    if zipfile.is_zipfile(archive):
+    try:
         z = zipfile.ZipFile(archive)
         for name in z.namelist():
             targetname = name
@@ -30,12 +36,32 @@ def extractall(archive, dstdir):
             if not name.endswith('/'):
                 # copy file
                 file(targetname, 'wb').write(z.read(name))
+            extracted = True
+    except zipfile.BadZipfile:
+        pass
 
-    elif tarfile.is_tarfile(archive):
-        tar = tarfile.open(archive)
-        tar.extractall(path=dstdir)
+    if not extracted:
+        archive.seek(0)
+        try:
+            tar = tarfile.open(name=archive) \
+                    if isinstance(archive, (StringType, UnicodeType)) \
+                    else tarfile.open(fileobj=archive)
+            tar.extractall(path=dstdir)
+            extracted = True
+        except tarfile.TarError:
+            pass
 
-    else:
+    if not extracted:
+        archive.seek(0)
         # seems to be a single file, save it
-        shutil.copyfile(archive, os.path.join(dstdir, os.path.basename(archive)))
+        if isinstance(archive, (StringType, UnicodeType)):
+            shutil.copyfile(
+                    archive, os.path.join(dstdir, os.path.basename(archive)))
+        else:
+            try:
+                fdst = open(
+                        os.path.join(dstdir, os.path.basename(name)), 'wb')
+                shutil.copyfileobj(archive, fdst)
+            finally:
+                if fdst: fdst.close()
 
