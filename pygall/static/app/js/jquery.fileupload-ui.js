@@ -100,22 +100,39 @@
             done: function (e, data) {
                 var that = $(this).data('fileupload');
                 if (data.context) {
-                    data.context.each(function (index) {
-                        var file = ($.isArray(data.result) &&
-                                data.result[index]) || {error: 'emptyResult'};
-                        if (file.error) {
-                            that._adjustMaxNumberOfFiles(1);
-                        }
-                        $(this).fadeOut(function () {
-                            that._renderDownload([file])
-                                .css('display', 'none')
-                                .replaceAll(this)
-                                .fadeIn(function () {
-                                    // Fix for IE7 and lower:
-                                    $(this).show();
-                                });
+                    if (data.context.length < data.result.length) {
+                        var lastrow = data.context[data.context.length - 1];
+                        that._renderDownload(data.result)
+                            .css('display', 'none')
+                            .insertAfter(lastrow || $(this).find('.files'))
+                            .fadeIn(function () {
+                                // Fix for IE7 and lower:
+                                $(this).show();
+                            });
+                        data.context.each(function (index) {
+                            $(this).fadeOut(function () {
+                                $(this).remove();
+                            });
                         });
-                    });
+                    }
+                    else {
+                        data.context.each(function (index) {
+                            var file = ($.isArray(data.result) &&
+                                    data.result[index]) || {error: 'emptyResult'};
+                            if (file.error) {
+                                that._adjustMaxNumberOfFiles(1);
+                            }
+                            $(this).fadeOut(function () {
+                                that._renderDownload([file])
+                                    .css('display', 'none')
+                                    .replaceAll(this)
+                                    .fadeIn(function () {
+                                        // Fix for IE7 and lower:
+                                        $(this).show();
+                                    });
+                            });
+                        });
+                    }
                 } else {
                     that._renderDownload(data.result)
                         .css('display', 'none')
