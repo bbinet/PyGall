@@ -53,6 +53,7 @@ def main(global_config, **settings):
     config.add_route('photos_index', '/{page:\d*}')
     config.add_route('photos_new', '/photos/new')
     config.add_route('photos_create', '/photos/create')
+    config.add_route('photos_delete', '/photos/delete')
     config.add_route('photos_editcomment', '/photos/editcomment')
 
     config.add_route('login', '/login')
