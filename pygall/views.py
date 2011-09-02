@@ -72,9 +72,16 @@ class Photos(object):
         self.lang = get_locale_name(request)
 
     @view_config(route_name='photos_delete', renderer='json',
-            permission='edit', request_method='DELETE')
+            permission='edit')
     def delete(self):
-        """POST /photos: Create a new item"""
+        """POST /photos/delete: Create a new item"""
+        uri = self.request.params.get('uri', None)
+        if not uri:
+            return HTTPBadRequest()
+        if DBSession.query(PyGallPhoto).filter_by(uri=uri).delete() == 0:
+            raise NotFound()
+        ip.remove_image(uri)
+        return True
 
     @view_config(route_name='photos_create', renderer='json',
             permission='edit', request_method='POST')
