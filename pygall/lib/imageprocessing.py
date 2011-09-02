@@ -174,10 +174,11 @@ class ImageProcessing:
         if md5sum is not None:
             info['md5sum'] = md5sum
         info = get_info(src, info)
+        date = info['date'] if info['date'] is not None else datetime.now()
         uri = os.path.join(
-            info['date'].strftime("%Y"),
-            info['date'].strftime("%m"),
-            info['date'].strftime("%d"),
+            date.strftime("%Y"),
+            date.strftime("%m"),
+            date.strftime("%d"),
             info['md5sum'] + '.' + info['ext'])
         info['uri'] = uri
         try:

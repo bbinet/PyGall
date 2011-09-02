@@ -46,7 +46,7 @@ class PyGallPhoto(Base):
     md5sum = Column(Unicode, unique=True)
     description = Column(Unicode)
     rating = Column(Integer)
-    time = Column(DateTime, nullable=False)
+    time = Column(DateTime)
 
     # Relations
     tags = relation('PyGallTag', secondary=photos_tags_table)

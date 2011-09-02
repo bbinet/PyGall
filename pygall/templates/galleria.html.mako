@@ -6,10 +6,10 @@
         <% first=True %>
         % for photo in photos:
         % if first:
-        <li title="${photo.time.strftime('%d/%m/%Y')}" class="active">
+        <li title="${photo.time.strftime('%d/%m/%Y') if photo.time else ''}" class="active">
         <% first=False %>
         % else:
-        <li title="${photo.time.strftime('%d/%m/%Y')}">
+        <li title="${photo.time.strftime('%d/%m/%Y') if photo.time else ''}">
         % endif
             <img src="${request.route_url('photos/',subpath='/scaled/'+str(photo.uri))}" alt="${photo.uri}" title="${photo.description or ''}">
         </li>
