@@ -73,7 +73,7 @@
         {{else}}
         <td class="preview">
             {{if thumbnail_url}}
-            <a href="<%text>${url}</%text>" target="_blank"><img src="<%text>${thumbnail_url}</%text>"></a>
+            <a href="<%text>${url}</%text>" target="_blank"><img src="<%text>${thumbnail_url}</%text>" style="max-height: 80px; max-width: 80px;"></a>
             {{/if}}
         </td>
         <td class="name">
