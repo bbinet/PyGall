@@ -19,6 +19,19 @@ def seek(f, pos):
         f.seek(pos)
     return loc
 
+def get_size(f):
+    """
+    get the size of a file
+    param can be either a filename or a file-like object
+    """
+    if isinstance(f, (StringType, UnicodeType)):
+        size = os.path.getsize(f)
+    else:
+        pos = seek(f, os.SEEK_END)
+        size = f.tell()
+        seek(f, pos)
+    return size
+
 def img_md5(f, block_size=2**20):
     # use PIL image to ignore exif tags when calculating md5sum
     md5 = hashlib.md5()

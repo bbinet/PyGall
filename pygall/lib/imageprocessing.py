@@ -8,7 +8,7 @@ from types import StringType, UnicodeType
 import Image
 import ExifTags
 
-from pygall.lib.helpers import img_md5, seek
+from pygall.lib.helpers import img_md5, seek, get_size
 
 log = logging.getLogger(__name__)
 
@@ -46,11 +46,7 @@ def get_info(img, info=None):
     if 'ext' not in info:
         info['ext'] = im.format.lower()
     if 'size' not in info:
-        if isinstance(img, (StringType, UnicodeType)):
-            info['size'] = os.path.getsize(img)
-        else:
-            img.seek(0, os.SEEK_END)
-            info['size'] = img.tell()
+        info['size'] = get_size(img)
     if loc: seek(f, loc)
 
     return info
