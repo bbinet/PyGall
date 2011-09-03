@@ -2,6 +2,7 @@ from pyramid.config import Configurator
 from pyramid.mako_templating import renderer_factory as mako_renderer_factory
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
+from pyramid.i18n import default_locale_negotiator
 import sqlalchemy
 import sqlahelper
 import pyramid_tm
@@ -10,10 +11,6 @@ from pygall.resources import RootFactory, FAModelsFactory
 from pygall.security import groupfinder
 from pygall.lib.imageprocessing import ip
 
-def locale_negotiator(request):
-    """ Our locale negotiator. Returns a locale name or None.
-    """
-    return request.params.get('lang') if request else None
 
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
@@ -28,7 +25,7 @@ def main(global_config, **settings):
             'my_secret', callback=groupfinder)
     authorization_policy = ACLAuthorizationPolicy()
     config = Configurator(root_factory=RootFactory, settings=settings,
-                          locale_negotiator=locale_negotiator,
+                          locale_negotiator=default_locale_negotiator,
                           authentication_policy=authentication_policy,
                           authorization_policy=authorization_policy)
 
