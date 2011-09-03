@@ -159,10 +159,11 @@ class Photos(object):
             permission='edit', request_method='GET')
     def new(self, format='html'):
         """GET /photos/new: Form to create a new item"""
+        settings = self.request.registry.settings
         return {
             'logged_in': authenticated_userid(self.request),
-            'maxfilesize': 10000000,
-            'minfilesize': 10,
+            'maxfilesize': settings.get('upload_maxsize', 10000000),
+            'minfilesize': settings.get('upload_minsize', 50000),
         }
 
 
