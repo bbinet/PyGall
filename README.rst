@@ -27,8 +27,9 @@ PyGall currently provides the following features:
 * Browse and view photos through a nice interface borrowed from
   `Galleria <http://galleria.aino.se/>`_.
 
-* Upload photos through the browser. The photos are automatically scaled and
-  rotated if needed.
+* Bulk upload of photos through the browser using `jQuery-File-Upload
+  <https://github.com/blueimp/jQuery-File-Upload>`_. The photos are
+  automatically scaled and rotated if needed.
 
 * If using `F-Spot <http://f-spot.org/>`_ as your personal photo management
   desktop application, PyGall provides a script to automatically import photos
