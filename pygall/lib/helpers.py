@@ -12,11 +12,11 @@ from cStringIO import StringIO
 from ImageFile import ImageFile
 import Image
 
-def seek(f, pos):
+def seek(f, offset, whence=0):
     loc = None
     if not isinstance(f, (StringType, UnicodeType)):
         loc = f.tell()
-        f.seek(pos)
+        f.seek(offset, whence)
     return loc
 
 def get_size(f):
@@ -27,7 +27,7 @@ def get_size(f):
     if isinstance(f, (StringType, UnicodeType)):
         size = os.path.getsize(f)
     else:
-        pos = seek(f, os.SEEK_END)
+        pos = seek(f, 0, os.SEEK_END)
         size = f.tell()
         seek(f, pos)
     return size
