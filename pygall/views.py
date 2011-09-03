@@ -17,7 +17,7 @@ from webhelpers.paginate import Page
 from pygall.models import DBSession, PyGallTag, PyGallPhoto
 from pygall.lib.imageprocessing import ip
 from pygall.lib.archivefile import extractall
-from pygall.lib.helpers import img_md5, unchroot_path, remove_empty_dirs
+from pygall.lib.helpers import img_md5, unchroot_path, remove_empty_dirs, get_size
 from pygall.security import authenticate
 
 log = logging.getLogger(__name__)
@@ -109,18 +109,25 @@ class Photos(object):
                     log.debug("Importing image: %s" % abspath)
                     try:
                         info = self._import(abspath)
-                        done.append({
+                        result = {
                             "name": f.filename,
-                            "size": info['size'],
-                            "url": self.request.static_url(
-                                settings['photos_dir']+'/orig/'+info['uri']),
-                            "thumbnail_url": self.request.static_url(
-                                settings['photos_dir']+'/scaled/'+info['uri']),
-                            #TODO: delete_url
-                            "delete_url": self.request.route_url(
-                                'photos_delete', _query=[('uri', info['uri'])]),
-                            "delete_type":"DELETE"
-                            })
+                            "size": get_size(f.file),
+                            "delete_type":"DELETE",
+                            }
+                        uri = None
+                        if isinstance(info, PyGallPhoto):
+                            uri = info.uri
+                            result["error"] = 'alreadyExists'
+                        else:
+                            uri = info['uri']
+
+                        result["url"] = self.request.static_url(
+                            settings['photos_dir']+'/orig/' + uri),
+                        result["thumbnail_url"] = self.request.static_url(
+                            settings['photos_dir']+'/scaled/' + uri),
+                        result["delete_url"] = self.request.route_url(
+                            'photos_delete', _query=[('uri', uri)]),
+                        done.append(result)
                     except Exception as e:
                         # TODO: log error in session (flash message)
                         log.exception("Error while importing image, skip" \
@@ -139,7 +146,8 @@ class Photos(object):
         hash = img_md5(abspath)
         photo = DBSession.query(PyGallPhoto).filter_by(md5sum=hash)
         if photo.count() > 0:
-            raise Exception("Same md5sum already exists in database")
+            log.info("Same md5sum already exists in database")
+            return photo.first()
 
         # process and import photos to public/data/photos dir
         info = ip.process_image(abspath, md5sum=hash)
