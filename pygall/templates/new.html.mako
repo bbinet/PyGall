@@ -3,10 +3,9 @@
 <h3>${_('Upload photos to the PyGall photos gallery')}</h3>
 <div id="fileupload">
     <form action="${request.route_path('photos_create')}" method="POST" enctype="multipart/form-data">
-        ##{% csrf_token %}
         <div class="fileupload-buttonbar">
             <label class="fileinput-button">
-                <span>Add files...</span>
+                <span>${_('Add files...')}</span>
                 <input type="file" name="files[]" multiple>
             </label>
             <button type="submit" class="start">Start upload</button>
@@ -26,11 +25,11 @@
         <td class="name"><%text>${name}</%text></td>
         <td class="size"><%text>${sizef}</%text></td>
         {{if error}}
-        <td class="error" colspan="2">Error:
-            {{if error === 'maxFileSize'}}File is too big
-            {{else error === 'minFileSize'}}File is too small
-            {{else error === 'acceptFileTypes'}}Filetype not allowed
-            {{else error === 'maxNumberOfFiles'}}Max number of files exceeded
+        <td class="error" colspan="2">${_('Error:')}
+            {{if error === 'maxFileSize'}}${_('File is too big')}
+            {{else error === 'minFileSize'}}${_('File is too small')}
+            {{else error === 'acceptFileTypes'}}${_('Filetype not allowed')}
+            {{else error === 'maxNumberOfFiles'}}${_('Max number of files exceeded')}
             {{else}}<%text>${error}</%text>
             {{/if}}
         </td>
@@ -39,11 +38,11 @@
             <div></div>
         </td>
         <td class="start">
-            <button>Start</button>
+            <button>${_('Start')}</button>
         </td>
         {{/if}}
         <td class="cancel">
-            <button>Cancel</button>
+            <button>${_('Cancel')}</button>
         </td>
     </tr>
 </script>
@@ -53,20 +52,20 @@
         <td></td>
         <td class="name"><%text>${name}</%text></td>
         <td class="size"><%text>${sizef}</%text></td>
-        <td class="error" colspan="2">Error:
-            {{if error === 1}}File exceeds upload_max_filesize (php.ini directive)
-            {{else error === 2}}File exceeds MAX_FILE_SIZE (HTML form directive)
-            {{else error === 3}}File was only partially uploaded
-            {{else error === 4}}No File was uploaded
-            {{else error === 5}}Missing a temporary folder
-            {{else error === 6}}Failed to write file to disk
-            {{else error === 7}}File upload stopped by extension
-            {{else error === 'maxFileSize'}}File is too big
-            {{else error === 'minFileSize'}}File is too small
-            {{else error === 'acceptFileTypes'}}Filetype not allowed
-            {{else error === 'maxNumberOfFiles'}}Max number of files exceeded
-            {{else error === 'uploadedBytes'}}Uploaded bytes exceed file size
-            {{else error === 'emptyResult'}}Empty file upload result
+        <td class="error" colspan="2">${_('Error:')}
+            {{if error === 1}}${_('File exceeds upload_max_filesize (php.ini directive)')}
+            {{else error === 2}}${_('File exceeds MAX_FILE_SIZE (HTML form directive)')}
+            {{else error === 3}}${_('File was only partially uploaded')}
+            {{else error === 4}}${_('No File was uploaded')}
+            {{else error === 5}}${_('Missing a temporary folder')}
+            {{else error === 6}}${_('Failed to write file to disk')}
+            {{else error === 7}}${_('File upload stopped by extension')}
+            {{else error === 'maxFileSize'}}${_('File is too big')}
+            {{else error === 'minFileSize'}}${_('File is too small')}
+            {{else error === 'acceptFileTypes'}}${_('Filetype not allowed')}
+            {{else error === 'maxNumberOfFiles'}}${_('Max number of files exceeded')}
+            {{else error === 'uploadedBytes'}}${_('Uploaded bytes exceed file size')}
+            {{else error === 'emptyResult'}}${_('Empty file upload result')}
             {{else}}<%text>${error}</%text>
             {{/if}}
         </td>
@@ -84,12 +83,11 @@
         <td colspan="2"></td>
         {{/if}}
         <td class="delete">
-            <button data-type="<%text>${delete_type}</%text>" data-url="<%text>${delete_url}</%text>">Delete</button>
+            <button data-type="<%text>${delete_type}</%text>" data-url="<%text>${delete_url}</%text>">${_('Delete')}</button>
         </td>
     </tr>
 </script>
 
-##<div id="upload"></div>
 \
 <%def name="title()">${_('Photos upload')}</%def>\
 \
