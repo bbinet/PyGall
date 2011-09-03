@@ -21,6 +21,12 @@ def add_renderer_globals(event):
 tsf = TranslationStringFactory('PyGall')
 
 @subscriber(NewRequest)
+def save_locale(event):
+    locale = event.request.params.get('_LOCALE_', None)
+    if locale:
+        event.request.response.set_cookie('_LOCALE_', locale)
+
+@subscriber(NewRequest)
 def add_localizer(event):
     request = event.request
     localizer = get_localizer(request)
