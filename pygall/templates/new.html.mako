@@ -97,7 +97,7 @@
 <%def name="title()">${_('Photos upload')}</%def>\
 \
 <%def name="stylesheets()">\
-    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.13/themes/base/jquery-ui.css" id="theme">
+    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/themes/dark-hive/jquery-ui.css" id="theme">
     <link href="${request.static_url('pygall:static/app/css/jquery.fileupload-ui.css')}" rel="stylesheet">
 ${parent.stylesheets()}
 </%def>\
