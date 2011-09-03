@@ -6,7 +6,6 @@ from tempfile import mkdtemp
 from shutil import rmtree
 
 from pyramid.view import view_config
-from pyramid.i18n import get_locale_name
 from pyramid.asset import abspath_from_asset_spec
 from pyramid.httpexceptions import HTTPBadRequest, HTTPFound
 from pyramid.exceptions import NotFound, Forbidden
@@ -69,7 +68,6 @@ class Photos(object):
     def __init__(self, request):
         self.request = request
         self.debug = "debug" in request.params
-        self.lang = get_locale_name(request)
 
     @view_config(route_name='photos_delete', renderer='json',
             permission='edit')
