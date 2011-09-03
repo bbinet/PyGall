@@ -8,9 +8,9 @@
                 <span>${_('Add files...')}</span>
                 <input type="file" name="files[]" multiple>
             </label>
-            <button type="submit" class="start">Start upload</button>
-            <button type="reset" class="cancel">Cancel upload</button>
-            <button type="button" class="delete">Delete files</button>
+            <button type="submit" class="start">${_('Start upload')}</button>
+            <button type="reset" class="cancel">${_('Cancel upload')}</button>
+            <button type="button" class="delete">${_('Delete files')}</button>
         </div>
     </form>
     <div class="fileupload-content">
