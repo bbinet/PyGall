@@ -56,14 +56,22 @@ def unchroot_path(path, chroot):
 
     return (unchrooted, uri)
 
-def remove_empty_dirs(root):
-    # remove empty directories
-    for dirpath, dirs, files in os.walk(root, topdown=False):
-        for subdirname in dirs:
+def remove_empty_dirs(root, uri=None):
+    if uri:
+        while uri != os.path.dirname(uri):
+            uri = os.path.dirname(uri)
             try:
-                os.rmdir(os.path.join(dirpath, subdirname))
+                os.rmdir(os.path.join(root, uri))
             except OSError:
-                pass
+                break
+    else:
+        # remove empty directories
+        for dirpath, dirs, files in os.walk(root, topdown=False):
+            for subdirname in dirs:
+                try:
+                    os.rmdir(os.path.join(dirpath, subdirname))
+                except OSError:
+                    pass
 
 
 def main(argv):
