@@ -123,12 +123,12 @@ def process(row, msgs):
                 row.uri if row.last_version is None else row.last_version.uri)
         md5sum = img_md5(src)
         # copy and scale image if needed
-        time, uri = IP.process_image(src, md5sum=md5sum)
+        info = IP.process_image(src, md5sum=md5sum)
         # set photo db record
         photo.fspot_id = fspot_id
-        photo.uri = uri
+        photo.uri = info['uri']
         photo.md5sum = md5sum
-        photo.time = time
+        photo.time = info['date']
 
     if insert or not OPTIONS['skip-existing']:
         # update row in db
