@@ -7,11 +7,6 @@ In progress
 * upgrade galleria to 1.2 (git submodule)
   we should create a pygall plugin for galleria similar to the flickr plugin
 
-* remove gp.fileupload on server side, and make use of
-  https://github.com/blueimp/jQuery-File-Upload on client side.
-  See also: http://wiki.pylonshq.com/display/pylonscookbook/A+Better+Way+To+Limit+File+Upload+Size
-  and: http://www.reddit.com/r/Python/comments/gd9s8/uploading_files_with_pyramid/
-
 Should have
 -----------
 
@@ -39,6 +34,8 @@ Should have
 
 Nice to have
 ------------
+
+* add upload size limit on server side
 
 * update the f-spot sync script to use marrow.script as an arg parser
 
