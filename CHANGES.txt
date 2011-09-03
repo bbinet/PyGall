@@ -22,6 +22,9 @@ Changes
 
 * the static view is now also secured
 
+* upload is now much better (based on jQuery-File-Upload instead of
+  gp.fileupload)
+
 0.8
 ---
 
