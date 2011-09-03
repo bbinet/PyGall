@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PyGall 0.8dev\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2011-06-30 23:36+0200\n"
+"POT-Creation-Date: 2011-09-03 19:11+0200\n"
 "PO-Revision-Date: 2011-05-18 00:35+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: en <LL@li.org>\n"
@@ -62,7 +62,8 @@ msgstr ""
 msgid "Send file"
 msgstr ""
 
-#: pygall/templates/globals.js.mako:13
+#: pygall/templates/globals.js.mako:13 pygall/templates/new.html.mako:29
+#: pygall/templates/new.html.mako:63
 msgid "File is too big"
 msgstr ""
 
@@ -86,7 +87,87 @@ msgstr ""
 msgid "Upload photos to the PyGall photos gallery"
 msgstr ""
 
-#: pygall/templates/new.html.mako:6
+#: pygall/templates/new.html.mako:8
+msgid "Add files..."
+msgstr ""
+
+#: pygall/templates/new.html.mako:11
+msgid "Start upload"
+msgstr ""
+
+#: pygall/templates/new.html.mako:12
+msgid "Cancel upload"
+msgstr ""
+
+#: pygall/templates/new.html.mako:13
+msgid "Delete files"
+msgstr ""
+
+#: pygall/templates/new.html.mako:28 pygall/templates/new.html.mako:55
+msgid "Error:"
+msgstr ""
+
+#: pygall/templates/new.html.mako:30 pygall/templates/new.html.mako:64
+msgid "File is too small"
+msgstr ""
+
+#: pygall/templates/new.html.mako:31 pygall/templates/new.html.mako:65
+msgid "Filetype not allowed"
+msgstr ""
+
+#: pygall/templates/new.html.mako:32 pygall/templates/new.html.mako:66
+msgid "Max number of files exceeded"
+msgstr ""
+
+#: pygall/templates/new.html.mako:41
+msgid "Start"
+msgstr ""
+
+#: pygall/templates/new.html.mako:45
+msgid "Cancel"
+msgstr ""
+
+#: pygall/templates/new.html.mako:56
+msgid "File exceeds upload_max_filesize (php.ini directive)"
+msgstr ""
+
+#: pygall/templates/new.html.mako:57
+msgid "File exceeds MAX_FILE_SIZE (HTML form directive)"
+msgstr ""
+
+#: pygall/templates/new.html.mako:58
+msgid "File was only partially uploaded"
+msgstr ""
+
+#: pygall/templates/new.html.mako:59
+msgid "No File was uploaded"
+msgstr ""
+
+#: pygall/templates/new.html.mako:60
+msgid "Missing a temporary folder"
+msgstr ""
+
+#: pygall/templates/new.html.mako:61
+msgid "Failed to write file to disk"
+msgstr ""
+
+#: pygall/templates/new.html.mako:62
+msgid "File upload stopped by extension"
+msgstr ""
+
+#: pygall/templates/new.html.mako:67
+msgid "Uploaded bytes exceed file size"
+msgstr ""
+
+#: pygall/templates/new.html.mako:68
+msgid "Empty file upload result"
+msgstr ""
+
+#: pygall/templates/new.html.mako:86
+msgid "Delete"
+msgstr ""
+
+#: pygall/templates/new.html.mako:92
 msgid "Photos upload"
 msgstr ""
 
