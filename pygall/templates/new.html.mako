@@ -70,7 +70,6 @@
             {{else error === 'maxNumberOfFiles'}}${_('Max number of files exceeded')}
             {{else error === 'uploadedBytes'}}${_('Uploaded bytes exceed file size')}
             {{else error === 'emptyResult'}}${_('Empty file upload result')}
-            {{else error === 'alreadyExist'}}${_('File already exists')}
             {{else}}<%text>${error}</%text>
             {{/if}}
         </td>

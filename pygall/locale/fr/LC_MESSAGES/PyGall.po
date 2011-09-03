@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PyGall 0.8dev\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2011-09-03 19:11+0200\n"
+"POT-Creation-Date: 2011-09-04 00:53+0200\n"
 "PO-Revision-Date: 2011-05-18 00:35+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: fr <LL@li.org>\n"
@@ -16,6 +16,10 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 0.9.6\n"
+
+#: pygall/views.py:121
+msgid "File already exists on server"
+msgstr "Le fichier existe déjà sur le serveur"
 
 #: pygall/templates/base.html.mako:25
 msgid "Gallery"
@@ -63,7 +67,7 @@ msgid "Send file"
 msgstr "Envoyer"
 
 #: pygall/templates/globals.js.mako:13 pygall/templates/new.html.mako:29
-#: pygall/templates/new.html.mako:63
+#: pygall/templates/new.html.mako:67
 msgid "File is too big"
 msgstr "Le fichier est trop gros"
 
@@ -103,19 +107,19 @@ msgstr "Annuler l'upload"
 msgid "Delete files"
 msgstr "Supprimer les fichiers"
 
-#: pygall/templates/new.html.mako:28 pygall/templates/new.html.mako:55
+#: pygall/templates/new.html.mako:28 pygall/templates/new.html.mako:59
 msgid "Error:"
 msgstr "Erreur:"
 
-#: pygall/templates/new.html.mako:30 pygall/templates/new.html.mako:64
+#: pygall/templates/new.html.mako:30 pygall/templates/new.html.mako:68
 msgid "File is too small"
 msgstr "Le fichier est trop petit"
 
-#: pygall/templates/new.html.mako:31 pygall/templates/new.html.mako:65
+#: pygall/templates/new.html.mako:31 pygall/templates/new.html.mako:69
 msgid "Filetype not allowed"
 msgstr "Ce type de fichier n'est pas authorisé"
 
-#: pygall/templates/new.html.mako:32 pygall/templates/new.html.mako:66
+#: pygall/templates/new.html.mako:32 pygall/templates/new.html.mako:70
 msgid "Max number of files exceeded"
 msgstr "Le nombre maximum de fichiers a été atteint"
 
@@ -127,47 +131,51 @@ msgstr "Démarrer"
 msgid "Cancel"
 msgstr "Annuler"
 
-#: pygall/templates/new.html.mako:56
+#: pygall/templates/new.html.mako:54
+msgid "Show image"
+msgstr "Voir l'image"
+
+#: pygall/templates/new.html.mako:60
 msgid "File exceeds upload_max_filesize (php.ini directive)"
 msgstr "La taille du fichier dépasse la taille maximale autorisée par le serveur"
 
-#: pygall/templates/new.html.mako:57
+#: pygall/templates/new.html.mako:61
 msgid "File exceeds MAX_FILE_SIZE (HTML form directive)"
 msgstr "La taille du fichier dépasse la taille maximale autorisée"
 
-#: pygall/templates/new.html.mako:58
+#: pygall/templates/new.html.mako:62
 msgid "File was only partially uploaded"
 msgstr "Le fichier n'a été que partiellement uploadé"
 
-#: pygall/templates/new.html.mako:59
+#: pygall/templates/new.html.mako:63
 msgid "No File was uploaded"
 msgstr "Aucun fichier n'a été uploadé"
 
-#: pygall/templates/new.html.mako:60
+#: pygall/templates/new.html.mako:64
 msgid "Missing a temporary folder"
 msgstr "Il manque un répertoire temporaire"
 
-#: pygall/templates/new.html.mako:61
+#: pygall/templates/new.html.mako:65
 msgid "Failed to write file to disk"
 msgstr "Impossible d'écrire le fichier sur le disque"
 
-#: pygall/templates/new.html.mako:62
+#: pygall/templates/new.html.mako:66
 msgid "File upload stopped by extension"
 msgstr "L'upload du fichier a été arrêté par extension"
 
-#: pygall/templates/new.html.mako:67
+#: pygall/templates/new.html.mako:71
 msgid "Uploaded bytes exceed file size"
 msgstr "Les données uploadées dépasse la taille maximale autorisée"
 
-#: pygall/templates/new.html.mako:68
+#: pygall/templates/new.html.mako:72
 msgid "Empty file upload result"
 msgstr "Le serveur n'a pas retourné de résultat suite à l'upload du fichier"
 
-#: pygall/templates/new.html.mako:86
+#: pygall/templates/new.html.mako:90
 msgid "Delete"
 msgstr "Supprimer"
 
-#: pygall/templates/new.html.mako:92
+#: pygall/templates/new.html.mako:96
 msgid "Photos upload"
 msgstr "Upload des photos"
 

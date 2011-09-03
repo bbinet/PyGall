@@ -117,7 +117,8 @@ class Photos(object):
                         uri = None
                         if isinstance(info, PyGallPhoto):
                             uri = info.uri
-                            result["error"] = 'alreadyExists'
+                            _ = self.request.translate
+                            result["error"] = _('File already exists on server')
                         else:
                             uri = info['uri']
 
