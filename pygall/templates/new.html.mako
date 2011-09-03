@@ -49,7 +49,11 @@
 <script id="template-download" type="text/x-jquery-tmpl">
     <tr class="template-download{{if error}} ui-state-error{{/if}}">
         {{if error}}
-        <td></td>
+        <td class="preview">
+            {{if url}}<a href="<%text>${url}</%text>" target="_blank">
+            {{if thumbnail_url}}<img src="<%text>${thumbnail_url}</%text>" style="max-height: 80px; max-width: 80px;">{{else}}${_('Show image')}{{/if}}
+            </a>{{/if}}
+        </td>
         <td class="name"><%text>${name}</%text></td>
         <td class="size"><%text>${sizef}</%text></td>
         <td class="error" colspan="2">${_('Error:')}
