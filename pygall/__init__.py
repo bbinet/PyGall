@@ -10,6 +10,7 @@ import pyramid_tm
 from pygall.resources import RootFactory, FAModelsFactory
 from pygall.security import groupfinder
 from pygall.lib.imageprocessing import ip
+from pygall.lib.helpers import mkdir_p
 
 
 def main(global_config, **settings):
@@ -20,6 +21,7 @@ def main(global_config, **settings):
     settings['static_path'] = 'pygall:static'
     settings['mako.directories'] = ['pygall:templates']
     ip.set_dest_dir(settings['photos_dir'])
+    mkdir_p(settings['upload_dir'])
 
     authentication_policy = AuthTktAuthenticationPolicy(
             'my_secret', callback=groupfinder)

@@ -5,12 +5,22 @@ available to Controllers. This module is available to templates as 'h'.
 """
 # Import helpers as desired, or define your own, ie:
 import os
+import errno
 import hashlib
 from types import StringType, UnicodeType
 from cStringIO import StringIO
 
 from ImageFile import ImageFile
 import Image
+
+
+def mkdir_p(path):
+    try:
+        os.makedirs(path)
+    except OSError as exc: # Python >2.5
+        if exc.errno == errno.EEXIST:
+            pass
+        else: raise
 
 def seek(f, offset, whence=0):
     loc = None
