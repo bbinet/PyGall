@@ -1,6 +1,11 @@
 Changes
 =======
 
+0.9.1
+-----
+
+* create upload directory if it does not already exist
+
 0.9
 ---
 
