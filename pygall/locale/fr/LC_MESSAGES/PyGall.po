@@ -23,7 +23,7 @@ msgstr "Le fichier existe déjà sur le serveur"
 
 #: pygall/templates/base.html.mako:25
 msgid "Gallery"
-msgstr "Gallerie"
+msgstr "Galerie"
 
 #: pygall/templates/base.html.mako:28
 msgid "Upload"
@@ -89,7 +89,7 @@ msgstr "Editer"
 
 #: pygall/templates/new.html.mako:3
 msgid "Upload photos to the PyGall photos gallery"
-msgstr "Upload des photos vers la gallerie photos PyGall"
+msgstr "Upload des photos vers la galerie photos PyGall"
 
 #: pygall/templates/new.html.mako:8
 msgid "Add files..."
