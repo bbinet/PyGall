@@ -79,6 +79,7 @@ class Photos(object):
         if DBSession.query(PyGallPhoto).filter_by(uri=uri).delete() == 0:
             raise NotFound()
         ip.remove_image(uri)
+        log.debug('ip.remove_image(%s)' % uri)
         remove_empty_dirs(self.request.registry.settings['upload_dir'], uri)
         return True
 
