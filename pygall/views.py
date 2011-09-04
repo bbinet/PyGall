@@ -80,7 +80,9 @@ class Photos(object):
             raise NotFound()
         ip.remove_image(uri)
         log.debug('ip.remove_image(%s)' % uri)
-        remove_empty_dirs(self.request.registry.settings['upload_dir'], uri)
+        photos_dir = self.request.registry.settings['photos_dir']
+        remove_empty_dirs(os.path.join(photos_dir, 'orig'), uri)
+        remove_empty_dirs(os.path.join(photos_dir, 'scaled'), uri)
         return True
 
     @view_config(route_name='photos_create', renderer='json',

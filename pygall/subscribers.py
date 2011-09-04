@@ -54,5 +54,6 @@ def after_photo_sync(context, event):
 def before_photo_delete(context, event):
     ip.remove_image(context.uri)
     log.debug('ip.remove_image(%s)' % context.uri)
-    remove_empty_dirs(
-            event.request.registry.settings['upload_dir'], context.uri)
+    photos_dir = event.request.registry.settings['photos_dir']
+    remove_empty_dirs(os.path.join(photos_dir, 'orig'), context.uri)
+    remove_empty_dirs(os.path.join(photos_dir, 'scaled'), context.uri)
