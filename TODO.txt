@@ -12,6 +12,9 @@ In progress
 Should have
 -----------
 
+* integrate a htpasswd python implementation to edit the auth.cfg directly from pygall
+  http://trac.edgewall.org/browser/trunk/contrib/htpasswd.py
+
 * add link to download orig high quality image
 
 * add support for importing image by scp or ftp
