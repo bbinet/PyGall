@@ -7,6 +7,8 @@ In progress
 * upgrade galleria to 1.2 (git submodule)
   we should create a pygall plugin for galleria similar to the flickr plugin
 
+* make authtkt secret customizable
+
 Should have
 -----------
 
