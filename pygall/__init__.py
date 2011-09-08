@@ -24,7 +24,7 @@ def main(global_config, **settings):
     mkdir_p(settings['upload_dir'])
 
     authentication_policy = AuthTktAuthenticationPolicy(
-            'my_secret', callback=groupfinder)
+            settings['authtkt_secret'], callback=groupfinder)
     authorization_policy = ACLAuthorizationPolicy()
     config = Configurator(root_factory=RootFactory, settings=settings,
                           locale_negotiator=default_locale_negotiator,
