@@ -74,6 +74,10 @@ repository and customize it to your needs::
 
     $ wget https://raw.github.com/inneos/PyGall/master/production.ini
 
+First, you should edit ``production.ini`` and set a unique random value for
+the ``authtkt_secret`` (instead of the `̀ changeme`` default value) to guard
+against the theft of authentication session.
+
 This ``production.ini`` file will be used by Paster to initialize the
 application, create the database, and serve your application.
 
