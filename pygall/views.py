@@ -200,14 +200,14 @@ class Photos(object):
         photo_q = DBSession.query(PyGallPhoto).order_by(PyGallPhoto.time.asc())
         if page == '':
             # default to last page
-            page = int(ceil(float(photo_q.count()) / 33))
+            page = int(ceil(float(photo_q.count()) / 20))
             return HTTPFound(
                     location=self.request.route_url('photos_index', page=page))
 
         # Inside a view method -- ``self`` comes from the surrounding scope.
         def url_generator(page):
             return self.request.route_url('photos_index', page=page)
-        photos = Page(photo_q, page=page, items_per_page=33, url=url_generator)
+        photos = Page(photo_q, page=page, items_per_page=20, url=url_generator)
         edit = bool(self.request.params.get('edit', False))
         return {
             'logged_in': authenticated_userid(self.request),
