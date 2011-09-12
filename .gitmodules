@@ -1,0 +1,3 @@
+[submodule "pygall/static/lib/galleria"]
+	path = pygall/static/lib/galleria
+	url = https://github.com/aino/galleria.git
