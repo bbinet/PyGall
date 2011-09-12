@@ -53,7 +53,7 @@ ${self.javascripts()}
 </%def>\
 \
 <%def name="javascripts()">\
-    <script type="text/javascript" src="${request.static_url('pygall:static/app/js/jquery.min.js')}"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
     <script type="text/javascript">
 <%include file="globals.js.mako"/>\
     </script>
