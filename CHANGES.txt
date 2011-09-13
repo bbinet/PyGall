@@ -7,6 +7,18 @@ Changes
 * bugfix: empty directories should now be correctly removed when an image is
   deleted
 
+* remove old "editcomment" view
+
+* update galleria to last version (1.2.5)
+
+* better css for the galleria info box
+
+* clean up galleria mako template and css
+
+* desaturate color of gif for upload animation
+
+* make authtkt secret customizable
+
 0.9.1
 -----
 
