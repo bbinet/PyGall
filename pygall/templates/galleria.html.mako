@@ -10,11 +10,6 @@
     ${photos.pager(_('Page') + ': $link_previous ~4~ $link_next')}
 </div>
 \
-\
-<%def name="stylesheets()">\
-${parent.stylesheets()}
-</%def>\
-\
 <%def name="javascripts()">\
 ${parent.javascripts()}
     <script type="text/javascript" src="${request.static_url('pygall:static/lib/galleria/src/galleria.js')}"></script>
