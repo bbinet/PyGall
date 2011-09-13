@@ -178,21 +178,6 @@ class Photos(object):
         }
 
 
-    @view_config(route_name='photos_editcomment', renderer='json')
-    def editcomment(self):
-        uri = self.request.params.getone('uri')
-        comment = self.request.params.getone('comment')
-        photo = DBSession.query(PyGallPhoto).filter_by(uri=uri).first()
-        if not photo:
-            raise NotFound()
-        photo.description = comment
-        DBSession.flush()
-        return {
-            'status': 0,
-            'msg': 'OK'
-        }
-
-
     @view_config(route_name='photos_index', renderer='galleria.html.mako',
             permission='view')
     def index(self):
@@ -208,10 +193,8 @@ class Photos(object):
         def url_generator(page):
             return self.request.route_url('photos_index', page=page)
         photos = Page(photo_q, page=page, items_per_page=20, url=url_generator)
-        edit = bool(self.request.params.get('edit', False))
         return {
             'logged_in': authenticated_userid(self.request),
             'photos': photos,
             'photos_dir': self.request.registry.settings['photos_dir'],
-            'edit': edit
         }
