@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 <%inherit file="base.html.mako"/>\
-    <h1>${_('PyGall photo gallery!')}</h1>
-    <div id="galleria">
-        % for photo in photos:
-            <img src="${request.static_path(photos_dir+'/scaled/'+str(photo.uri))}" alt="${photo.description or ''}" title="${photo.time.strftime('%d/%m/%Y') if photo.time else ''}">
-        % endfor
-    </div>
-    <div class="nav">
-        <p>${photos.pager(_('Page') + ': $link_previous ~4~ $link_next')}</p>
-    </div>
-
+<h1>${_('PyGall photo gallery!')}</h1>
+<div id="galleria">
+    % for photo in photos:
+    <img src="${request.static_path(photos_dir+'/scaled/'+str(photo.uri))}" alt="${photo.description or ''}" title="${photo.time.strftime('%d/%m/%Y') if photo.time else ''}">
+    % endfor
+</div>
+<div id="pager-nav">
+    ${photos.pager(_('Page') + ': $link_previous ~4~ $link_next')}
+</div>
+\
 \
 <%def name="stylesheets()">\
 ${parent.stylesheets()}
