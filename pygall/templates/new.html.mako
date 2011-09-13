@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 <%inherit file="base.html.mako"/>\
-<h3>${_('Upload photos to the PyGall photos gallery')}</h3>
+<h1>${_('Upload photos to the PyGall photos gallery')}</h1>
 <div id="fileupload">
     <form action="${request.route_path('photos_create')}" method="POST" enctype="multipart/form-data">
         <div class="fileupload-buttonbar">
