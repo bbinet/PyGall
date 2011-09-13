@@ -4,6 +4,7 @@ TODO
 In progress
 -----------
 
+* downloading javascript files from cdn should be optionnal/configurable
 
 Should have
 -----------
