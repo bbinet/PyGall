@@ -4,11 +4,11 @@ TODO
 In progress
 -----------
 
-* upgrade galleria to 1.2 (git submodule)
-  we should create a pygall plugin for galleria similar to the flickr plugin
 
 Should have
 -----------
+
+* create a pygall plugin for galleria similar to the flickr plugin
 
 * integrate a htpasswd python implementation to edit the auth.cfg directly from pygall
   http://trac.edgewall.org/browser/trunk/contrib/htpasswd.py
