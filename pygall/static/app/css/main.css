@@ -13,3 +13,18 @@ a:hover{color:#67a;}
 #pager-nav {
     margin: 15px 0 0;
 }
+
+.galleria-info {
+    left: 15px;
+    right: 15px;
+    top: 6px;
+    text-align: center;
+    opacity: 0.5;
+    width: 100%;
+}
+.galleria-info-text {
+    padding: 15px 0 5px;
+}
+.galleria-info-description {
+    margin: 0 0 7px;
+}
