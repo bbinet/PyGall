@@ -19,6 +19,9 @@ Changes
 
 * make authtkt secret customizable
 
+* download resources files either from cdn or from static directory depending
+  on 'allow_cdn' config option value
+
 0.9.1
 -----
 
