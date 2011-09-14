@@ -10,7 +10,6 @@ from pyramid.asset import abspath_from_asset_spec
 from pyramid.httpexceptions import HTTPBadRequest, HTTPFound
 from pyramid.exceptions import NotFound, Forbidden
 from pyramid.security import remember, forget, authenticated_userid
-from pyramid.url import route_url
 from webhelpers.paginate import Page
 
 from pygall.models import DBSession, PyGallTag, PyGallPhoto
@@ -25,16 +24,16 @@ log = logging.getLogger(__name__)
 @view_config(context=Forbidden)
 def forbidden_view(request):
     if not authenticated_userid(request):
-        return HTTPFound(location = route_url('login', request))
+        return HTTPFound(location = request.route_path('login'))
     return Forbidden()
 
 @view_config(route_name='login', renderer='login.html.mako')
 def login(request):
     referrer = request.url
-    login_url = route_url('login', request)
+    login_url = request.route_url('login')
     if referrer == login_url:
         # never use the login form itself as came_from
-        referrer = route_url('photos_index', request, page='')
+        referrer = request.route_path('photos_index', page='')
     came_from = request.params.get('came_from', referrer)
     message = ''
     login = ''
@@ -60,7 +59,7 @@ def login(request):
 @view_config(route_name='logout')
 def logout(request):
     headers = forget(request)
-    return HTTPFound(location = route_url('login', request),
+    return HTTPFound(location = request.route_url('login'),
                      headers = headers)
 
 
