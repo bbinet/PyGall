@@ -3,6 +3,7 @@ from pyramid.mako_templating import renderer_factory as mako_renderer_factory
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.i18n import default_locale_negotiator
+from pyramid.settings import asbool
 import sqlalchemy
 import sqlahelper
 import pyramid_tm
@@ -20,6 +21,8 @@ def main(global_config, **settings):
     # force some global settings
     settings['static_path'] = 'pygall:static'
     settings['mako.directories'] = ['pygall:templates']
+    allow_cdn = asbool(settings.get('allow_cdn', 'false'))
+    settings['allow_cdn'] = allow_cdn
     ip.set_dest_dir(settings['photos_dir'])
     mkdir_p(settings['upload_dir'])
 
