@@ -5,8 +5,8 @@
     <title>${self.title()}</title>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta http-equiv="imagetoolbar" content="false">
-    <meta name="description" content="PyGall image gallery based on the Pylons web framework">
-    <meta name="keywords" content="PyGall, image, photo, gallery, Pylons, Galleria">
+    <meta name="description" content="PyGall image gallery based on the Pyramid web framework">
+    <meta name="keywords" content="PyGall, image, photo, gallery, Pylons, Pyramid, Galleria">
     <link rel="shortcut icon" type="image/x-icon" href="${request.static_url('pygall:static/app/img/favicon.ico')}" />
 ${self.stylesheets()}
 ${self.javascripts()}
@@ -53,7 +53,12 @@ ${self.javascripts()}
 </%def>\
 \
 <%def name="javascripts()">\
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+    % if request.registry.settings.get('allow_cdn'):
+    ${request.registry.settings.get('allow_cdn')}
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+    % else:
+    <script src="${request.static_path('pygall:static/lib/jquery/jquery-1.6.4.min.js')}"></script>
+    % endif
     <script type="text/javascript">
 <%include file="globals.js.mako"/>\
     </script>

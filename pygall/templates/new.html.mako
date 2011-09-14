@@ -96,15 +96,24 @@
 <%def name="title()">${_('Photos upload')}</%def>\
 \
 <%def name="stylesheets()">\
-    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/themes/dark-hive/jquery-ui.css" id="theme">
+    % if request.registry.settings.get('allow_cdn'):
+    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/dark-hive/jquery-ui.css" id="theme">
+    % else:
+    <link rel="stylesheet" href="${request.static_path('pygall:static/lib/jquery-ui/jquery-ui-dark-hive-1.8.16.css')}" id="theme">
+    % endif
     <link href="${request.static_url('pygall:static/app/css/jquery.fileupload-ui.css')}" rel="stylesheet">
 ${parent.stylesheets()}
 </%def>\
 \
 <%def name="javascripts()">\
 ${parent.javascripts()}
-    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/jquery-ui.min.js"></script>
+    % if request.registry.settings.get('allow_cdn'):
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
     <script src="http://ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
+    % else:
+    <script src="${request.static_path('pygall:static/lib/jquery-ui/jquery-ui-1.8.16.min.js')}"></script>
+    <script src="${request.static_path('pygall:static/lib/jquery-tmpl/jquery-tmpl-beta1.min.js')}"></script>
+    % endif
 
     <script src="${request.static_url('pygall:static/app/js/jquery.iframe-transport.js')}"></script>
     <script src="${request.static_url('pygall:static/app/js/jquery.fileupload.js')}"></script>
