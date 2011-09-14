@@ -30,8 +30,7 @@ def forbidden_view(request):
 @view_config(route_name='login', renderer='login.html.mako')
 def login(request):
     referrer = request.url
-    login_url = request.route_url('login')
-    if referrer == login_url:
+    if referrer == request.route_url('login'):
         # never use the login form itself as came_from
         referrer = request.route_path('photos_index', page='')
     came_from = request.params.get('came_from', referrer)
@@ -49,11 +48,8 @@ def login(request):
 
     return dict(
         message = message,
-        url = login_url,
-        #url = request.application_url + '/login',
         came_from = came_from,
         login = login,
-        #password = password,
         )
 
 @view_config(route_name='logout')
