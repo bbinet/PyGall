@@ -12,6 +12,8 @@ In progress
 
 * replace route_url occurences by route_path when possible
 
+* give ability to override templates (+i18n)
+
 Should have
 -----------
 
