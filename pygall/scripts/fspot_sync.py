@@ -19,7 +19,7 @@ import transaction
 
 from pygall.lib.imageprocessing import ImageProcessing
 from pygall.lib.helpers import img_md5
-from pygall.models import PyGallTag, PyGallPhoto, DBSession, Base
+from pygall.models import Tag, Photo, DBSession, Base
 from pygall.models.fspot import \
         Tag as FS_Tag, \
         Photo as FS_Photo, \
@@ -101,12 +101,12 @@ def get_tags(tags):
     global TAGS
     if TAGS is None:
         TAGS = {}
-        for t in DBSession.query(PyGallTag):
+        for t in DBSession.query(Tag):
             TAGS[t.name] = t
     res = []
     for tname in tags:
         if tname not in TAGS:
-            TAGS[tname] = PyGallTag(tname)
+            TAGS[tname] = Tag(tname)
             DBSession.add(TAGS[tname])
         res.append(DBSession.merge(TAGS[tname]))
     return res
@@ -115,10 +115,10 @@ def get_tags(tags):
 def process(row, msgs):
     fspot_id = row.id
     insert = False
-    photo = DBSession.query(PyGallPhoto).filter_by(fspot_id=fspot_id).first()
+    photo = DBSession.query(Photo).filter_by(fspot_id=fspot_id).first()
     if photo is None:
         insert = True
-        photo = PyGallPhoto()
+        photo = Photo()
         src = decode_fspot_uri(
                 row.uri if row.last_version is None else row.last_version.uri)
         md5sum = img_md5(src)
@@ -195,8 +195,8 @@ def main():
 
     # remove photos coming from fspot that are not associated with tag pygall
     # anymore
-    for photo in DBSession.query(PyGallPhoto).filter(and_(
-        PyGallPhoto.fspot_id!=None, not_(PyGallPhoto.fspot_id.in_(fs_ids)))).all():
+    for photo in DBSession.query(Photo).filter(and_(
+        Photo.fspot_id!=None, not_(Photo.fspot_id.in_(fs_ids)))).all():
         IP.remove_image(photo.uri)
         DBSession.delete(photo)
         transaction.commit()

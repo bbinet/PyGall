@@ -6,7 +6,7 @@ from pyramid.events import subscriber, BeforeRender, NewRequest
 from pyramid_formalchemy.events import subscriber as fa_subscriber, \
         IAfterSyncEvent, IBeforeDeleteEvent
 
-from pygall.models import PyGallPhoto
+from pygall.models import Photo
 from pygall.lib.imageprocessing import ip, get_info, ORIG
 from pygall.lib.helpers import remove_empty_dirs
 
@@ -36,7 +36,7 @@ def add_localizer(event):
     request.localizer = localizer
     request.translate = auto_translate
 
-@fa_subscriber([PyGallPhoto, IAfterSyncEvent])
+@fa_subscriber([Photo, IAfterSyncEvent])
 def after_photo_sync(context, event):
     if context.time and context.md5sum:
         return
@@ -50,7 +50,7 @@ def after_photo_sync(context, event):
         context.md5sum = info['md5sum']
         log.debug("context.md5sum = %s" % info['md5sum'])
 
-@fa_subscriber([PyGallPhoto, IBeforeDeleteEvent])
+@fa_subscriber([Photo, IBeforeDeleteEvent])
 def before_photo_delete(context, event):
     ip.remove_image(context.uri)
     log.debug('ip.remove_image(%s)' % context.uri)

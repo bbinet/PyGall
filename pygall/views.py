@@ -12,7 +12,7 @@ from pyramid.exceptions import NotFound, Forbidden
 from pyramid.security import remember, forget, authenticated_userid
 from webhelpers.paginate import Page
 
-from pygall.models import DBSession, PyGallTag, PyGallPhoto
+from pygall.models import DBSession, Tag, Photo
 from pygall.lib.imageprocessing import ip
 from pygall.lib.archivefile import extractall
 from pygall.lib.helpers import img_md5, unchroot_path, remove_empty_dirs, get_size
@@ -71,7 +71,7 @@ class Photos(object):
         uri = self.request.params.get('uri', None)
         if not uri:
             return HTTPBadRequest()
-        if DBSession.query(PyGallPhoto).filter_by(uri=uri).delete() == 0:
+        if DBSession.query(Photo).filter_by(uri=uri).delete() == 0:
             raise NotFound()
         ip.remove_image(uri)
         log.debug('ip.remove_image(%s)' % uri)
@@ -111,7 +111,7 @@ class Photos(object):
                             "delete_type":"DELETE",
                             }
                         uri = None
-                        if isinstance(info, PyGallPhoto):
+                        if isinstance(info, Photo):
                             uri = info.uri
                             _ = self.request.translate
                             result["error"] = _('File already exists on server')
@@ -141,7 +141,7 @@ class Photos(object):
     def _import(self, abspath):
         # check same image has not already been imported
         hash = img_md5(abspath)
-        photo = DBSession.query(PyGallPhoto).filter_by(md5sum=hash)
+        photo = DBSession.query(Photo).filter_by(md5sum=hash)
         if photo.count() > 0:
             log.info("Same md5sum already exists in database")
             return photo.first()
@@ -151,7 +151,7 @@ class Photos(object):
         os.unlink(abspath)
 
         # import image in db
-        photo = PyGallPhoto()
+        photo = Photo()
         photo.uri = info['uri']
         photo.md5sum = hash
         photo.time = info['date']
@@ -177,7 +177,7 @@ class Photos(object):
             permission='view')
     def index(self):
         page = self.request.matchdict.get('page')
-        photo_q = DBSession.query(PyGallPhoto).order_by(PyGallPhoto.time.asc())
+        photo_q = DBSession.query(Photo).order_by(Photo.time.asc())
         if page == '':
             # default to last page
             page = int(ceil(float(photo_q.count()) / 20))

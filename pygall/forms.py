@@ -9,28 +9,28 @@ config.engine = TemplateEngine()
 
 FieldSet.default_renderers.update(fa_renderers.default_renderers)
 
-PyGallTag = FieldSet(models.PyGallTag)
-PyGallTag.configure(exclude=[PyGallTag.photos])
-PyGallTagGrid = Grid(models.PyGallTag)
-PyGallTagGrid.configure(exclude=[PyGallTagGrid.photos])
+Tag = FieldSet(models.Tag)
+Tag.configure(exclude=[Tag.photos])
+TagGrid = Grid(models.Tag)
+TagGrid.configure(exclude=[TagGrid.photos])
 
-PyGallPhotoView = FieldSet(models.PyGallPhoto)
-PyGallPhotoView.fspot_id.set(readonly=True)
-PyGallPhotoView.md5sum.set(readonly=True)
-PyGallPhotoView.uri.set(renderer=PyGallImageFieldRenderer)
-PyGallPhotoView.configure()
+PhotoView = FieldSet(models.Photo)
+PhotoView.fspot_id.set(readonly=True)
+PhotoView.md5sum.set(readonly=True)
+PhotoView.uri.set(renderer=PyGallImageFieldRenderer)
+PhotoView.configure()
 
-PyGallPhotoEdit = FieldSet(models.PyGallPhoto)
-PyGallPhotoEdit.fspot_id.set(readonly=True)
-PyGallPhotoEdit.md5sum.set(readonly=True)
-PyGallPhotoEdit.uri.set(renderer=PyGallImageFieldRenderer, readonly=True)
-PyGallPhotoEdit.configure()
+PhotoEdit = FieldSet(models.Photo)
+PhotoEdit.fspot_id.set(readonly=True)
+PhotoEdit.md5sum.set(readonly=True)
+PhotoEdit.uri.set(renderer=PyGallImageFieldRenderer, readonly=True)
+PhotoEdit.configure()
 
-PyGallPhotoAdd = FieldSet(models.PyGallPhoto)
-PyGallPhotoAdd.uri.set(renderer=PyGallImageFieldRenderer)
-PyGallPhotoAdd.configure(exclude=[
-    PyGallPhotoAdd.fspot_id, PyGallPhotoAdd.md5sum, PyGallPhotoAdd.time])
+PhotoAdd = FieldSet(models.Photo)
+PhotoAdd.uri.set(renderer=PyGallImageFieldRenderer)
+PhotoAdd.configure(exclude=[
+    PhotoAdd.fspot_id, PhotoAdd.md5sum, PhotoAdd.time])
 
-PyGallPhotoGrid = Grid(models.PyGallPhoto)
-PyGallPhotoGrid.configure(exclude=[PyGallPhotoGrid.md5sum])
+PhotoGrid = Grid(models.Photo)
+PhotoGrid.configure(exclude=[PhotoGrid.md5sum])
 

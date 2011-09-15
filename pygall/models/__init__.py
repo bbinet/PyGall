@@ -15,7 +15,7 @@ photos_tags_table = Table(
 # photo_id, tag_id
 
 
-class PyGallTag(Base):
+class Tag(Base):
 
     __acl__ = [(Allow, 'admin', ALL_PERMISSIONS)]
     __tablename__ = 'tags'
@@ -24,7 +24,7 @@ class PyGallTag(Base):
     name = Column(Unicode, nullable=False)
 
     # Relations
-    photos = relation('PyGallPhoto', secondary=photos_tags_table)
+    photos = relation('Photo', secondary=photos_tags_table)
 
     def __init__(self, name=None):
         self.name = name
@@ -33,7 +33,7 @@ class PyGallTag(Base):
         return u'[%s]' % self.name
 
 
-class PyGallPhoto(Base):
+class Photo(Base):
 
     __acl__ = [(Allow, 'admin', ALL_PERMISSIONS)]
     __tablename__ = 'photos'
@@ -49,7 +49,7 @@ class PyGallPhoto(Base):
     time = Column(DateTime)
 
     # Relations
-    tags = relation('PyGallTag', secondary=photos_tags_table)
+    tags = relation('Tag', secondary=photos_tags_table)
 
     def __unicode__(self):
         return u'[%s]' % self.uri
