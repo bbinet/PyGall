@@ -10,8 +10,6 @@ In progress
 
 * rename model classes: s/PyGallPhoto/Photo and s/PyGallTag/Tag/
 
-* replace route_url occurences by route_path when possible
-
 * give ability to override templates (+i18n)
 
 Should have

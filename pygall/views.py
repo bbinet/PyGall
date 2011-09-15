@@ -55,7 +55,7 @@ def login(request):
 @view_config(route_name='logout')
 def logout(request):
     headers = forget(request)
-    return HTTPFound(location = request.route_url('login'),
+    return HTTPFound(location = request.route_path('login'),
                      headers = headers)
 
 
@@ -118,11 +118,11 @@ class Photos(object):
                         else:
                             uri = info['uri']
 
-                        result["url"] = self.request.static_url(
+                        result["url"] = self.request.static_path(
                             settings['photos_dir']+'/orig/' + uri),
-                        result["thumbnail_url"] = self.request.static_url(
+                        result["thumbnail_url"] = self.request.static_path(
                             settings['photos_dir']+'/scaled/' + uri),
-                        result["delete_url"] = self.request.route_url(
+                        result["delete_url"] = self.request.route_path(
                             'photos_delete', _query=[('uri', uri)]),
                         done.append(result)
                     except Exception as e:
@@ -182,11 +182,11 @@ class Photos(object):
             # default to last page
             page = int(ceil(float(photo_q.count()) / 20))
             return HTTPFound(
-                    location=self.request.route_url('photos_index', page=page))
+                    location=self.request.route_path('photos_index', page=page))
 
         # Inside a view method -- ``self`` comes from the surrounding scope.
         def url_generator(page):
-            return self.request.route_url('photos_index', page=page)
+            return self.request.route_path('photos_index', page=page)
         photos = Page(photo_q, page=page, items_per_page=20, url=url_generator)
         return {
             'logged_in': authenticated_userid(self.request),

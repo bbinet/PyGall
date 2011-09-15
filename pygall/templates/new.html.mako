@@ -101,7 +101,7 @@
     % else:
     <link rel="stylesheet" href="${request.static_path('pygall:static/lib/jquery-ui/jquery-ui-dark-hive-1.8.16.css')}" id="theme">
     % endif
-    <link href="${request.static_url('pygall:static/app/css/jquery.fileupload-ui.css')}" rel="stylesheet">
+    <link href="${request.static_path('pygall:static/app/css/jquery.fileupload-ui.css')}" rel="stylesheet">
 ${parent.stylesheets()}
 </%def>\
 \
@@ -115,11 +115,11 @@ ${parent.javascripts()}
     <script src="${request.static_path('pygall:static/lib/jquery-tmpl/jquery-tmpl-beta1.min.js')}"></script>
     % endif
 
-    <script src="${request.static_url('pygall:static/app/js/jquery.iframe-transport.js')}"></script>
-    <script src="${request.static_url('pygall:static/app/js/jquery.fileupload.js')}"></script>
-    <script src="${request.static_url('pygall:static/app/js/jquery.fileupload-ui.js')}"></script>
+    <script src="${request.static_path('pygall:static/app/js/jquery.iframe-transport.js')}"></script>
+    <script src="${request.static_path('pygall:static/app/js/jquery.fileupload.js')}"></script>
+    <script src="${request.static_path('pygall:static/app/js/jquery.fileupload-ui.js')}"></script>
 
-    <script src="${request.static_url('pygall:static/app/js/App.Upload.js')}" type="text/javascript"></script>
+    <script src="${request.static_path('pygall:static/app/js/App.Upload.js')}" type="text/javascript"></script>
     <script type="text/javascript">
         $(document).ready($.proxy(App.Upload.init, undefined, ${maxfilesize}, ${minfilesize}));
     </script>

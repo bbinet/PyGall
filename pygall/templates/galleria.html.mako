@@ -12,10 +12,10 @@
 \
 <%def name="javascripts()">\
 ${parent.javascripts()}
-    <script type="text/javascript" src="${request.static_url('pygall:static/lib/galleria/src/galleria.js')}"></script>
-    <script type="text/javascript" src="${request.static_url('pygall:static/lib/galleria/src/plugins/history/galleria.history.js')}"></script>
-    <script type="text/javascript" src="${request.static_url('pygall:static/lib/galleria/src/themes/classic/galleria.classic.js')}"></script>
-    ##<script type="text/javascript" src="${request.static_url('pygall:static/lib/galleria/src/themes/folio/galleria.folio.min.js')}"></script>
+    <script type="text/javascript" src="${request.static_path('pygall:static/lib/galleria/src/galleria.js')}"></script>
+    <script type="text/javascript" src="${request.static_path('pygall:static/lib/galleria/src/plugins/history/galleria.history.js')}"></script>
+    <script type="text/javascript" src="${request.static_path('pygall:static/lib/galleria/src/themes/classic/galleria.classic.js')}"></script>
+    ##<script type="text/javascript" src="${request.static_path('pygall:static/lib/galleria/src/themes/folio/galleria.folio.min.js')}"></script>
     <script>
         $(document).ready(function() {
             $('#galleria').galleria({

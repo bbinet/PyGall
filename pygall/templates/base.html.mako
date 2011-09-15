@@ -7,7 +7,7 @@
     <meta http-equiv="imagetoolbar" content="false">
     <meta name="description" content="PyGall image gallery based on the Pyramid web framework">
     <meta name="keywords" content="PyGall, image, photo, gallery, Pylons, Pyramid, Galleria">
-    <link rel="shortcut icon" type="image/x-icon" href="${request.static_url('pygall:static/app/img/favicon.ico')}" />
+    <link rel="shortcut icon" type="image/x-icon" href="${request.static_path('pygall:static/app/img/favicon.ico')}" />
 ${self.stylesheets()}
 ${self.javascripts()}
 </head>
@@ -22,16 +22,16 @@ ${self.javascripts()}
                     from pyramid.url import current_route_url
                 %>
                 % if has_permission('view', request.context, request):
-                <a href="${request.route_url('photos_index', page='')}">${_('Gallery')}</a> |
+                <a href="${request.route_path('photos_index', page='')}">${_('Gallery')}</a> |
                 % endif
                 % if has_permission('edit', request.context, request):
-                <a href="${request.route_url('photos_new')}">${_('Upload')}</a> |
-                <a href="${request.route_url('admin', traverse='')}">${_('Admin')}</a> |
+                <a href="${request.route_path('photos_new')}">${_('Upload')}</a> |
+                <a href="${request.route_path('admin', traverse='')}">${_('Admin')}</a> |
                 % endif
                 % if logged_in:
-                <a href="${request.route_url('logout')}">${_('Logout')} [${logged_in}]</a>
+                <a href="${request.route_path('logout')}">${_('Logout')} [${logged_in}]</a>
                 % else:
-                <a href="${request.route_url('login', came_from=current_route_url(request))}">${_('Login')}</a>
+                <a href="${request.route_path('login', came_from=current_route_url(request))}">${_('Login')}</a>
                 % endif
             </div>
         </div>
@@ -49,7 +49,7 @@ ${self.javascripts()}
 <%def name="title()">${_('PyGall image gallery')}</%def>\
 \
 <%def name="stylesheets()">\
-    <link href="${request.static_url('pygall:static/app/css/main.css')}" rel="stylesheet" type="text/css" media="screen">
+    <link href="${request.static_path('pygall:static/app/css/main.css')}" rel="stylesheet" type="text/css" media="screen">
 </%def>\
 \
 <%def name="javascripts()">\
