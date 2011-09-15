@@ -107,6 +107,14 @@ ${parent.stylesheets()}
 \
 <%def name="javascripts()">\
 ${parent.javascripts()}
+% if debug:
+    <script src="${request.static_path('pygall:static/lib/jquery-ui/jquery-ui-1.8.16.js')}"></script>
+    <script src="${request.static_path('pygall:static/lib/jquery-tmpl/jquery-tmpl-beta1.js')}"></script>
+    <script src="${request.static_path('pygall:static/app/js/jquery.iframe-transport.js')}"></script>
+    <script src="${request.static_path('pygall:static/app/js/jquery.fileupload.js')}"></script>
+    <script src="${request.static_path('pygall:static/app/js/jquery.fileupload-ui.js')}"></script>
+    <script src="${request.static_path('pygall:static/app/js/App.Upload.js')}" type="text/javascript"></script>
+% else:
     % if request.registry.settings.get('allow_cdn'):
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
     <script src="http://ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
@@ -114,12 +122,9 @@ ${parent.javascripts()}
     <script src="${request.static_path('pygall:static/lib/jquery-ui/jquery-ui-1.8.16.min.js')}"></script>
     <script src="${request.static_path('pygall:static/lib/jquery-tmpl/jquery-tmpl-beta1.min.js')}"></script>
     % endif
+    <script src="${request.static_path('pygall:static/build/upload.min.js')}"></script>
+% endif
 
-    <script src="${request.static_path('pygall:static/app/js/jquery.iframe-transport.js')}"></script>
-    <script src="${request.static_path('pygall:static/app/js/jquery.fileupload.js')}"></script>
-    <script src="${request.static_path('pygall:static/app/js/jquery.fileupload-ui.js')}"></script>
-
-    <script src="${request.static_path('pygall:static/app/js/App.Upload.js')}" type="text/javascript"></script>
     <script type="text/javascript">
         $(document).ready($.proxy(App.Upload.init, undefined, ${maxfilesize}, ${minfilesize}));
     </script>

@@ -22,10 +22,10 @@ ${self.javascripts()}
                     from pyramid.url import current_route_url
                 %>
                 % if has_permission('view', request.context, request):
-                <a href="${request.route_path('photos_index', page='')}">${_('Gallery')}</a> |
+                <a href="${request.route_path('photos_index', page='', _query=[('debug', 1)]) if debug else request.route_path('photos_index', page='')}">${_('Gallery')}</a> |
                 % endif
                 % if has_permission('edit', request.context, request):
-                <a href="${request.route_path('photos_new')}">${_('Upload')}</a> |
+                <a href="${request.route_path('photos_new', _query=[('debug', 1)]) if debug else request.route_path('photos_new')}">${_('Upload')}</a> |
                 <a href="${request.route_path('admin', traverse='')}">${_('Admin')}</a> |
                 % endif
                 % if logged_in:

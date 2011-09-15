@@ -167,6 +167,7 @@ class Photos(object):
         """GET /photos/new: Form to create a new item"""
         settings = self.request.registry.settings
         return {
+            'debug': self.debug,
             'logged_in': authenticated_userid(self.request),
             'maxfilesize': settings.get('upload_maxsize', 10000000),
             'minfilesize': settings.get('upload_minsize', 50000),
@@ -181,14 +182,16 @@ class Photos(object):
         if page == '':
             # default to last page
             page = int(ceil(float(photo_q.count()) / 20))
+            params = [('debug', 1)] if self.debug else []
             return HTTPFound(
-                    location=self.request.route_path('photos_index', page=page))
+                    location=self.request.route_path('photos_index', page=page, _query=params))
 
         # Inside a view method -- ``self`` comes from the surrounding scope.
         def url_generator(page):
             return self.request.route_path('photos_index', page=page)
         photos = Page(photo_q, page=page, items_per_page=20, url=url_generator)
         return {
+            'debug': self.debug,
             'logged_in': authenticated_userid(self.request),
             'photos': photos,
             'photos_dir': self.request.registry.settings['photos_dir'],

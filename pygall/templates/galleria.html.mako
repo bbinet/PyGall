@@ -10,12 +10,21 @@
     ${photos.pager(_('Page') + ': $link_previous ~4~ $link_next')}
 </div>
 \
+<%def name="stylesheets()">\
+${parent.stylesheets()}
+    <link href="${request.static_path('pygall:static/lib/galleria/src/themes/classic/galleria.classic.css')}" rel="stylesheet">
+</%def>\
+\
 <%def name="javascripts()">\
 ${parent.javascripts()}
+% if debug:
     <script type="text/javascript" src="${request.static_path('pygall:static/lib/galleria/src/galleria.js')}"></script>
     <script type="text/javascript" src="${request.static_path('pygall:static/lib/galleria/src/plugins/history/galleria.history.js')}"></script>
     <script type="text/javascript" src="${request.static_path('pygall:static/lib/galleria/src/themes/classic/galleria.classic.js')}"></script>
     ##<script type="text/javascript" src="${request.static_path('pygall:static/lib/galleria/src/themes/folio/galleria.folio.min.js')}"></script>
+% else:
+    <script type="text/javascript" src="${request.static_path('pygall:static/build/galleria.min.js')}"></script>
+% endif
     <script>
         $(document).ready(function() {
             $('#galleria').galleria({
