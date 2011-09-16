@@ -4,10 +4,6 @@ TODO
 In progress
 -----------
 
-* add support for building javascript and css resources
-
-* configure a debug mode to be able to load non minified js and css
-
 * give ability to override templates (+i18n)
 
 Should have
