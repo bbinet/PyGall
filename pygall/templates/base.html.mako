@@ -49,7 +49,11 @@ ${self.javascripts()}
 <%def name="title()">${_('PyGall image gallery')}</%def>\
 \
 <%def name="stylesheets()">\
+    % if debug:
     <link href="${request.static_path('pygall:static/app/css/main.css')}" rel="stylesheet" type="text/css" media="screen">
+    % else:
+    <link href="${request.static_path('pygall:static/build/main.min.css')}" rel="stylesheet" type="text/css" media="screen">
+    % endif
 </%def>\
 \
 <%def name="javascripts()">\

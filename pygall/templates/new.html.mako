@@ -101,7 +101,11 @@
     % else:
     <link rel="stylesheet" href="${request.static_path('pygall:static/lib/jquery-ui/jquery-ui-dark-hive-1.8.16.css')}" id="theme">
     % endif
+    % if debug:
     <link href="${request.static_path('pygall:static/app/css/jquery.fileupload-ui.css')}" rel="stylesheet">
+    % else:
+    <link href="${request.static_path('pygall:static/build/jquery.fileupload-ui.min.css')}" rel="stylesheet">
+    % endif
 ${parent.stylesheets()}
 </%def>\
 \
