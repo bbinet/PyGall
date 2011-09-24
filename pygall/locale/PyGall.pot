@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PyGall 0.9dev\n"
+"Project-Id-Version: PyGall 0.10dev\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2011-09-04 01:30+0200\n"
+"POT-Creation-Date: 2011-09-24 22:30+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 0.9.6\n"
 
-#: pygall/views.py:120
+#: pygall/views.py:117
 msgid "File already exists on server"
 msgstr ""
 
@@ -45,44 +45,36 @@ msgstr ""
 msgid "PyGall image gallery"
 msgstr ""
 
-#: pygall/templates/galleria.html.mako:4
+#: pygall/templates/galleria.html.mako:3
 msgid "PyGall photo gallery!"
 msgstr ""
 
-#: pygall/templates/galleria.html.mako:20
-msgid "previous"
-msgstr ""
-
-#: pygall/templates/galleria.html.mako:20
-msgid "next"
-msgstr ""
-
-#: pygall/templates/galleria.html.mako:24 pygall/templates/galleria.html.mako:26
+#: pygall/templates/galleria.html.mako:10
 msgid "Page"
 msgstr ""
 
-#: pygall/templates/globals.js.mako:12
+#: pygall/templates/globals.js.mako:11
 msgid "Send file"
 msgstr ""
 
-#: pygall/templates/globals.js.mako:13 pygall/templates/new.html.mako:29
+#: pygall/templates/globals.js.mako:12 pygall/templates/new.html.mako:29
 #: pygall/templates/new.html.mako:67
 msgid "File is too big"
 msgstr ""
 
-#: pygall/templates/globals.js.mako:14
+#: pygall/templates/globals.js.mako:13
 msgid "Upload was successful"
 msgstr ""
 
-#: pygall/templates/globals.js.mako:15
+#: pygall/templates/globals.js.mako:14
 msgid "Upload has failed"
 msgstr ""
 
-#: pygall/templates/globals.js.mako:16
+#: pygall/templates/globals.js.mako:15
 msgid "Enter a comment"
 msgstr ""
 
-#: pygall/templates/globals.js.mako:17
+#: pygall/templates/globals.js.mako:16
 msgid "Edit"
 msgstr ""
 
