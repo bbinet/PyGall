@@ -58,7 +58,6 @@ ${self.javascripts()}
 \
 <%def name="javascripts()">\
     % if request.registry.settings.get('allow_cdn'):
-    ${request.registry.settings.get('allow_cdn')}
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
     % else:
     <script src="${request.static_path('pygall:static/lib/jquery/jquery-1.6.4.min.js')}"></script>
