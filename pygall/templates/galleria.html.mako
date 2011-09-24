@@ -11,8 +11,8 @@
 </div>
 \
 <%def name="stylesheets()">\
-${parent.stylesheets()}
     <link href="${request.static_path('pygall:static/lib/galleria/src/themes/classic/galleria.classic.css')}" rel="stylesheet">
+${parent.stylesheets()}
 </%def>\
 \
 <%def name="javascripts()">\
