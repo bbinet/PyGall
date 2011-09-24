@@ -22,6 +22,11 @@ Changes
 * download resources files either from cdn or from static directory depending
   on 'allow_cdn' config option value
 
+* add a buildout.cfg to build css and js files using c2c.recipe.cssmin and
+  c2c.recipe.closurecompile
+
+* some refactoring, eg. rename Tag and Photo models
+
 0.9.1
 -----
 
