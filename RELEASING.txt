@@ -7,6 +7,8 @@ Releasing PyGall
 
 * Change setup.py version to the new version number.
 
+* Work on a fresh clone of PyGall and remove PyGall.egg-info directory
+
 * Make sure PyPI long description renders (requires ``collective.dist``
   installed into your Python)::
 
