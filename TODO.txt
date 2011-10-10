@@ -4,7 +4,9 @@ TODO
 In progress
 -----------
 
-* give ability to override templates (+i18n)
+* give ability to override templates
+
+* add i18n support for overriden templates
 
 * configure buildout.cfg to be able to hack on pygall
 
