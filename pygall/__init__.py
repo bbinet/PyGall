@@ -19,7 +19,6 @@ def main(global_config, **settings):
     """
 
     # force some global settings
-    settings['static_path'] = 'pygall:static'
     settings['mako.directories'] = ['pygall:templates']
     allow_cdn = asbool(settings.get('allow_cdn', 'false'))
     settings['allow_cdn'] = allow_cdn
@@ -64,7 +63,7 @@ def main(global_config, **settings):
     config.scan()
 
     # add the static views (for static resources)
-    config.add_static_view('static', settings['static_path'])
+    config.add_static_view('static', 'pygall:static')
     config.add_static_view('photos', settings['photos_dir'], permission='view')
 
     return config.make_wsgi_app()
