@@ -14,9 +14,8 @@ from pygall.lib.imageprocessing import ip
 from pygall.lib.helpers import mkdir_p
 
 
-def main(global_config, **settings):
-    """ This function returns a Pyramid WSGI application.
-    """
+def includeme(config):
+    settings = config.registry.settings
 
     # force some global settings
     settings['mako.directories'] = ['pygall:templates']
@@ -28,17 +27,19 @@ def main(global_config, **settings):
     authentication_policy = AuthTktAuthenticationPolicy(
             settings['authtkt_secret'], callback=groupfinder)
     authorization_policy = ACLAuthorizationPolicy()
-    config = Configurator(root_factory=RootFactory, settings=settings,
-                          locale_negotiator=default_locale_negotiator,
-                          authentication_policy=authentication_policy,
-                          authorization_policy=authorization_policy)
+
+    config.add_settings(settings)
+    config.set_root_factory(RootFactory)
+    config.set_locale_negotiator(default_locale_negotiator)
+    config.set_authentication_policy(authentication_policy)
+    config.set_authorization_policy(authorization_policy)
 
     # initialize database
     engine = sqlalchemy.engine_from_config(settings, 'sqlalchemy.')
     sqlahelper.add_engine(engine)
     config.include(pyramid_tm.includeme)
 
-    # formaclhemy
+    # formalchemy
     config.include('pyramid_formalchemy')
     config.include('fa.jquery')
     config.formalchemy_admin('admin', package='pygall',
@@ -50,6 +51,13 @@ def main(global_config, **settings):
     # bind the mako renderer to other file extensions
     config.add_renderer('.mako', mako_renderer_factory)
 
+    config.include(add_routes)
+    config.include(add_views)
+
+    config.scan('pygall')
+
+
+def add_routes(config):
     # add routes to the entry view class
     config.add_route('photos_index', '/{page:\d*}')
     config.add_route('photos_new', '/photos/new')
@@ -59,12 +67,18 @@ def main(global_config, **settings):
     config.add_route('login', '/login')
     config.add_route('logout', '/logout')
 
-    # we need to call scan() for the "home" routes
-    config.scan()
-
+def add_views(config):
     # add the static views (for static resources)
+    settings = config.registry.settings
     config.add_static_view('static', 'pygall:static')
     config.add_static_view('photos', settings['photos_dir'], permission='view')
+
+def main(global_config, **settings):
+    """ This function returns a Pyramid WSGI application.
+    """
+
+    config = Configurator(settings=settings)
+    config.include(includeme)
 
     return config.make_wsgi_app()
 
