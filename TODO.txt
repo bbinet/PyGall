@@ -4,9 +4,12 @@ TODO
 In progress
 -----------
 
-* give ability to override templates
+* explain how to override templates in an application that extends pygall
 
-* add i18n support for overriden templates
+* explain how to add i18n support for overriden templates in an application
+  that extends pygall
+
+* add default values for config parameters
 
 * configure buildout.cfg to be able to hack on pygall
 
