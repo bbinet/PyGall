@@ -6,15 +6,17 @@ In progress
 
 * explain how to override templates in an application that extends pygall
 
-* explain how to add i18n support for overriden templates in an application
-  that extends pygall
-
 * add default values for config parameters
 
 * configure buildout.cfg to be able to hack on pygall
 
+* create a public demo of pygall
+
 Should have
 -----------
+
+* explain how to add i18n support for overriden templates in an application
+  that extends pygall
 
 * create a pygall plugin for galleria similar to the flickr plugin
 
