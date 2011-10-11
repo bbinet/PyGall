@@ -125,14 +125,13 @@ Log in as administrator and you're ready to import your first photos!
 Use PyGall
 ----------
 
-When anonymous, you will be prompted for login. Only users logged in will be
+When anonymous, you will be prompted for login. Only registered users will be
 allowed to view the gallery.
 
-So once logged in, you will be redirected to the PyGall index page and you will
-be able to view photos.
+So once logged in, you will be redirected to the PyGall gallery index page.
 Then if you are part of the admin group, you will be allowed both to upload new
-photos and to edit, delete existing photos. For that purpose, you can click on
-the 'Upload' and 'Admin' link in the upper right corner of the gallery.
+photos and to edit, delete existing photos. For that purpose, you can go
+through the 'Upload' and 'Admin' link in the upper right corner of the gallery.
 
 If you are using F-spot as your personnal photo management desktop application,
 you can rather choose to use the F-spot synchronization script provided with
@@ -146,6 +145,5 @@ gallery. Pass `--help` option to see all possible options::
 
    $ venv/bin/python -m pygall.scripts.fspot_sync --help
 
-When your gallery is full of photos, and once you have created new user
-accounts (please refer to the previous section note to learn how to create new
-accounts), you are now able to share it with friends and family.
+If you want to share your gallery to other people, please refer to the
+previous note to create new user accounts.
