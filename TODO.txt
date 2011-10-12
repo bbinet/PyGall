@@ -6,8 +6,6 @@ In progress
 
 * explain how to override templates in an application that extends pygall
 
-* add default values for config parameters
-
 * configure buildout.cfg to be able to hack on pygall
 
 * create a public demo of pygall

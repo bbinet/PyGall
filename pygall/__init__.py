@@ -17,8 +17,13 @@ from pygall.lib.helpers import mkdir_p
 def includeme(config):
     settings = config.registry.settings
 
-    # force some global settings
-    settings['mako.directories'] = ['pygall:templates']
+    # add default values for some global settings
+    if 'mako.directories' not in settings:
+        settings['mako.directories'] = ['pygall:templates']
+    if 'photos_dir' not in settings:
+        settings['photos_dir'] = 'photos'
+    if 'upload_dir' not in settings:
+        settings['upload_dir'] = 'upload'
     allow_cdn = asbool(settings.get('allow_cdn', 'false'))
     settings['allow_cdn'] = allow_cdn
     ip.set_dest_dir(settings['photos_dir'])
