@@ -15,11 +15,13 @@ from pygall import models
 
 def main():
     if len(sys.argv) < 2:
-        sys.exit("Usage: python -m pygall.scripts.setup INI_FILE [-d|--drop]")
-    ini_file = sys.argv[1]
+        sys.exit("Usage: python -m pygall.scripts.setup INI_FILE#section [-d|--drop]")
+    args = sys.argv[1].split('#')
+    ini_file = args[0]
+    section = args[1] if len(args)>1 else 'PyGall'
     logging.config.fileConfig(ini_file)
     log = logging.getLogger(__name__)
-    app = get_app(ini_file, "PyGall")
+    app = get_app(ini_file, section)
     settings = app.registry.settings
 
     if len(sys.argv) > 2 and sys.argv[2] in ['-d', '--drop']:
