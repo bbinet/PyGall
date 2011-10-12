@@ -17,8 +17,8 @@ class PyGallImageFieldRenderer(ImageFieldRenderer):
 
     def get_url(self, relative_path):
         """ override ImageFieldRenderer get_url """
-        return self.request.route_path('photos/',
-                subpath='/scaled/%s' % relative_path)
+        return self.request.static_path('%s/scaled/%s' % \
+                (self.storage_path, relative_path))
 
     def deserialize(self):
         """ override ImageFieldRenderer deserialize """
