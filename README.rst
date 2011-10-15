@@ -40,6 +40,9 @@ PyGall currently provides the following features:
   photos, or organize them through tags (which will soon be used to provide
   different views in PyGall).
 
+* Allow templates override so that the user interface can be easily customized
+  to your needs.
+
 For upcoming features, you can have a look at
 https://github.com/inneos/PyGall/blob/master/TODO.txt
 
