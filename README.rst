@@ -150,3 +150,44 @@ gallery. Pass `--help` option to see all possible options::
 
 If you want to share your gallery to other people, please refer to the
 previous note to create new user accounts.
+
+Customize look and feel
+-----------------------
+
+You can easily customize the look and feel of the PyGall gallery by overriding
+some mako templates and providing your own static resources (css, images).
+
+To override some default PyGall templates, you have to update your
+`production.ini` and uncomment the line::
+
+    templates_dir = %(here)s/custom_templates
+
+Then create the `custom_templates` directory, and put some mako templates in
+there. For example, you can copy the default PyGall templates from
+https://github.com/inneos/PyGall/tree/master/pygall/templates and update them
+as needed.
+
+If you want to include some static resources, you can also activate a new
+static view by uncommenting the line::
+
+    static_dir = %(here)s/custom_static
+
+Then create the `custom_static` directory, and put some static files in there.
+You can now access these static resources from your mako templates with
+something like::
+
+    ${request.static_url(request.registry.settings['static_dir'] + /path/to/resource')}
+
+Extend PyGall
+-------------
+
+If the customization of the look and feel is not enough, you can go further and
+create a new Pyramid application which extends PyGall.
+
+Thus you can use all the flexibility of the Pyramid web framework to make your
+own application and use PyGall views internally.
+
+Please refer to the `Pyramid web framework documentation
+<https://docs.pylonsproject.org/docs/pyramid.html>`_ to know more about
+application customization.
+
