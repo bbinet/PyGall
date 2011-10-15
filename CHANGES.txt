@@ -5,8 +5,7 @@ Changes
 ----
 
 * add an additionnal static_view if static_dir is set in the paste config
-  so that the user can use his own static resources if he overrides the pygall
-  templates
+  so that the user can use his own static resources
 
 * allow override templates by setting templates_dir config property
 
