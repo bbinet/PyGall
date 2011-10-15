@@ -8,7 +8,7 @@ Changes
   so that the user can use his own static resources if he overrides the pygall
   templates
 
-* allow override templates by setting mako.directories config property
+* allow override templates by setting templates_dir config property
 
 * add default values for config parameters
 
