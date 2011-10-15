@@ -11,13 +11,10 @@ In progress
 * create a public demo of pygall
 
 * protect gallery to authenticated users should be optionnal. PyGall should
-  allow to be configured so that the gallery is viewable by anyone.
+  allow to be configured in a way that the gallery is viewable by anyone.
 
 Should have
 -----------
-
-* explain how to add i18n support for overriden templates in an application
-  that extends pygall
 
 * create a pygall plugin for galleria similar to the flickr plugin
 
@@ -48,6 +45,9 @@ Should have
 
 Nice to have
 ------------
+
+* explain how to add i18n support for overriden templates in an application
+  that extends pygall
 
 * add upload size limit on server side
 
