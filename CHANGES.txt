@@ -4,6 +4,10 @@ Changes
 0.11
 ----
 
+* add an additionnal static_view if static_dir is set in the paste config
+  so that the user can use his own static resources if he overrides the pygall
+  templates
+
 * allow override templates by setting mako.directories config property
 
 * add default values for config parameters
