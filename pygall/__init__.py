@@ -79,6 +79,9 @@ def add_views(config):
     settings = config.registry.settings
     config.add_static_view('static', 'pygall:static')
     config.add_static_view('photos', settings['photos_dir'], permission='view')
+    if 'static_dir' in settings:
+        config.add_static_view('static_dir', settings['static_dir'],
+                permission='view')
 
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
