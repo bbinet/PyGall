@@ -18,8 +18,10 @@ def includeme(config):
     settings = config.registry.settings
 
     # add default values for some global settings
-    if 'mako.directories' not in settings:
-        settings['mako.directories'] = ['pygall:templates']
+    directories = list(filter(
+        None, settings.get('mako.directories', '').splitlines()))
+    directories.append('pygall:templates')
+    settings['mako.directories'] = directories
     if 'photos_dir' not in settings:
         settings['photos_dir'] = 'photos'
     if 'upload_dir' not in settings:
