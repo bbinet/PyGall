@@ -151,6 +151,16 @@ gallery. Pass `--help` option to see all possible options::
 If you want to share your gallery to other people, please refer to the
 previous note to create new user accounts.
 
+Note that PyGall has been internationalized, and is available in both french
+and english languages. To change the current locale, you can set the `_LOCALE_`
+parameter in the query string of the current url. So the url would look like::
+
+    http://127.0.0.1:6543/?_LOCALE_=en
+
+or::
+
+    http://127.0.0.1:6543/?_LOCALE_=fr
+
 Customize look and feel
 -----------------------
 
