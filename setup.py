@@ -29,7 +29,7 @@ setup(name='PyGall',
       long_description=README + '\n\n' +  CHANGES,
       author='Bruno Binet',
       author_email='binet.bruno@gmail.com',
-      url='http://gitorious.org/PyGall',
+      url='https://github.com/inneos/PyGall',
       classifiers=[
         'Development Status :: 3 - Alpha',
         'Environment :: Web Environment',
