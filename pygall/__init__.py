@@ -9,7 +9,7 @@ import sqlahelper
 import pyramid_tm
 
 from pygall.resources import RootFactory, FAModelsFactory
-from pygall.security import groupfinder
+from pygall.security import groupfinder, init_security
 from pygall.lib.imageprocessing import ip
 from pygall.lib.helpers import mkdir_p
 
@@ -30,6 +30,8 @@ def includeme(config):
     settings['allow_cdn'] = allow_cdn
     ip.set_dest_dir(settings['photos_dir'])
     mkdir_p(settings['upload_dir'])
+
+    init_security(settings)
 
     authentication_policy = AuthTktAuthenticationPolicy(
             settings['authtkt_secret'], callback=groupfinder)

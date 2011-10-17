@@ -1,31 +1,26 @@
 from ConfigParser import ConfigParser, NoOptionError
-from pyramid.threadlocal import get_current_registry
 
 
-def _get_auth(userid):
-    #TODO: get rid of this threadlocal call
-    with open(get_current_registry().settings['auth_cfg'], 'r') as f:
+auth_cfg = {}
+
+def init_security(settings):
+    global auth_cfg
+    with open(settings['auth_cfg'], 'r') as f:
         for l in f:
             line = l.strip()
             if line.startswith('#'):
                 continue
             tokens = line.rstrip().split(':')
-            if tokens[0] == userid:
-                return tokens
-    return None
+            if len(tokens) > 1:
+                auth_cfg[tokens[0]] = \
+                    (tokens[1], (tokens[2],) if len(tokens)==3 else ())
 
 def groupfinder(userid, request):
-    tokens = _get_auth(userid)
-    if tokens and len(tokens) == 3:
-        return [tokens[2]]
-    else:
-        return []
+    return auth_cfg[userid][1]
 
 def authenticate(login, password):
-    tokens = _get_auth(login)
-    if tokens and len(tokens) > 1 and _crypt_check(password, tokens[1]):
+    if login in auth_cfg and _crypt_check(password, auth_cfg[login][0]):
         return login
-    return None
 
 def _crypt_check(password, hashed):
     from crypt import crypt
