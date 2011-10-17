@@ -1,9 +1,15 @@
-from ConfigParser import ConfigParser, NoOptionError
+import logging
+import os
 
 
+log = logging.getLogger(__name__)
 auth_cfg = {}
 
 def init_security(settings):
+    if not os.path.exists(settings['auth_cfg']):
+        log.warn('can\'t read auth configuration from file "%s": ' \
+                'No such file' % settings['auth_cfg'])
+        return None
     with open(settings['auth_cfg'], 'r') as f:
         for l in f:
             line = l.strip()
