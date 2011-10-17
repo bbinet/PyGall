@@ -8,9 +8,6 @@ In progress
 
 * create a public demo of pygall
 
-* protect gallery to authenticated users should be optionnal. PyGall should
-  allow to be configured in a way that the gallery is viewable by anyone.
-
 Should have
 -----------
 
