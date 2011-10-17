@@ -4,6 +4,8 @@ Changes
 0.12
 ----
 
+* update buildout.cfg to be able to hack on pygall
+
 * add allow_anonymous option:
   it is not anymore necessary to be authenticated to view the gallery, this
   option should be set in the paste config production.ini

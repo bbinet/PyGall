@@ -4,8 +4,6 @@ TODO
 In progress
 -----------
 
-* configure buildout.cfg to be able to hack on pygall
-
 * create a public demo of pygall
 
 Should have
