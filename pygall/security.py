@@ -4,7 +4,6 @@ from ConfigParser import ConfigParser, NoOptionError
 auth_cfg = {}
 
 def init_security(settings):
-    global auth_cfg
     with open(settings['auth_cfg'], 'r') as f:
         for l in f:
             line = l.strip()
