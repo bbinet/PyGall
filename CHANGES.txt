@@ -1,6 +1,11 @@
 Changes
 =======
 
+0.12
+----
+
+* get rid of threadlocal call and load auth_cfg in memory at startup
+
 0.11
 ----
 
