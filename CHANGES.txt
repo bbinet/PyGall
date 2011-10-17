@@ -4,6 +4,10 @@ Changes
 0.12
 ----
 
+* add allow_anonymous option:
+  it is not anymore necessary to be authenticated to view the gallery, this
+  option should be set in the paste config production.ini
+
 * get rid of threadlocal call and load auth_cfg in memory at startup
 
 0.11
