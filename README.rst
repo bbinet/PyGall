@@ -128,10 +128,13 @@ Log in as administrator and you're ready to import your first photos!
 Use PyGall
 ----------
 
-When anonymous, you will be prompted for login. Only registered users will be
-allowed to view the gallery.
+By default, when anonymous, you will be prompted for login: only registered
+users will be allowed to view the gallery.
 
-So once logged in, you will be redirected to the PyGall gallery index page.
+If you want to allow any anonymous user to view the gallery, you can set
+`allow_anonymous = true` in the `production.ini` config file.
+
+Once logged in, you will be redirected to the PyGall gallery index page.
 Then if you are part of the admin group, you will be allowed both to upload new
 photos and to edit, delete existing photos. For that purpose, you can go
 through the 'Upload' and 'Admin' link in the upper right corner of the gallery.
