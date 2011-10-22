@@ -4,12 +4,17 @@ TODO
 In progress
 -----------
 
+* create a pygall plugin for galleria similar to the flickr plugin
+
+* add unit/functionnal tests
+
 * create a public demo of pygall
 
 Should have
 -----------
 
-* create a pygall plugin for galleria similar to the flickr plugin
+* integrate with shotwell: make a script that can import photo from a specific
+  tag from shotwell (as it's done for fspot)
 
 * integrate a htpasswd python implementation to edit the auth.cfg directly from pygall
   http://trac.edgewall.org/browser/trunk/contrib/htpasswd.py
@@ -23,8 +28,6 @@ Should have
 * log errors to the session (and display them on client side)
 
 * show images thumbnails in the formalchemy admin interface
-
-* add unit tests
 
 * add support to filter photos by tags
 
