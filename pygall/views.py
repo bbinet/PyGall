@@ -196,3 +196,19 @@ class Photos(object):
             'photos': photos,
             'photos_dir': self.request.registry.settings['photos_dir'],
         }
+
+    @view_config(route_name='photos_query', renderer='jsonp', permission='view')
+    def query(self):
+        photos_dir = self.request.registry.settings['photos_dir']
+        page = int(self.request.params.get('page', 0))
+        maxphotos = int(self.request.params.get('max', 30))
+        photo_q = DBSession.query(Photo).order_by(Photo.time.asc())
+        photos = Page(photo_q, page=page, items_per_page=maxphotos)
+        return {
+                'page': page,
+                'page_count': photos.page_count,
+                'photos': [{
+                    'image': self.request.static_url(photos_dir+'/scaled/'+str(p.uri)),
+                    'title': 'mon titre'
+                    } for p in photos],
+                }
