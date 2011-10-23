@@ -205,8 +205,10 @@ class Photos(object):
         photo_q = DBSession.query(Photo).order_by(Photo.time.asc())
         photos = Page(photo_q, page=page, items_per_page=maxphotos)
         return {
-                'page': page,
-                'page_count': photos.page_count,
+                'meta': {
+                    'page': page,
+                    'page_count': photos.page_count,
+                    },
                 'photos': [{
                     'image': self.request.static_url(photos_dir+'/scaled/'+str(p.uri)),
                     'title': 'mon titre'
