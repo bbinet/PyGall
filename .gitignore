@@ -1,4 +1,4 @@
-Paste*.egg
+*.egg
 **.pyc
 **.swp
 PyGall.egg-info/
@@ -11,3 +11,4 @@ pygall/public/data/
 dist/
 auth.cfg
 .installed.cfg
+.coverage
