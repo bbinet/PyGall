@@ -6,7 +6,7 @@ here = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(here, 'README.rst')).read()
 CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
 
-requires = [
+install_requires = [
     # pyramid > 1.1 because we need static_url to accept an asbolutes
     # filename as a "path" argument. See:
     # https://docs.pylonsproject.org/projects/pyramid/1.2/whatsnew-1.2.html#minor-feature-additions
@@ -21,6 +21,14 @@ requires = [
     'pyramid_formalchemy',
     'fa.jquery',
     'WebOb<=1.1.1',
+    ]
+
+setup_requires = [
+    'nose'
+    ]
+
+tests_require = install_requires + [
+    'coverage',
     ]
 
 setup(name='PyGall',
@@ -48,8 +56,9 @@ setup(name='PyGall',
       packages=find_packages(),
       include_package_data=True,
       zip_safe=False,
-      install_requires=requires,
-      tests_require=requires,
+      install_requires=install_requires,
+      setup_requires=setup_requires,
+      tests_require=tests_require,
       message_extractors = {'pygall': [
             ('**.py', 'python', None),
             ('templates/**.mako', 'mako', None),
