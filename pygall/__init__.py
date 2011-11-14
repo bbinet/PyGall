@@ -4,6 +4,7 @@ from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.i18n import default_locale_negotiator
 from pyramid.settings import asbool
+from pyramid.renderers import JSONP
 import sqlalchemy
 import sqlahelper
 import pyramid_tm
@@ -61,6 +62,7 @@ def includeme(config):
 
     # bind the mako renderer to other file extensions
     config.add_renderer('.mako', mako_renderer_factory)
+    config.add_renderer('jsonp', JSONP(param_name='callback'))
 
     config.include(add_routes)
     config.include(add_views)
@@ -74,6 +76,7 @@ def add_routes(config):
     config.add_route('photos_new', '/photos/new')
     config.add_route('photos_create', '/photos/create')
     config.add_route('photos_delete', '/photos/delete')
+    config.add_route('photos_query', '/query.json')
 
     config.add_route('login', '/login')
     config.add_route('logout', '/logout')
