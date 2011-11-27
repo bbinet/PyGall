@@ -35,6 +35,7 @@ def login(request):
         message = message,
         came_from = came_from,
         login = login,
+        logged_in = authenticated_userid(request),
         )
 
 @view_config(route_name='logout')
