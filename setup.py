@@ -29,6 +29,7 @@ setup_requires = [
 
 tests_require = install_requires + [
     'coverage',
+    'webtest',
     ]
 
 setup(name='PyGall',
