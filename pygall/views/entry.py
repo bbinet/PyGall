@@ -14,7 +14,7 @@ def forbidden_view(request):
 
 @view_config(route_name='login', renderer='login.html.mako')
 def login(request):
-    referrer = request.url
+    referrer = request.referrer or request.url
     if referrer == request.route_url('login'):
         # never use the login form itself as came_from
         referrer = request.route_path('photos_index', page='')
