@@ -3,7 +3,7 @@ from pyramid_formalchemy.utils import TemplateEngine
 from fa.jquery import renderers as fa_renderers
 
 from pygall import models
-from pygall.lib.formalchemy.pygallimage import PyGallImageFieldRenderer
+from pygall.lib.forms.pygallimage import PyGallImageFieldRenderer
 
 config.engine = TemplateEngine()
 
