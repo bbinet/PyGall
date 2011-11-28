@@ -45,10 +45,10 @@ class EntryTests(TestCase):
             'came_from': '/login',
             })
         self.assertEqual(r.status_int, 302)
-        self.assertFalse(u'Failed login' in r.body)
         self.assertEqual(r.location, 'http://localhost/login')
         r = r.follow()
         self.assertEqual(r.status_int, 200)
+        self.assertFalse(u'Failed login' in r.body)
         self.assertTrue('<a href="/"' in r.body)
         self.assertTrue('<a href="/logout"' in r.body)
         self.assertFalse('<a href="/photos/new"' in r.body)
@@ -62,10 +62,10 @@ class EntryTests(TestCase):
             'came_from': '/login',
             })
         self.assertEqual(r.status_int, 302)
-        self.assertFalse(u'Failed login' in r.body)
         self.assertEqual(r.location, 'http://localhost/login')
         r = r.follow()
         self.assertEqual(r.status_int, 200)
+        self.assertFalse(u'Failed login' in r.body)
         self.assertTrue('<a href="/"' in r.body)
         self.assertTrue('<a href="/logout"' in r.body)
         self.assertTrue('<a href="/photos/new"' in r.body)
