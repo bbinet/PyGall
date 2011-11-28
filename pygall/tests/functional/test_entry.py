@@ -62,5 +62,29 @@ class EntryTests(BaseTestCase):
         self.assertFalse('<a href="/admin/"' in r.body)
 
     def test_logout(self):
-        pass
+        r = self._login('guest')
+        r = r.follow()
+        self.assertEqual(r.status_int, 200)
+        self.assertTrue('<a href="/"' in r.body)
+        self.assertTrue('<a href="/logout"' in r.body)
+
+        r = self.testapp.get('/logout')
+        self.assertFalse('<a href="/"' in r.body)
+        self.assertFalse('<a href="/logout"' in r.body)
+        self.assertFalse('<a href="/photos/new"' in r.body)
+        self.assertFalse('<a href="/admin/"' in r.body)
+        self.assertTrue('<a href="/login"' in r.body)
+
+    def test_forbidden_redirected(self):
+        r = self.testapp.get('/')
+        self.assertEqual(r.status_int, 302)
+        self.assertEqual(r.location, 'http://localhost/login')
+
+    def test_forbidden(self):
+        r = self._login('guest')
+        r = self.testapp.get('/admin')
+        self.assertEqual(r.status_int, 302)
+        self.assertEqual(r.location, 'http://localhost/admin/')
+        r = r.follow(expect_errors=True)
+        self.assertEqual(r.status_int, 403)
 
