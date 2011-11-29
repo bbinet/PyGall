@@ -67,8 +67,10 @@ class EntryTests(BaseTestCase):
         self.assertEqual(r.status_int, 200)
         self.assertTrue('<a href="/"' in r.body)
         self.assertTrue('<a href="/logout"' in r.body)
+        self.assertFalse('<a href="/login"' in r.body)
 
         r = self.testapp.get('/logout')
+        r = self.testapp.get('/login')
         self.assertFalse('<a href="/"' in r.body)
         self.assertFalse('<a href="/logout"' in r.body)
         self.assertFalse('<a href="/photos/new"' in r.body)
