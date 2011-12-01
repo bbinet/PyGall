@@ -27,3 +27,19 @@ class ImageProcessingTests(TestCase):
             self.assertEqual(ip.quality, 50)
             # assert set_dest_dir has been called
             mock_set_dest_dir.assert_called_once_with('/foo/bar')
+
+    def test_set_dest_dir(self):
+        from pygall.lib.imageprocessing import ImageProcessing
+        ip = ImageProcessing()
+        ip.set_dest_dir('/foo/bar')
+        self.assertEqual(ip.dest_dir, '/foo/bar')
+        self.assertEqual(ip.abs_orig_dest_dir,  '/foo/bar/orig')
+        self.assertEqual(ip.abs_scaled_dest_dir, '/foo/bar/scaled')
+
+    def test_set_dest_dir_None(self):
+        from pygall.lib.imageprocessing import ImageProcessing
+        ip = ImageProcessing()
+        ip.set_dest_dir(None)
+        self.assertTrue(ip.dest_dir is None)
+        self.assertTrue(ip.abs_orig_dest_dir is None)
+        self.assertTrue(ip.abs_scaled_dest_dir is None)
