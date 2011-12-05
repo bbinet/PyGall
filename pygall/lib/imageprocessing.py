@@ -74,11 +74,12 @@ class ImageProcessing:
     def copy_orig(self, src, uri):
         """
         Copy the original image to orig dest directory
+        - src can be either a string or a file-like object
         """
         dest = os.path.join(self.abs_orig_dest_dir, uri)
-
-        if not self._check_paths(src, dest):
-            return
+        if os.path.exists(dest):
+            # dest already exists: failed silently
+            return False
 
         dirpath = os.path.dirname(dest)
         if not os.path.exists(dirpath):
@@ -97,11 +98,12 @@ class ImageProcessing:
         """
         Rotate and scale image.
         Copy the processed image to scaled dest directory
+        - src can be either a string or a file-like object
         """
         dest = os.path.join(self.abs_scaled_dest_dir, uri)
-
-        if not self._check_paths(src, dest):
-            return
+        if os.path.exists(dest):
+            # dest already exists: failed silently
+            return False
 
         loc = seek(src, 0)
         im = Image.open(src)
@@ -192,21 +194,6 @@ class ImageProcessing:
             raise e
         return info
 
-
-    def _check_paths(self, src, dest=None):
-        """
-        Checks validity of src and/or dest paths
-        """
-        # fail if src photo does not exist
-        if isinstance(src, (StringType, UnicodeType)) and \
-                not os.path.exists(src):
-            log.info("Source photo does not exists: %s" % src)
-            return False
-        # fail if dest photo already exists
-        if dest is not None and os.path.exists(dest):
-            log.info("Destination photo already exists: %s" % dest)
-            return False
-        return True
 
 
 ip = ImageProcessing()
