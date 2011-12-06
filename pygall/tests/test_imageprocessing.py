@@ -82,4 +82,16 @@ class IPTests(TestCase):
                     '4c6f6da9406bce4ae220d265aa70f9d9')
 
     def test_copy_orig_fileobj(self):
-        pass
+        import os
+        import hashlib
+        uri = 'test/python.jpg'
+        dest = os.path.join(self.destdir, 'orig', uri)
+        with open('python.jpg', 'rb') as src:
+            loc = src.tell()
+            self.ip.copy_orig(src, uri)
+            self.assertTrue(os.path.exists(dest))
+            with open(dest, 'rb') as f:
+                self.assertEqual(
+                        hashlib.md5(f.read()).hexdigest(),
+                        '4c6f6da9406bce4ae220d265aa70f9d9')
+            self.assertEqual(src.tell(), loc)
