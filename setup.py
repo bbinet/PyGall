@@ -7,7 +7,7 @@ README = open(os.path.join(here, 'README.rst')).read()
 CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
 
 install_requires = [
-    # pyramid > 1.1 because we need static_url to accept an asbolutes
+    # pyramid > 1.1 because we need static_url to accept an absolute
     # filename as a "path" argument. See:
     # https://docs.pylonsproject.org/projects/pyramid/1.2/whatsnew-1.2.html#minor-feature-additions
     'pyramid>1.1',
