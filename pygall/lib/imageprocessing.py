@@ -47,7 +47,7 @@ def get_info(img, info=None):
         info['ext'] = im.format.lower()
     if 'size' not in info:
         info['size'] = get_size(img)
-    if loc: seek(f, loc)
+    if loc is not None: seek(f, loc)
 
     return info
 
@@ -145,7 +145,7 @@ class ImageProcessing:
 
         # save processed image
         im.save(dest, quality=self.quality)
-        if loc: seek(src, loc)
+        if loc is not None: seek(src, loc)
 
 
     def remove_image(self, uri):
