@@ -96,7 +96,7 @@ class IPTests(TestCase):
                         '4c6f6da9406bce4ae220d265aa70f9d9')
             self.assertEqual(src.tell(), loc)
 
-    def test_copy_orig_already_exists(self):
+    def test_copy_scaled_already_exists(self):
         import os
         import hashlib
         uri = 'test/python.jpg'
@@ -116,3 +116,18 @@ class IPTests(TestCase):
             self.assertEqual(
                     hashlib.md5(f.read()).hexdigest(),
                     'af18318b71016ea25e2c79c63810482a')
+
+    def test_copy_scaled_fileobj(self):
+        import os
+        import hashlib
+        uri = 'test/python.jpg'
+        dest = os.path.join(self.destdir, 'scaled', uri)
+        with open('python.jpg', 'rb') as src:
+            loc = src.tell()
+            self.ip.copy_scaled(src, uri)
+            self.assertTrue(os.path.exists(dest))
+            with open(dest, 'rb') as f:
+                self.assertEqual(
+                        hashlib.md5(f.read()).hexdigest(),
+                        'af18318b71016ea25e2c79c63810482a')
+            self.assertEqual(src.tell(), loc)
