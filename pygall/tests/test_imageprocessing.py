@@ -117,6 +117,22 @@ class IPTests(TestCase):
                     hashlib.md5(f.read()).hexdigest(),
                     'af18318b71016ea25e2c79c63810482a')
 
+    def test_copy_scaled_with_rotation(self):
+        import os
+        import hashlib
+        uri = 'test/python.jpg'
+        dest = os.path.join(self.destdir, 'scaled', uri)
+        from mock import patch
+        with patch("pygall.lib.imageprocessing.get_exif") as mock_get_exif:
+            mock_get_exif.return_value = {'Orientation': 6}
+            self.ip.copy_scaled('python.jpg', uri)
+            self.assertTrue(os.path.exists(dest))
+            with open(dest, 'rb') as f:
+                self.assertEqual(
+                        hashlib.md5(f.read()).hexdigest(),
+                        'aa72c5f0442e45f413102b5dc022141b')
+            self.assertEqual(mock_get_exif.called, 1)
+
     def test_copy_scaled_fileobj(self):
         import os
         import hashlib
