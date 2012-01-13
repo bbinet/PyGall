@@ -123,7 +123,7 @@ class IPTests(TestCase):
         uri = 'test/python.jpg'
         dest = os.path.join(self.destdir, 'scaled', uri)
         from mock import patch
-        with patch("pygall.lib.imageprocessing.get_exif") as mock_get_exif:
+        with patch('pygall.lib.imageprocessing.get_exif') as mock_get_exif:
             mock_get_exif.return_value = {'Orientation': 6}
             self.ip.copy_scaled('python.jpg', uri)
             self.assertTrue(os.path.exists(dest))
@@ -163,3 +163,25 @@ class IPTests(TestCase):
         self.ip.remove_image(uri)
         self.assertFalse(os.path.exists(dest_orig))
         self.assertFalse(os.path.exists(dest_scaled))
+
+    def test_process_image(self):
+        from contextlib import nested
+        from datetime import datetime
+        from pygall.lib.imageprocessing import ImageProcessing
+        from mock import patch
+        src = 'python.jpg'
+        with nested(
+                patch('pygall.lib.imageprocessing.get_info'),
+                patch.object(ImageProcessing, 'copy_orig'),
+                patch.object(ImageProcessing, 'copy_scaled'),
+                ) as (mock_get_info, mock_copy_orig, mock_copy_scaled):
+            mock_get_info.return_value = {
+                    'md5sum': 'the_md5',
+                    'date': datetime(2002, 02, 22),
+                    'ext': 'jpeg',
+                    }
+            info = self.ip.process_image(src)
+            uri = info['uri']
+            self.assertEqual(uri, '2002/02/22/the_md5.jpeg')
+            mock_copy_orig.assert_called_once_with(src, uri)
+            mock_copy_scaled.assert_called_once_with(src, uri)
