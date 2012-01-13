@@ -147,3 +147,19 @@ class IPTests(TestCase):
                         hashlib.md5(f.read()).hexdigest(),
                         'af18318b71016ea25e2c79c63810482a')
             self.assertEqual(src.tell(), loc)
+
+    def test_remove_image(self):
+        import os
+        import hashlib
+        uri = 'test/python.jpg'
+        dest_orig = os.path.join(self.destdir, 'orig', uri)
+        dest_scaled = os.path.join(self.destdir, 'scaled', uri)
+        os.makedirs(os.path.dirname(dest_orig), 0755)
+        os.makedirs(os.path.dirname(dest_scaled), 0755)
+        open(dest_orig, 'w').close() # create a dest_orig file
+        open(dest_scaled, 'w').close() # create a dest_scaled file
+        self.assertTrue(os.path.exists(dest_orig))
+        self.assertTrue(os.path.exists(dest_scaled))
+        self.ip.remove_image(uri)
+        self.assertFalse(os.path.exists(dest_orig))
+        self.assertFalse(os.path.exists(dest_scaled))
