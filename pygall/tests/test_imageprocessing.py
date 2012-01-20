@@ -1,6 +1,54 @@
 from unittest import TestCase
 
 
+class UtilitiesTests(TestCase):
+
+    def test_get_exif(self):
+        import Image
+        from pygall.lib.imageprocessing import get_exif
+        im = Image.open('python.jpg')
+        exif = get_exif(im._getexif())
+        self.assertEqual(exif['DateTimeOriginal'], '2011:11:27 15:08:47')
+        self.assertEqual(exif['Orientation'], 1)
+
+    def test_get_info(self):
+        from pygall.lib.imageprocessing import get_info
+        from datetime import datetime
+        info = get_info('python.jpg')
+        self.assertEqual(info, {
+            'date': datetime(2011, 11, 27, 15, 8, 47),
+            'ext': 'jpeg',
+            'md5sum': u'065c540533e7621f6fc37fb9ab297b3f',
+            'size': 63205
+            })
+        info = get_info('python.jpg', {
+            'date': 'dummy_date',
+            'ext': 'dummy_ext',
+            'md5sum': 'dummy_md5sum',
+            'size': 'dummy_size'
+            })
+        self.assertEqual(info, {
+            'date': 'dummy_date',
+            'ext': 'dummy_ext',
+            'md5sum': 'dummy_md5sum',
+            'size': 'dummy_size'
+            })
+
+    def test_get_info_fileobj(self):
+        from pygall.lib.imageprocessing import get_info
+        from datetime import datetime
+        with open('python.jpg', 'rb') as src:
+            loc = src.tell()
+            info = get_info(src)
+            self.assertEqual(info, {
+                'date': datetime(2011, 11, 27, 15, 8, 47),
+                'ext': 'jpeg',
+                'md5sum': u'065c540533e7621f6fc37fb9ab297b3f',
+                'size': 63205
+                })
+            self.assertEqual(src.tell(), loc)
+
+
 class IPMockTests(TestCase):
 
     def test_constructor_no_arg(self):
