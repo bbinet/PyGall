@@ -257,14 +257,20 @@ class IPTests(TestCase):
                 patch('pygall.lib.imageprocessing.get_info'),
                 patch.object(ImageProcessing, 'copy_orig'),
                 patch.object(ImageProcessing, 'copy_scaled'),
-                ) as (mock_get_info, mock_copy_orig, mock_copy_scaled):
+                patch.object(ImageProcessing, 'remove_image'),
+                ) as (mock_get_info, mock_copy_orig, mock_copy_scaled,
+                        mock_remove_image):
             mock_get_info.return_value = {
                     'md5sum': 'the_md5',
                     'date': datetime(2002, 02, 22),
                     'ext': 'jpeg',
                     }
-            info = self.ip.process_image(src)
+            info = self.ip.process_image(src, md5sum='dummy_md5sum')
             uri = info['uri']
             self.assertEqual(uri, '2002/02/22/the_md5.jpeg')
             mock_copy_orig.assert_called_once_with(src, uri)
             mock_copy_scaled.assert_called_once_with(src, uri)
+            # test if an exception is thrown
+            mock_copy_scaled.side_effect = Exception()
+            self.assertRaises(Exception, self.ip.process_image, src)
+            mock_remove_image.assert_called_once_with(uri)
