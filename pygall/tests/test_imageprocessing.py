@@ -6,6 +6,7 @@ class UtilitiesTests(TestCase):
     def test_get_exif(self):
         import Image
         from pygall.lib.imageprocessing import get_exif
+        self.assertRaises(Exception, get_exif, None)
         im = Image.open('python.jpg')
         exif = get_exif(im._getexif())
         self.assertEqual(exif['DateTimeOriginal'], '2011:11:27 15:08:47')
