@@ -242,6 +242,10 @@ class IPTests(TestCase):
         self.ip.remove_image(uri)
         self.assertFalse(os.path.exists(dest_orig))
         self.assertFalse(os.path.exists(dest_scaled))
+        # test removal does not crash if dest images don't exist
+        self.ip.remove_image(uri)
+        self.assertFalse(os.path.exists(dest_orig))
+        self.assertFalse(os.path.exists(dest_scaled))
 
     def test_process_image(self):
         from contextlib import nested
