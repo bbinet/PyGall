@@ -32,3 +32,13 @@ class HelpersTests(TestCase):
         with open(src, 'rb') as f:
             size = get_size(f)
             self.assertEqual(size, 63205)
+
+    def test_img_md5(self):
+        from pygall.lib.helpers import img_md5
+        src = 'python.jpg'
+        md5 = img_md5(src)
+        self.assertEqual(md5, '065c540533e7621f6fc37fb9ab297b3f')
+        # test img_md5 of a file object
+        with open(src, 'rb') as f:
+            md5 = img_md5(f)
+            self.assertEqual(md5, '065c540533e7621f6fc37fb9ab297b3f')
