@@ -34,6 +34,15 @@ class UtilitiesTests(TestCase):
                 'md5sum': 'dummy_md5sum',
                 'size': 'dummy_size',
                 })
+
+            # test date:None if invalid date
+            mock_get_exif.return_value = {
+                    'DateTimeOriginal': 'ERROR'
+                    }
+            info = get_info('python.jpg')
+            self.assertEqual(info['date'], None)
+
+            # test that existing info param is given priority over calculation
             info = get_info('python.jpg', {
                 'date': 'fake_date',
                 'ext': 'fake_ext',
