@@ -22,3 +22,14 @@ class HelpersTests(TestCase):
         mkdir_p(testpath)
         self.assertTrue(os.path.isdir(testpath))
         shutil.rmtree(tmpdir)
+
+    def test_get_size(self):
+        import os
+        from pygall.lib.helpers import get_size
+        src = 'python.jpg'
+        size = get_size(src)
+        self.assertEqual(size, 63205)
+        # test get_size of a file object
+        with open(src, 'rb') as f:
+            size = get_size(f)
+            self.assertEqual(size, 63205)
