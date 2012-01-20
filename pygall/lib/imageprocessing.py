@@ -47,7 +47,7 @@ def get_info(img, info=None):
         info['ext'] = im.format.lower()
     if 'size' not in info:
         info['size'] = get_size(img)
-    if loc is not None: seek(f, loc)
+    if loc is not None: seek(img, loc)
 
     return info
 
