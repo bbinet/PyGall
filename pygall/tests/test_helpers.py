@@ -24,7 +24,6 @@ class HelpersTests(TestCase):
         shutil.rmtree(tmpdir)
 
     def test_get_size(self):
-        import os
         from pygall.lib.helpers import get_size
         src = 'python.jpg'
         size = get_size(src)
