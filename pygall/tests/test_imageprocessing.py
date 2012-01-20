@@ -202,6 +202,15 @@ class IPTests(TestCase):
                         hashlib.md5(f.read()).hexdigest(),
                         'aa72c5f0442e45f413102b5dc022141b')
             self.assertEqual(mock_get_exif.called, 1)
+            os.unlink(dest)
+
+            # test that if an exception occurs, there is no rotation
+            mock_get_exif.side_effect = Exception()
+            self.ip.copy_scaled('python.jpg', uri)
+            with open(dest, 'rb') as f:
+                self.assertEqual(
+                        hashlib.md5(f.read()).hexdigest(),
+                        'af18318b71016ea25e2c79c63810482a')
 
     def test_copy_scaled_fileobj(self):
         import os
