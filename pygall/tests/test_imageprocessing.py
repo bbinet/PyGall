@@ -15,25 +15,37 @@ class UtilitiesTests(TestCase):
     def test_get_info(self):
         from pygall.lib.imageprocessing import get_info
         from datetime import datetime
-        info = get_info('python.jpg')
-        self.assertEqual(info, {
-            'date': datetime(2011, 11, 27, 15, 8, 47),
-            'ext': 'jpeg',
-            'md5sum': u'065c540533e7621f6fc37fb9ab297b3f',
-            'size': 63205
-            })
-        info = get_info('python.jpg', {
-            'date': 'dummy_date',
-            'ext': 'dummy_ext',
-            'md5sum': 'dummy_md5sum',
-            'size': 'dummy_size'
-            })
-        self.assertEqual(info, {
-            'date': 'dummy_date',
-            'ext': 'dummy_ext',
-            'md5sum': 'dummy_md5sum',
-            'size': 'dummy_size'
-            })
+        from contextlib import nested
+        from mock import patch
+        with nested(
+                patch('pygall.lib.imageprocessing.get_exif'),
+                patch('pygall.lib.imageprocessing.img_md5'),
+                patch('pygall.lib.imageprocessing.get_size'),
+                ) as (mock_get_exif, mock_img_md5, mock_get_size):
+            mock_get_exif.return_value = {
+                    'DateTimeOriginal': '2000:12:31 23:00:00'
+                    }
+            mock_img_md5.return_value = 'dummy_md5sum'
+            mock_get_size.return_value = 'dummy_size'
+            info = get_info('python.jpg')
+            self.assertEqual(info, {
+                'date': datetime(2000, 12, 31, 23, 0, 0),
+                'ext': 'jpeg',
+                'md5sum': 'dummy_md5sum',
+                'size': 'dummy_size',
+                })
+            info = get_info('python.jpg', {
+                'date': 'fake_date',
+                'ext': 'fake_ext',
+                'md5sum': 'fake_md5sum',
+                'size': 'fake_size',
+                })
+            self.assertEqual(info, {
+                'date': 'fake_date',
+                'ext': 'fake_ext',
+                'md5sum': 'fake_md5sum',
+                'size': 'fake_size',
+                })
 
     def test_get_info_fileobj(self):
         from pygall.lib.imageprocessing import get_info
