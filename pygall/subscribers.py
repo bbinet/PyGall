@@ -8,7 +8,6 @@ from pyramid_formalchemy.events import subscriber as fa_subscriber, \
 
 from pygall.models import Photo
 from pygall.lib.imageprocessing import ip, get_info, ORIG
-from pygall.lib.helpers import remove_empty_dirs
 
 log = logging.getLogger(__name__)
 
@@ -54,6 +53,3 @@ def after_photo_sync(context, event):
 def before_photo_delete(context, event):
     ip.remove_image(context.uri)
     log.debug('ip.remove_image(%s)' % context.uri)
-    photos_dir = event.request.registry.settings['photos_dir']
-    remove_empty_dirs(os.path.join(photos_dir, 'orig'), context.uri)
-    remove_empty_dirs(os.path.join(photos_dir, 'scaled'), context.uri)

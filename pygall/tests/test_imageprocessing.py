@@ -230,18 +230,43 @@ class IPTests(TestCase):
     def test_remove_image(self):
         import os
         import hashlib
-        uri = 'test/python.jpg'
-        dest_orig = os.path.join(self.destdir, 'orig', uri)
-        dest_scaled = os.path.join(self.destdir, 'scaled', uri)
-        os.makedirs(os.path.dirname(dest_orig), 0755)
-        os.makedirs(os.path.dirname(dest_scaled), 0755)
-        open(dest_orig, 'w').close() # create a dest_orig file
-        open(dest_scaled, 'w').close() # create a dest_scaled file
-        self.assertTrue(os.path.exists(dest_orig))
-        self.assertTrue(os.path.exists(dest_scaled))
-        self.ip.remove_image(uri)
-        self.assertFalse(os.path.exists(dest_orig))
-        self.assertFalse(os.path.exists(dest_scaled))
+        uri1 = 'path/to/first/python.jpg'
+        uri2 = 'path/to/second/python.jpg'
+        origdir = os.path.join(self.destdir, 'orig')
+        scaleddir = os.path.join(self.destdir, 'scaled')
+        pathlens = []
+
+        # create files
+        for uri in (uri1, uri2,):
+            dest_orig = os.path.join(origdir, uri)
+            dest_scaled = os.path.join(scaleddir, uri)
+            os.makedirs(os.path.dirname(dest_orig), 0755)
+            os.makedirs(os.path.dirname(dest_scaled), 0755)
+            open(dest_orig, 'w').close() # create a dest_orig file
+            open(dest_scaled, 'w').close() # create a dest_scaled file
+            self.assertTrue(os.path.exists(dest_orig))
+            self.assertTrue(os.path.exists(dest_scaled))
+
+        # test remove_image
+        for uri in (uri1, uri2,):
+            dest_orig = os.path.join(origdir, uri)
+            dest_scaled = os.path.join(scaleddir, uri)
+            self.ip.remove_image(uri)
+            self.assertFalse(os.path.exists(dest_orig))
+            self.assertFalse(os.path.exists(dest_scaled))
+            for p in (dest_orig, dest_scaled,):
+                base = os.path.dirname(p)
+                i = 0
+                while not os.path.exists(base):
+                    i += 1;
+                    base = os.path.dirname(base)
+                pathlens.append(i)
+        self.assertEqual(pathlens, [1, 1, 3, 3])
+        self.assertTrue(os.path.exists(origdir))
+        self.assertEqual(os.listdir(origdir), [])
+        self.assertTrue(os.path.exists(scaleddir))
+        self.assertEqual(os.listdir(scaleddir), [])
+
         # test removal does not crash if dest images don't exist
         self.ip.remove_image(uri)
         self.assertFalse(os.path.exists(dest_orig))

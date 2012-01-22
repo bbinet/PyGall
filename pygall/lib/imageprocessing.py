@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
+import errno
 from datetime import datetime
 import shutil
 import logging
@@ -152,18 +153,20 @@ class ImageProcessing:
         """
         Remove scaled and orig images associated with the given src image
         """
-        # remove scaled image
-        dest = os.path.join(self.abs_scaled_dest_dir, uri)
-        try:
-            os.unlink(dest)
-        except:
-            pass
-        # remove orig image
-        dest = os.path.join(self.abs_orig_dest_dir, uri)
-        try:
-            os.unlink(dest)
-        except:
-            pass
+        for imgdir in (self.abs_scaled_dest_dir, self.abs_orig_dest_dir,):
+            # remove image from imgdir
+            try:
+                os.unlink(os.path.join(imgdir, uri))
+            except OSError, e:
+                if e.errno != errno.ENOENT:
+                    raise
+            head, tail = os.path.split(uri)
+            while head and tail:
+                try:
+                    os.rmdir(os.path.join(imgdir, head))
+                except OSError:
+                    break
+                head, tail = os.path.split(head)
 
 
     def process_image(self, src, md5sum=None):

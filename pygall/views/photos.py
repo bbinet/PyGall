@@ -14,7 +14,7 @@ from webhelpers.paginate import Page
 from pygall.models import DBSession, Photo
 from pygall.lib.imageprocessing import ip
 from pygall.lib.archivefile import extractall
-from pygall.lib.helpers import img_md5, remove_empty_dirs, get_size
+from pygall.lib.helpers import img_md5, get_size
 
 
 log = logging.getLogger(__name__)
@@ -35,9 +35,6 @@ class Photos(object):
             raise NotFound()
         ip.remove_image(uri)
         log.debug('ip.remove_image(%s)' % uri)
-        photos_dir = self.request.registry.settings['photos_dir']
-        remove_empty_dirs(os.path.join(photos_dir, 'orig'), uri)
-        remove_empty_dirs(os.path.join(photos_dir, 'scaled'), uri)
         return True
 
     @view_config(route_name='photos_create', renderer='json',
