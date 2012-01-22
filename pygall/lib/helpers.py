@@ -79,11 +79,3 @@ def unchroot_path(path, chroot):
 
     return (unchrooted, uri)
 
-
-def main(argv):
-    for arg in argv[1:]:
-        print "img_md5('%s') --> %s" % (arg, img_md5(arg))
-
-if __name__ == "__main__":
-    import sys
-    main(sys.argv)
