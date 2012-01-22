@@ -3,12 +3,6 @@ from unittest import TestCase
 
 class HelpersTests(TestCase):
 
-    def setUp(self):
-        pass
-
-    def tearDown(self):
-        pass
-
     def test_mkdir_p(self):
         import os
         import shutil
