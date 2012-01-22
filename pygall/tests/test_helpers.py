@@ -22,6 +22,10 @@ class HelpersTests(TestCase):
         mkdir_p(testpath)
         self.assertTrue(os.path.isdir(testpath))
         shutil.rmtree(tmpdir)
+        from mock import patch
+        with patch('os.makedirs') as mock_makedirs:
+            mock_makedirs.side_effect = OSError
+            self.assertRaises(OSError, mkdir_p, testpath)
 
     def test_get_size(self):
         from pygall.lib.helpers import get_size
