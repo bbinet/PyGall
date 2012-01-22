@@ -42,3 +42,24 @@ class HelpersTests(TestCase):
         with open(src, 'rb') as f:
             md5 = img_md5(f)
             self.assertEqual(md5, '065c540533e7621f6fc37fb9ab297b3f')
+
+    def test_unchroot_path(self):
+        import os
+        import shutil
+        from tempfile import mkdtemp
+        from pygall.lib.helpers import unchroot_path
+        self.assertRaises(Exception, unchroot_path, None, None)
+        self.assertRaises(
+                Exception, unchroot_path, '/path/to/file', '/bad/chroot')
+        self.assertRaises(
+                Exception, unchroot_path, '/path/to/file', '/chroot/path')
+        self.assertRaises(
+                Exception, unchroot_path, '/path..//etc/passwd', '/chroot/path')
+        # test a working unchroot_path
+        tmpdir = mkdtemp(prefix='test_unchroot_path-')
+        testpath = os.path.join(tmpdir, 'dummy', 'file')
+        os.makedirs(os.path.dirname(testpath), 0755)
+        open(testpath, 'w').close() # create a dest file
+        pth = unchroot_path('/dummy/file', os.path.join(tmpdir, 'dummy'))
+        self.assertEqual(pth, (testpath, 'file'))
+        shutil.rmtree(tmpdir)
