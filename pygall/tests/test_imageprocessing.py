@@ -71,7 +71,7 @@ class UtilitiesTests(TestCase):
             self.assertEqual(src.tell(), loc)
 
 
-class IPMockTests(TestCase):
+class IPTestsNoSetup(TestCase):
 
     def test_constructor_no_arg(self):
         from pygall.lib.imageprocessing import ImageProcessing
