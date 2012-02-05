@@ -9,13 +9,13 @@ PyGall is a simple web photo gallery written in Python and built on the
 
 PyGall is licensed under a BSD permissive license.
 
-Code is hosted on github: https://github.com/inneos/PyGall.
+Code is hosted on github: https://github.com/bbinet/PyGall.
 
 Be warned that this image gallery is beta software, and not full featured.
 It has been developped to fit my own needs, and may not suit your wishes.
 
 But that being said, feel free to report bugs or ask for new features at
-https://github.com/inneos/PyGall/issues.
+https://github.com/bbinet/PyGall/issues.
 Even better, since the code is hosted on github, feel free to fork and send
 pull requests.
 
@@ -44,7 +44,7 @@ PyGall currently provides the following features:
   to your needs.
 
 For upcoming features, you can have a look at
-https://github.com/inneos/PyGall/blob/master/TODO.txt
+https://github.com/bbinet/PyGall/blob/master/TODO.txt
 
 Install
 -------
@@ -75,7 +75,7 @@ PyGall is now installed. We need to make a configuration file for your
 PyGall photo gallery. The easiest way is to copy the file from the PyGall
 repository and customize it to your needs::
 
-    $ wget https://raw.github.com/inneos/PyGall/master/production.ini
+    $ wget https://raw.github.com/bbinet/PyGall/master/production.ini
 
 First, you should edit ``production.ini`` and set a unique random value for
 the ``authtkt_secret`` (instead of the `̀ changeme`` default value) to guard
@@ -177,7 +177,7 @@ To override some default PyGall templates, you have to update your
 
 Then create the `custom_templates` directory, and put some mako templates in
 there. For example, you can copy the default PyGall templates from
-https://github.com/inneos/PyGall/tree/master/pygall/templates and update them
+https://github.com/bbinet/PyGall/tree/master/pygall/templates and update them
 as needed.
 
 If you want to include some static resources, you can also activate a new
