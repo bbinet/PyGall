@@ -4,9 +4,6 @@ Changes
 0.12
 ----
 
-* set upper limit for WebOb dependency since formalchemy use UnicodeMultiDict
-  which have been removed in WebOb 1.2x
-
 * update buildout.cfg to be able to hack on pygall
 
 * add allow_anonymous option:
