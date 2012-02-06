@@ -21,6 +21,7 @@ install_requires = [
     'pyramid_formalchemy',
     'fa.jquery',
     'WebOb',
+    'Archive',
     ]
 
 setup_requires = [

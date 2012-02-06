@@ -1,6 +1,7 @@
 import logging
 import cgi
 import os
+import shutil
 from math import ceil
 from tempfile import mkdtemp
 from shutil import rmtree
@@ -10,10 +11,10 @@ from pyramid.httpexceptions import HTTPBadRequest, HTTPFound
 from pyramid.exceptions import NotFound
 from pyramid.security import authenticated_userid
 from webhelpers.paginate import Page
+from archive import extract, UnrecognizedArchiveFormat
 
 from pygall.models import DBSession, Photo
 from pygall.lib.imageprocessing import ip
-from pygall.lib.archivefile import extractall
 from pygall.lib.helpers import img_md5, get_size
 
 
@@ -53,7 +54,19 @@ class Photos(object):
         tmpdir = mkdtemp(dir=settings['upload_dir'])
 
         try:
-            extractall(f.file, tmpdir, name=f.filename)
+            try:
+                fn = f.filename
+                extract(f.file, tmpdir, safe=True, filename=fn)
+                log.debug("file '%s' has been correctly extracted" % fn)
+            except UnrecognizedArchiveFormat as e:
+                # seems to be a single file, save it
+                try:
+                    fdst = open(
+                            os.path.join(tmpdir, os.path.basename(fn)), 'wb')
+                    shutil.copyfileobj(f.file, fdst)
+                    log.debug("file '%s' has been correctly copied" % fn)
+                finally:
+                    if fdst: fdst.close()
 
             # walk in import directory to import all image files
             for dirpath, dirs, files in os.walk(tmpdir, topdown=False):
